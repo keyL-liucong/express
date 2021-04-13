@@ -1,5 +1,6 @@
 <template>
     <view class="content">
+        qqqqqqq
 		<!-- <tui-modal :show="true"  title="提示" content="确定退出登录吗？"></tui-modal> -->
     </view>
 </template>
