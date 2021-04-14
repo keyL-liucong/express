@@ -27,7 +27,15 @@ export default {
             },
         };
     },
-    onLoad() {},
+    onLoad() {
+        this.$toast('测试弹框');
+        this.$alert({
+            content:'测试alert',
+            success:()=> {
+                this.$toast('测试弹框success');
+            }
+        });
+    },
     methods: {},
 };
 </script>
