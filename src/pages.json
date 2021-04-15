@@ -1,79 +1,90 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		},
-		{
-			"path": "pages/tabbar-2/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		},
-		{
-			"path": "pages/tabbar-3/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		},
-		{
-			"path": "pages/tabbar-4/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		},
-		{
-			"path": "pages/login/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		}
-	],
-	"tabBar": {
-		"color": "#8a8a8a",
-		"selectedColor": "#FB5452",
-		"borderStyle": "white",
-		"backgroundColor": "#ffffff",
-		"iconWidth": "24px",
-		"list": [
-			{
-				"pagePath": "pages/index/index",
-				"text": "首页",
-				"iconPath": "static/tab-1.png",
-				"selectedIconPath": "static/tab-1-selected.png"
-			},
-			{
-				"pagePath": "pages/tabbar-2/index",
-				"text": "查件",
-				"iconPath": "static/tab-2.png",
-				"selectedIconPath": "static/tab-2-selected.png"
-			},
-			{
-				"pagePath": "pages/tabbar-3/index",
-				"text": "福利",
-				"iconPath": "static/tab-2.png",
-				"selectedIconPath": "static/tab-2-selected.png"
-			},
-			{
-				"pagePath": "pages/tabbar-4/index",
-				"text": "我的",
-				"iconPath": "static/tab-2.png",
-				"selectedIconPath": "static/tab-2-selected.png"
-			}
-		]
-	},
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	},
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"tui-(.*)": "thorui-uni/lib/thorui/tui-$1/tui-$1.vue"
-		}
-	}
+    "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        },
+        {
+            "path": "pages/tabbar-2/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        },
+        {
+            "path": "pages/tabbar-3/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        },
+        {
+            "path": "pages/tabbar-4/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        },
+        {
+            "path": "pages/tabbar-5/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        },
+        {
+            "path": "pages/login/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        }
+    ],
+    "tabBar": {
+        "color": "#8a8a8a",
+        "selectedColor": "#FB5452",
+        "borderStyle": "white",
+        "backgroundColor": "#ffffff",
+        "iconWidth": "24px",
+        "list": [{
+                "pagePath": "pages/index/index",
+                "text": "首页",
+                "iconPath": "static/tab-1.png",
+                "selectedIconPath": "static/tabbar-1-selected.png"
+            },
+            {
+                "pagePath": "pages/tabbar-2/index",
+                "text": "查件",
+                "iconPath": "static/tab-2.png",
+                "selectedIconPath": "static/tabbar-2-selected.png"
+            },
+            {
+                "pagePath": "pages/tabbar-3/index",
+                "text": "福利",
+                "iconPath": "static/tab-3.png",
+                "selectedIconPath": "static/tabbar-3-selected.png"
+            },
+            {
+                "pagePath": "pages/tabbar-4/index",
+                "text": "我的",
+                "iconPath": "static/tab-4.png",
+                "selectedIconPath": "static/tabbar-4-selected.png"
+            },
+            {
+                "pagePath": "pages/tabbar-5/index",
+                "text": "我的",
+                "iconPath": "static/tab-5.png",
+                "selectedIconPath": "static/tabbar-5-selected.png"
+            }
+        ]
+    },
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    },
+    "easycom": {
+        "autoscan": true,
+        "custom": {
+            "tui-(.*)": "thorui-uni/lib/thorui/tui-$1/tui-$1.vue"
+        }
+    }
 }
