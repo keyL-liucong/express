@@ -14,4 +14,12 @@ export default {
 
 <style>
 /*每个页面公共css */
+button::after {
+    border: none;
+}
+button {
+    border-radius: 0;
+    background-color: #fff;
+}
+
 </style>

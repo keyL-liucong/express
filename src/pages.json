@@ -33,7 +33,7 @@
         {
             "path": "pages/login/index",
             "style": {
-                "navigationBarTitleText": "uni-app"
+                "navigationBarTitleText": "国际快递"
             }
         }
     ],
@@ -42,7 +42,6 @@
         "selectedColor": "#FB5452",
         "borderStyle": "white",
         "backgroundColor": "#ffffff",
-        "iconWidth": "24px",
         "list": [{
                 "pagePath": "pages/index/index",
                 "text": "首页",
