@@ -27,7 +27,13 @@
         {
             "path": "pages/tabbar-5/index",
             "style": {
-                "navigationBarTitleText": "uni-app"
+                "navigationBarTitleText": "uni-app",
+                "navigationStyle": "custom",
+                "app-plus": {
+                    "titleNView": {
+                        "backgroundImage": "linear-gradient(to right, #ff9900, #ff7100)"
+                    }
+                }
             }
         },
         {
@@ -79,6 +85,8 @@
         "navigationBarTitleText": "uni-app",
         "navigationBarBackgroundColor": "#F8F8F8",
         "backgroundColor": "#F8F8F8"
+
+
     },
     "easycom": {
         "autoscan": true,

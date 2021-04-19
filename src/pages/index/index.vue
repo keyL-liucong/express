@@ -351,9 +351,10 @@ export default {
         align-items: center;
         background: #fff;
         width: 100%;
-        padding-left: 30rpx;
+        padding: 0 30rpx;
         font-size: 28rpx;
         box-sizing: border-box;
+        margin-bottom: 20rpx;
         > text {
             
             font-weight: bold;
