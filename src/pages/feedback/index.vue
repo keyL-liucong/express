@@ -1,6 +1,6 @@
 <template>
   <view class="app-container">
-    <view class="item-list-wrap">
+    <view class="item-list-wrap" @click="navTo(e)">
       <tui-list-view  color="#777">
         <tui-list-cell arrow radius=true padding="30rpx" color="#000000"> 费用问题 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 下单流程 </tui-list-cell>
@@ -23,7 +23,15 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+     navTo(e) {
+       console.log(e);
+      uni.navigateTo({
+          url: '/pages/feedback/form'
+      });
+    }
+
+  },
   created() {},
   mounted() {},
 };

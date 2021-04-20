@@ -26,10 +26,10 @@
           <view class="num">456</view>
           <view class="desc">累计收益</view>
         </view>
-        <view class="right-box box">
+        <navigator class="right-box box" url="/pages/coupon/index">
           <view class="num">12</view>
           <view class="desc">优惠卷</view>
-        </view>
+        </navigator>
       </view>
     </view>
     <view class="center-part-wrap">
@@ -53,14 +53,14 @@
       </view>
     </view>
     <view class="item-list-wrap">
-      <tui-list-view  color="#777">
+      <tui-list-view  color="#777" >
         <tui-list-cell arrow radius=true padding="30rpx" color="#000000"> 邀请下单 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 我的运费 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 我的运单 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 自寄到仓地址 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 自提点查询 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 我的推荐 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" > 投诉建议 </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo()"> 投诉建议 </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000"> 退出 </tui-list-cell>
        
       </tui-list-view>
@@ -74,7 +74,13 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    navTo() {
+      uni.navigateTo({
+          url: '/pages/feedback/index'
+      });
+    }
+  },
   created() {},
   mounted() {},
 };
