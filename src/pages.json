@@ -41,6 +41,12 @@
             "style": {
                 "navigationBarTitleText": "国际快递"
             }
+        },
+        {
+            "path": "pages/coupon/index",
+            "style": {
+                "navigationBarTitleText": "国际快递"
+            }
         }
     ],
     "tabBar": {
