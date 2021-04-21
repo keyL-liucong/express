@@ -47,6 +47,18 @@
             "style": {
                 "navigationBarTitleText": "国际快递"
             }
+        },
+        {
+            "path": "pages/feedback/index",
+            "style": {
+                "navigationBarTitleText": "意见反馈"
+            }
+        },
+        {
+            "path": "pages/feedback/form",
+            "style": {
+                "navigationBarTitleText": "意见反馈"
+            }
         }
     ],
     "tabBar": {
