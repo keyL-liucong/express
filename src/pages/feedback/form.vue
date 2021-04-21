@@ -1,7 +1,7 @@
 <template>
   <view class="app-container">
-    <view class="item-list-wrap">
-     
+    <view class="top-content">
+        
     </view>
   </view>
 </template>
