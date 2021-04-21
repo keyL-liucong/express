@@ -51,7 +51,7 @@
     ],
     "tabBar": {
         "color": "#8a8a8a",
-        "selectedColor": "#FB5452",
+        "selectedColor": "#FF6E00",
         "borderStyle": "white",
         "backgroundColor": "#ffffff",
         "list": [{
@@ -62,25 +62,25 @@
             },
             {
                 "pagePath": "pages/tabbar-2/index",
-                "text": "查件",
+                "text": "我的订单",
                 "iconPath": "static/tab-2.png",
                 "selectedIconPath": "static/tabbar-2-selected.png"
             },
             {
                 "pagePath": "pages/tabbar-3/index",
-                "text": "福利",
+                "text": "去寄件",
                 "iconPath": "static/tab-3.png",
                 "selectedIconPath": "static/tabbar-3-selected.png"
             },
             {
                 "pagePath": "pages/tabbar-4/index",
-                "text": "我的",
+                "text": "福利",
                 "iconPath": "static/tab-4.png",
                 "selectedIconPath": "static/tabbar-4-selected.png"
             },
             {
                 "pagePath": "pages/tabbar-5/index",
-                "text": "我的",
+                "text": "个人中心",
                 "iconPath": "static/tab-5.png",
                 "selectedIconPath": "static/tabbar-5-selected.png"
             }
