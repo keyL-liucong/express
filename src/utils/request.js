@@ -1,3 +1,4 @@
+import { cache } from './cache';
 const BASE_URL = '';
 export const request = (url, data, method = 'GET', loading = true) => {
     return new Promise((resolve, reject) => {
@@ -11,7 +12,7 @@ export const request = (url, data, method = 'GET', loading = true) => {
             data,
             method, // 默认值 GET
             header: {
-                'token': 'hello W' //自定义请求头信息
+                'token': cache.get('token') || '' //自定义请求头信息
             },
             success: (res) => {
                 resolve(res);

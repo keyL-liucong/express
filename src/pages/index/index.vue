@@ -93,7 +93,7 @@
         <!-- write part -->
         <view class="write-address-part">
             <text>海外地址不会填？邀请收件人填写</text>
-            <button>邀请填写</button>
+            <button @click="navTo">邀请填写</button>
         </view>
 
         <!-- <tui-modal :show="true"  title="提示" content="确定退出登录吗？"></tui-modal> -->
@@ -135,7 +135,11 @@ export default {
             },
         });
     },
-    methods: {},
+    methods: {
+        navTo(){
+            this.$page.navigateTo({url:'/pages/feedback/form'})
+        }
+    },
 };
 </script>
 
