@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { getBanner } from './service'
+import Api from '../../services/index'
 export default {
     data() {
         return {
@@ -125,7 +125,9 @@ export default {
         };
     },
     async onLoad() {
-        let res = await getBanner();
+        let res = await Api.getBanner();
+        let res1 = await Api.getAlert(); 
+        let res2 = await Api.getCouponList();
         setTimeout(() => {
             this.animation = true;
         }, 600);
