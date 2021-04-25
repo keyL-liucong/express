@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App'
 import { alter, toast } from './utils/index';
 import navTo from './utils/navTo';
+import cache from './utils/cache';
 
+Vue.prototype.$cache = cache;
 Vue.prototype.$alert = alter;
 Vue.prototype.$toast = toast;
 Vue.prototype.$page = navTo;

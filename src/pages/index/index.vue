@@ -2,19 +2,29 @@
     <view class="app-container">
         <!-- board -->
         <view class="tui-notice-board">
-            <view class="tui-icon-bg">
+            <view class="tui-rolling-news">
                 <tui-icon
                     name="news-fill"
-                    :size="24"
-                    color="#ff4848"
+                    :size="28"
+                    color="#FF4848"
                 ></tui-icon>
-            </view>
-            <view class="tui-scorll-view" @tap="detail">
-                <view
-                    class="tui-notice"
-                    :class="[animation ? 'tui-animation' : '']"
-                    >B站10分日本动漫已消失，9.9分仅剩12部，这一部动漫包揽三席！</view
+                <swiper
+                    vertical
+                    autoplay
+                    circular
+                    interval="3000"
+                    class="tui-swiper"
                 >
+                    <swiper-item
+                        v-for="(item, index) in tipsList"
+                        :key="index"
+                        class="tui-swiper-item"
+                    >
+                        <view class="tui-news-item" @tap="detail">{{
+                            item.text
+                        }}</view>
+                    </swiper-item>
+                </swiper>
             </view>
         </view>
         <!-- 轮播图 -->
@@ -29,14 +39,14 @@
                 indicator-color="rgba(255, 255, 255, 0.8)"
                 indicator-active-color="#fff"
             >
-                <swiper-item>
+                <swiper-item v-for="(item, index) in bannerList" :key="index">
                     <image
-                        :src="'https://zhizuxia-sit.obs.cn-north-1.myhuaweicloud.com/tgmini-img/share-2.png'"
+                        :src="item.pic_url"
                         class="tui-slide-image"
                         mode="scaleToFill"
                     />
                 </swiper-item>
-                <swiper-item>
+                <!-- <swiper-item>
                     <image
                         :src="'https://zhizuxia-sit.obs.cn-north-1.myhuaweicloud.com/tgmini-img/share-2.png'"
                         class="tui-slide-image"
@@ -49,7 +59,7 @@
                         class="tui-slide-image"
                         mode="scaleToFill"
                     />
-                </swiper-item>
+                </swiper-item> -->
             </swiper>
         </view>
         <view class="banner-part">
@@ -101,33 +111,19 @@
 </template>
 
 <script>
-import Api from '../../services/index'
+import Api from "../../services/index";
 export default {
     data() {
         return {
-            animation: false,
-            title: "Hello",
-            show: true,
-            pwdArr: "",
-            inputvalue1: [],
-            card: {
-                title: {
-                    text: "CSDN云计算",
-                },
-                tag: {
-                    text: "1小时前",
-                },
-                header: {
-                    bgcolor: "#F7F7F7",
-                    line: true,
-                },
-            },
-        };
+            bannerList: [],  // 轮播图
+            tipsList: [],  // 提示
+        }; 
     },
     async onLoad() {
-        let res = await Api.getBanner();
-        let res1 = await Api.getAlert(); 
-        let res2 = await Api.getCouponList();
+        let getBannerRes = await Api.getBanner();
+        this.bannerList = getBannerRes.data;
+        let tipsRes = await Api.getAlert();
+        this.tipsList = tipsRes.data;
         setTimeout(() => {
             this.animation = true;
         }, 600);
@@ -140,9 +136,9 @@ export default {
         });
     },
     methods: {
-        navTo(){
-            this.$page.navigateTo({url:'/pages/feedback/form'})
-        }
+        navTo() {
+            this.$page.navigateTo({ url: "/pages/feedback/form" });
+        },
     },
 };
 </script>
@@ -155,60 +151,41 @@ export default {
     justify-content: center;
     padding: 20rpx 30rpx 0;
     background: #f3f3f3;
-    .tui-animation {
-        -webkit-animation: tui-rolling 12s linear infinite;
-        animation: tui-rolling 12s linear infinite;
-    }
-    @-webkit-keyframes tui-rolling {
-        0% {
-            transform: translate3d(100%, 0, 0);
-        }
-
-        100% {
-            transform: translate3d(-170%, 0, 0);
-        }
-    }
-    @keyframes tui-rolling {
-        0% {
-            transform: translate3d(100%, 0, 0);
-        }
-
-        100% {
-            transform: translate3d(-170%, 0, 0);
-        }
-    }
     .tui-notice-board {
         width: 100%;
         padding-right: 30rpx;
         box-sizing: border-box;
         font-size: 28rpx;
         height: 60rpx;
-        background: #fff8d5;
+        background: rgba(255,217,188,0.5);
         display: flex;
         align-items: center;
-        .tui-icon-bg {
-            background: #fff8d5;
-            padding-left: 30rpx;
-            position: relative;
-            z-index: 10;
+        .tui-rolling-news {
+            width: 100%;
+            padding: 12rpx 30rpx;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
         }
 
-        .tui-icon-class {
-            margin-right: 12rpx;
-        }
-
-        .tui-scorll-view {
+        .tui-swiper {
+            font-size: 28rpx;
+            height: 50rpx;
             flex: 1;
-            line-height: 1;
+        }
+
+        .tui-swiper-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .tui-news-item {
+            line-height: 28rpx;
             white-space: nowrap;
             overflow: hidden;
-            color: #f54f46;
-        }
-
-        .tui-notice {
-            -webkit-backface-visibility: hidden;
-            -webkit-perspective: 1000;
-            transform: translate3d(100%, 0, 0);
+            text-overflow: ellipsis;
         }
     }
     .tui-banner-box {
@@ -364,7 +341,6 @@ export default {
         box-sizing: border-box;
         margin-bottom: 20rpx;
         > text {
-            
             font-weight: bold;
         }
         > button {

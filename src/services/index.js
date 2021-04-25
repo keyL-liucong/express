@@ -7,7 +7,7 @@ export default {
         return request({
             url: 'auth/getSession',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 用户注册登录
@@ -22,7 +22,7 @@ export default {
         return request({
             url: 'auth/login',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 5. 用户信息
@@ -30,7 +30,7 @@ export default {
         return request({
             url: 'member/getInfo',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 首页
@@ -61,7 +61,7 @@ export default {
         return request({
             url: 'coupon/getList',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 2. 领取优惠券
@@ -72,7 +72,7 @@ export default {
         return request({
             url: 'coupon/receive',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 地址薄
@@ -99,7 +99,7 @@ export default {
         return request({
             url: 'address/delete',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 5. 地址薄详情
@@ -118,7 +118,7 @@ export default {
         return request({
             url: 'address/setDefault',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
     // 意见反馈
@@ -140,7 +140,7 @@ export default {
         return request({
             url: 'complaint/addComplaint',
             data,
-            methods: 'POST'
+            method: 'POST'
         })
     },
 

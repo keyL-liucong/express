@@ -12,7 +12,8 @@ export const request = (params) => {
             data: params.data,
             method: params.method || 'GET', // 默认值 GET
             header: {
-                'token': get('token') || '' //自定义请求头信息
+                'token': get('token') || '', //自定义请求头信息
+                'content-type': 'application/x-www-form-urlencoded'
             },
             success: (res) => {
                 resolve(res.data);
