@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import { getBanner } from './service'
 export default {
     data() {
         return {
@@ -123,7 +124,8 @@ export default {
             },
         };
     },
-    onLoad() {
+    async onLoad() {
+        let res = await getBanner();
         setTimeout(() => {
             this.animation = true;
         }, 600);
