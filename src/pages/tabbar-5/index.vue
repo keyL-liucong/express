@@ -3,31 +3,38 @@
     <view class="top-part">
       <view class="info-box">
         <view class="header-img">
-          <image src="../../static/index-1.png" mode="" />
+          <image
+            :src="memberInfo.avator || '../../static/index-1.png'"
+            mode=""
+          />
         </view>
-        <view class="info-line">
-          <view class="name">大表哥</view>
-          <view class="mobile">17688773132</view>
+        <view class="info-line" v-if="memberInfo">
+          <view class="name">{{ memberInfo.nick_name }}</view>
+          <view class="mobile">{{ memberInfo.mobile }}</view>
           <view class="code">
-            <view class="code-left">会员编号：123465789</view>
+            <view class="code-left">会员编号：{{ memberInfo.member_no }}</view>
             <view class="code-right">
               <text>修改</text>
               <image src="../../static/white-arrow.png" mode="" />
             </view>
           </view>
         </view>
+        <view class="info-line" v-else @click="handleLogin">
+          <view class="name">登录 | 注册</view>
+          <view class="mobile">hello,欢迎来到米推客</view>
+        </view>
       </view>
       <view class="info-show-box">
         <view class="left-box box">
-          <view class="num">1766</view>
+          <view class="num">{{ money }}</view>
           <view class="desc">余额</view>
         </view>
         <view class="center-box box">
-          <view class="num">456</view>
+          <view class="num">{{ income  }}</view>
           <view class="desc">累计收益</view>
         </view>
         <navigator class="right-box box" url="/pages/coupon/index">
-          <view class="num">12</view>
+          <view class="num">{{ couponTotal }}</view>
           <view class="desc">优惠卷</view>
         </navigator>
       </view>
@@ -53,16 +60,31 @@
       </view>
     </view>
     <view class="item-list-wrap">
-      <tui-list-view  color="#777" >
-        <tui-list-cell arrow radius=true padding="30rpx" color="#000000"> 邀请下单 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000"> 我的运费 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000"> 我的运单 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000"> 自寄到仓地址 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000"> 自提点查询 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000"> 我的推荐 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo()"> 投诉建议 </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000"> 退出 </tui-list-cell>
-       
+      <tui-list-view color="#777">
+        <tui-list-cell arrow radius="true" padding="30rpx" color="#000000">
+          邀请下单
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000">
+          我的运费
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000">
+          我的运单
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000">
+          自寄到仓地址
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000">
+          自提点查询
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000">
+          我的推荐
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo()">
+          投诉建议
+        </tui-list-cell>
+        <tui-list-cell arrow padding="30rpx" color="#000000">
+          退出
+        </tui-list-cell>
       </tui-list-view>
     </view>
   </view>
@@ -72,16 +94,32 @@
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      money: '0.00',
+      income: '0.00',
+      couponTotal: 0,
+      memberInfo: null,
+    };
   },
   methods: {
+    handleLogin(){
+        this.$page.navigateTo({ url: "/pages/login/index" });
+    },
     navTo() {
       uni.navigateTo({
-          url: '/pages/feedback/index'
+        url: "/pages/feedback/index",
       });
+    },
+  },
+  async created() {
+    if (this.$cache.get("token")) {
+      let res = await this.$api.getMemberInfo();
+      this.memberInfo = res.data.userInfo;
+      this.money = res.data.money;
+      this.income = res.data.income;
+      this.couponTotal = res.data.couponTotal;
     }
   },
-  created() {},
   mounted() {},
 };
 </script>
@@ -109,6 +147,7 @@ export default {
         image {
           width: 100%;
           height: 100%;
+          border-radius: 65rpx;
         }
       }
       .info-line {
@@ -187,12 +226,11 @@ export default {
       }
     }
   }
-  .item-list-wrap{
-      position: relative;
-      bottom: 70rpx;
-      padding: 0 30rpx;
-      border-radius: 16rpx;
-     
+  .item-list-wrap {
+    position: relative;
+    bottom: 70rpx;
+    padding: 0 30rpx;
+    border-radius: 16rpx;
   }
 }
 </style>

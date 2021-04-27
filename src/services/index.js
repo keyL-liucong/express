@@ -25,11 +25,10 @@ export default {
             method: 'POST'
         })
     },
-    // 5. 用户信息
-    getMemberInfo(data) {
+    // 5. 用户信息 token
+    getMemberInfo() {
         return request({
             url: 'member/getInfo',
-            data,
             method: 'POST'
         })
     },

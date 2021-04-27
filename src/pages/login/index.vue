@@ -60,7 +60,15 @@ export default {
                 this.loginBtn = false;
                 return false;
             }
-            let openid = this.$cache.get("openId");
+            let code = await this.getLoginCode();
+            let code2sessionKey = await Api.getAuthSession({
+                code
+            });
+            let openid = code2sessionKey.data.open_id;
+            this.$cache.put(
+                "openId",
+                openid
+            );
             let postData = {
                 avatarUrl: userInfo.avatarUrl,
                 gender: userInfo.gender,
@@ -113,28 +121,20 @@ export default {
                 mask: true,
             });
         },
-        handleLogin() {
-            const _this = this;
-            uni.login({
-                provider: "weixin",
-                async success(res) {
-                    console.log(res);
-                    if (res.code) {
-                        //发起网络请求
-                        let code2sessionKey = await Api.getAuthSession({
-                            code: res.code,
-                        });
-                        _this.$cache.put(
-                            "openId",
-                            code2sessionKey.data.open_id
-                        );
-                        console.log("res====》", code2sessionKey);
-                    } else {
-                        console.log("登录失败！" + res.errMsg);
-                    }
-                },
-            });
+        getLoginCode() {
+            return new Promise((resolve,reject) => {
+                 uni.login({
+                    provider: "weixin",
+                    success(res) {
+                        console.log(res);
+                        resolve(res.code);
+                    },
+                });
+            })
         },
+        handleLogin(){
+            console.log('handleLogin');
+        }
     },
     created() {},
     mounted() {},
