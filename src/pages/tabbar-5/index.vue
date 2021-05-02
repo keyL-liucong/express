@@ -33,7 +33,7 @@
           <view class="num">{{ income  }}</view>
           <view class="desc">累计收益</view>
         </view>
-        <navigator class="right-box box" url="/pages/coupon/index">
+        <navigator class="right-box box"  @click="navTo">
           <view class="num">{{ couponTotal }}</view>
           <view class="desc">优惠卷</view>
         </navigator>
@@ -106,10 +106,13 @@ export default {
         this.$page.navigateTo({ url: "/pages/login/index" });
     },
     navTo() {
-      uni.navigateTo({
-        url: "/pages/feedback/index",
-      });
+        this.$page.navigateTo({ url: "/pages/coupon/index" });
     },
+    // navTo() {
+    //   uni.navigateTo({
+    //     url: "/pages/feedback/index",
+    //   });
+    // },
   },
   async created() {
     if (this.$cache.get("token")) {

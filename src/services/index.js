@@ -60,7 +60,7 @@ export default {
         return request({
             url: 'coupon/getList',
             data,
-            method: 'POST'
+            method: 'GET'
         })
     },
     // 2. 领取优惠券
@@ -72,6 +72,13 @@ export default {
             url: 'coupon/receive',
             data,
             method: 'POST'
+        })
+    },
+    // 查询我的优惠券
+    getMyCounponList(data) {
+        return request({
+            url: 'coupon/getMyList',
+            data,
         })
     },
     // 地址薄

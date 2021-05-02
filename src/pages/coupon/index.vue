@@ -1,7 +1,27 @@
 <template>
     <view class="app-container">
-        <view class="coupon-part-list">
-            <view class="coupon-item use-item">
+        <view class="coupon-part-list" v-if="couponList.length > 0">
+             <view class="coupon-item " :class="[item.status != 3 ? 'use-item' : 'no-use-item']" v-for="(item,index) in couponList" :key="index">
+                <view class="coupon-top">
+                    <view class="money-num" v-if="item.coupon_type == 1">
+                        <text>￥</text><text class="num">{{ item.money }}</text>
+                    </view>
+                    <view class="money-num" v-else>
+                        <text class="num">{{ item. discount }}</text><text>折</text>
+                    </view>
+                    <view class="coupon-desc">
+                        <view>{{ item.coupon_name }}</view>
+                        <view>仅限国际线路使用</view>
+                    </view>
+                </view>
+                <view class="coupon-bottom">
+                    <view class="coupon-time"> 有效期：{{ item.end_time }}前 </view>
+                    <view class="coupon-btn use-btn" v-if="item.status === 3"> 立即使用 </view>
+                    <view class="coupon-btn no-use-btn" v-else-if="item.status === 2"> 已过期 </view>
+                    <view class="coupon-btn no-use-btn" v-else-if="item.status === 1"> 已使用 </view>
+                </view>
+            </view>
+            <!-- <view class="coupon-item use-item">
                 <view class="coupon-top">
                     <view class="money-num">
                         <text>￥</text><text class="num">100</text>
@@ -60,7 +80,10 @@
                     <view class="coupon-time"> 有效期：2021-06-13前 </view>
                     <view class="coupon-btn no-use-btn"> 立即使用 </view>
                 </view>
-            </view>
+            </view> -->
+        </view>
+        <view v-else style="text-align:center;">
+            暂无优惠券~
         </view>
     </view>
 </template>
@@ -69,10 +92,22 @@
 export default {
     components: {},
     data() {
-        return {};
+        return {
+            couponList:[]
+        };
     },
-    methods: {},
-    created() {},
+    methods: {
+        getCouponList(){
+            this.$api.getCouponList()
+        }
+    },
+    async created() {
+        let res = await this.$api.getMyCounponList({page:1,size:10});
+        if(res.data && res.data.list.length > 0) {
+            this.couponList = res.data.list;
+        }
+        console.log(res);
+    },
     mounted() {},
 };
 </script>
