@@ -82,7 +82,7 @@
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo()">
           投诉建议
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" v-if="isLogin" @click="handleExit">
           退出
         </tui-list-cell>
       </tui-list-view>
@@ -99,29 +99,55 @@ export default {
       income: '0.00',
       couponTotal: 0,
       memberInfo: null,
+      isLogin:false
     };
   },
   methods: {
+    async initData(){
+      this.isLogin = this.$cache.get("token") ? true : false;
+      if (this.$cache.get("token")) {
+        let res = await this.$api.getMemberInfo();
+        this.memberInfo = res.data.userInfo;
+        this.money = res.data.money;
+        this.income = res.data.income;
+        this.couponTotal = res.data.couponTotal;
+      }else{
+        this.memberInfo = null;
+        this.money = '0.00';
+        this.income = '0.00';
+        this.couponTotal = 0;
+      }
+    },
     handleLogin(){
         this.$page.navigateTo({ url: "/pages/login/index" });
     },
     navTo() {
         this.$page.navigateTo({ url: "/pages/coupon/index" });
     },
+    // 退出登录
+    handleExit(){
+      const _this = this;
+      this.$alert({
+            content: "确定退出登录吗？",
+            showCancel:true,
+            success: () => {
+                this.$cache.clear();
+                _this.initData();
+            },
+
+        });
+    }
     // navTo() {
     //   uni.navigateTo({
     //     url: "/pages/feedback/index",
     //   });
     // },
   },
+  onLoad() {
+     this.initData();
+  },
   async created() {
-    if (this.$cache.get("token")) {
-      let res = await this.$api.getMemberInfo();
-      this.memberInfo = res.data.userInfo;
-      this.money = res.data.money;
-      this.income = res.data.income;
-      this.couponTotal = res.data.couponTotal;
-    }
+   
   },
   mounted() {},
 };

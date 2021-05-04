@@ -59,7 +59,20 @@
             "style": {
                 "navigationBarTitleText": "意见反馈"
             }
+        },
+        {
+            "path": "pages/address/send",
+            "style": {
+                "navigationBarTitleText": "新增寄件地址"
+            }
+        },
+        {
+            "path": "pages/send/index",
+            "style": {
+                "navigationBarTitleText": "寄件"
+            }
         }
+
     ],
     "tabBar": {
         "color": "#8a8a8a",

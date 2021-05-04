@@ -14,6 +14,7 @@ export default {
 
 <style>
 /*每个页面公共css */
+ @import './static/style/thorui.min.css';
 * {
     box-sizing: border-box;
 }
