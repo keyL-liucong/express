@@ -71,6 +71,12 @@
             "style": {
                 "navigationBarTitleText": "寄件"
             }
+        },
+        {
+            "path": "pages/address/index",
+            "style": {
+                "navigationBarTitleText": "地址簿"
+            }
         }
 
     ],
