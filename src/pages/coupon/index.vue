@@ -82,8 +82,9 @@
                 </view>
             </view> -->
         </view>
-        <view v-else style="text-align:center;">
-            暂无优惠券~
+        <view v-else class="no-data">
+            <img src="../../static/no-data.png" alt="">
+            <text>暂无优惠券~</text>
         </view>
     </view>
 </template>
@@ -114,6 +115,7 @@ export default {
 <style lang='scss' scoped>
 .app-container {
     background: #f3f3f3;
+    min-height: 100vh;
     padding: 40rpx 56rpx 0;
     .coupon-part-list {
         display: flex;
@@ -172,6 +174,22 @@ export default {
         }
         .no-use-item {
             background-image: url("../../static/coupon-2.png");
+        }
+    }
+    .no-data{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-100%);
+        width: 100%;
+        height: 460rpx;
+        img{
+            width: 80%;
+            height: 100%;
         }
     }
 }

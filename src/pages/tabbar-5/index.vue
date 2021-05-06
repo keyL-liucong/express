@@ -33,7 +33,7 @@
           <view class="num">{{ income  }}</view>
           <view class="desc">累计收益</view>
         </view>
-        <navigator class="right-box box"  @click="navTo">
+        <navigator class="right-box box"  @click="navTo('/pages/coupon/index')">
           <view class="num">{{ couponTotal }}</view>
           <view class="desc">优惠卷</view>
         </navigator>
@@ -41,19 +41,19 @@
     </view>
     <view class="center-part-wrap">
       <view class="center-part">
-        <view class="center-box">
+        <view class="center-box" @click="navTo('/pages/coupon/index')">
           <img src="../../static/center-1.png" alt="" />
           <text>地址簿</text>
         </view>
-        <view class="center-box">
+        <view class="center-box" @click="navTo('/pages/coupon/index')">
           <img src="../../static/center-2.png" alt="" />
           <text>运费与实效</text>
         </view>
-        <view class="center-box">
+        <view class="center-box" @click="navTo('/pages/coupon/index')">
           <img src="../../static/center-3.png" alt="" />
           <text>违禁品</text>
         </view>
-        <view class="center-box">
+        <view class="center-box" @click="navTo('/pages/coupon/index')">
           <img src="../../static/center-4.png" alt="" />
           <text>申请发票</text>
         </view>
@@ -61,25 +61,25 @@
     </view>
     <view class="item-list-wrap">
       <tui-list-view color="#777">
-        <tui-list-cell arrow radius="true" padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           邀请下单
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的运费
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的运单
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           自寄到仓地址
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           自提点查询
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的推荐
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo()">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           投诉建议
         </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000" v-if="isLogin" @click="handleExit">
@@ -121,8 +121,8 @@ export default {
     handleLogin(){
         this.$page.navigateTo({ url: "/pages/login/index" });
     },
-    navTo() {
-        this.$page.navigateTo({ url: "/pages/coupon/index" });
+    navTo(url) {
+        this.$page.navigateTo({ url: url });
     },
     // 退出登录
     handleExit(){
