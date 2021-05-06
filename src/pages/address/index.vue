@@ -45,7 +45,7 @@
       </view>
     </view>
     <view class="bottom-btn-box">
-      <button>新增收件地址</button>
+      <button @click="navTo('/pages/address/send')">新增收件地址</button>
     </view>
   </view>
 </template>
@@ -58,9 +58,15 @@ export default {
       couponList: [],
     };
   },
-  methods: {},
+  methods: {
+    navTo(url) {
+        this.$page.navigateTo({ url: url });
+    }
+  },
   async created() {},
-  mounted() {},
+  mounted() {
+     
+  },
 };
 </script>
 <style lang='scss' scoped>

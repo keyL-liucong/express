@@ -149,6 +149,47 @@ export default {
             method: 'POST'
         })
     },
+    // 获取订单列表获取订单列表
+    getAllOrderList(data) {
+        return request({
+            url: 'order/getList',
+            data,
+            method: 'POST'
+        })
+    },
+    // 获取订单详情
+    getOrderInfo() {
+        return request({
+            url: 'order/getInfo',
+            data,
+            method: 'POST'
+        })
+    },
+    // 删除订单 order_sn：订单id
+    // user_id: 会员id
+    delOrder() {
+        return request({
+            url: 'order/delete',
+            data,
+            method: 'POST'
+        })
+    },
+    getWaitingPayList(data) {
+        return request({
+            url: 'order/intercept/getWaitingPayList',
+            data,
+            method: 'get'
+        })
+    },
+    // 国内省市区 
+    getRegion(data) {
+        return request({
+            url: 'address/getRegion',
+            data,
+            method: 'get'
+        })
+    },
+
 
 
 }

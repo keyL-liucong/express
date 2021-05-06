@@ -41,7 +41,7 @@
     </view>
     <view class="center-part-wrap">
       <view class="center-part">
-        <view class="center-box" @click="navTo('/pages/coupon/index')">
+        <view class="center-box" @click="navTo('/pages/address/index')">
           <img src="../../static/center-1.png" alt="" />
           <text>地址簿</text>
         </view>
