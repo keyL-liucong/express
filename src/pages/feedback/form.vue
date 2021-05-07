@@ -2,12 +2,12 @@
   <view class="app-container">
     <view class="top-content">
       <view class="row">
-        您的问题类型:费用问题
+        您的问题类型:{{ name }}
       </view>
       <view class="row">
        反馈内容:
       </view>
-      <textarea name="" id="" placeholder="描述一下您的问题，便于我们即时处理"></textarea>
+      <textarea name="" id="" v-model="postData.desc" placeholder="描述一下您的问题，便于我们即时处理"></textarea>
     </view>
     <view class="upload-img">
       <view class="row">
@@ -19,17 +19,17 @@
       </view>
     </view>
     <view class="bottom-content">
-      <view class="row line">
+      <view class="row">
         <text>联系电话</text>
-        <text>18766775544</text>
+        <text>{{ postData.mobile }}</text>
       </view>
       <view class="row">
         <text>邮箱</text>
-        <input placeholder="海外用户请填写可联系的邮箱"/>
+        <input placeholder="海外用户请填写可联系的邮箱" v-model="postData.email"/>
       </view>
     </view>
     <view class="btn-box">
-        <tui-button width="686rpx" height="80rpx" shape="circle" type="warning">提交</tui-button>
+        <tui-button width="686rpx" height="80rpx" shape="circle" type="warning" @click="submit">提交</tui-button>
     </view>
   </view>
 </template>
@@ -38,11 +38,27 @@
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      name:"",
+      id:"",
+      postData:{
+        desc:"",
+        mobile:"18133657592",
+        email:""
+      }
+    };
   },
-  methods: {},
+  methods: {
+    submit() {
+
+    }
+  },
   created() {},
   mounted() {},
+  onLoad(e) {
+    this.name = e.name;
+    this.id = e.id;
+  }
 };
 </script>
 <style lang='scss' scoped>
