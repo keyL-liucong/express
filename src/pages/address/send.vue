@@ -5,7 +5,7 @@
       <input
         class="input"
         type="text"
-        v-model="addressData.name"
+        v-model="addressData.realname"
         placeholder="收货人姓名"
         placeholder-class="placeholder"
       />
@@ -15,64 +15,41 @@
       <input
         class="input"
         type="number"
-        v-model="addressData.phoneNumber"
+        v-model="addressData.mobile"
         placeholder="收货人手机号码"
         placeholder-class="placeholder"
       />
     </view>
     <view class="row b-b">
       <text class="tit">省市区</text>
-      <!-- <uni-popup ref="popup" type="bottom">
-        <view class="popup">
-          <view class="picker-btn">
-            <view class="left" @click="cancel">取消</view>
-            <view class="right" @click="confirm">确定</view>
-          </view>
-          <picker-view
-            :indicator-style="indicatorStyle"
-            :value="valueArr"
-            @change="bindChange"
-          >
-            <picker-view-column>
-              <view
-                class="item"
-                v-for="(item, index) in province"
-                :key="index"
-                >{{ item.provinceName }}</view
-              >
-            </picker-view-column>
-            <picker-view-column v-if="province[valueArr[0]]">
-              <view
-                class="item"
-                v-for="(item, index) in province[valueArr[0]].children"
-                :key="index"
-                >{{ item.name }}</view
-              >
-            </picker-view-column>
-            <picker-view-column v-if="province[valueArr[0]]">
-              <view
-                class="item"
-                v-for="(item, index) in province[valueArr[0]].children[
-                  valueArr[1]
-                ].children"
-                :key="index"
-                >{{ item.name }}</view
-              >
-            </picker-view-column>
-          </picker-view>
-        </view>
-      </uni-popup> -->
-      <!-- <text  class="input">
-				{{addressData.province}} {{addressData.city}} {{addressData.region}}
-			</text>
-			<text class="yticon icon-shouhuodizhi" @click="chooseLocation"></text> -->
+      <picker
+        :value="value"
+        mode="multiSelector"
+        @change="picker"
+        @columnchange="columnPicker"
+        :range="multiArray"
+        class="pick"
+      >
+        <input
+          type="text"
+          v-model="addressData.receiverRegionShow"
+          placeholder="  省/市/区"
+          @click="pickerClick"
+          class="input"
+          disabled="true"
+        />
+      </picker>
+      <view>
+        {{ text }}
+      </view>
+      <!-- <text  @click="togglePopup">{{ pcdAdress }}</text> -->
     </view>
     <view class="row b-b">
-      <text class="tit">门牌号</text>
+      <text class="tit">详细地址</text>
       <input
         class="input"
         type="text"
-        v-model="addressData.detailAddress"
+        v-model="addressData.address"
         placeholder="楼号、门牌"
         placeholder-class="placeholder"
       />
@@ -81,52 +58,13 @@
     <view class="row default-row">
       <text class="tit">设为默认</text>
       <switch
-        :checked="addressData.defaultStatus === 1"
-        color="#fa436a"
+        :checked="addressData.is_default === 1"
+        color="#FF6C00"
         @change="switchChange"
       />
     </view>
-    <button class="add-btn" @click="confirm">提交</button>
-      <uni-popup ref="popup" type="bottom">
-        <view class="popup">
-          <view class="picker-btn">
-            <view class="left" @click="cancel">取消</view>
-            <view class="right" @click="confirm">确定</view>
-          </view>
-          <picker-view
-            :indicator-style="indicatorStyle"
-            :value="valueArr"
-            @change="bindChange"
-          >
-            <picker-view-column>
-              <view
-                class="item"
-                v-for="(item, index) in province"
-                :key="index"
-                >{{ item.provinceName }}</view
-              >
-            </picker-view-column>
-            <picker-view-column v-if="province[valueArr[0]]">
-              <view
-                class="item"
-                v-for="(item, index) in province[valueArr[0]].children"
-                :key="index"
-                >{{ item.name }}</view
-              >
-            </picker-view-column>
-            <picker-view-column v-if="province[valueArr[0]]">
-              <view
-                class="item"
-                v-for="(item, index) in province[valueArr[0]].children[
-                  valueArr[1]
-                ].children"
-                :key="index"
-                >{{ item.name }}</view
-              >
-            </picker-view-column>
-          </picker-view>
-        </view>
-      </uni-popup>
+    <button class="add-btn" @click="handleConfirm">提交</button>
+    <tui-bottom-popup :show="popupShow"> </tui-bottom-popup>
   </view>
 </template>
 
@@ -134,26 +72,31 @@
 export default {
   data() {
     return {
-      indicatorStyle: `height: ${Math.round(
-        uni.getSystemInfoSync().screenWidth / (750 / 100)
-      )}px;`,
-      valueArr: [0, 0, 0], // 用于判断当前滑动的是哪一列
-      province: [], // 数据列表
+      popupShow: false,
       manageType: "add",
       addressData: {
-        name: "",
-        phoneNumber: "",
-        province: "在地图选择",
-        city: "",
-        region: "",
-        address: "",
-        detailAddress: "",
-        defaultStatus: 0,
+        receiverDistrictId: "",
+        receiverRegionName: "",
+        receiverRegionShow: "",
+        prov_id:"",
+        city_id:"",
+        dist_id:"",
+        mobile: "",
+        address:'',
+        realname: "",  // 姓名
+        is_default: false,
       },
+      selectList: [], // 接口返回picker数据,此处就直接使用本地测试数据
+      multiArray: [], // picker数据
+      provinces: [],
+      citys: [],
+      districts: [],
+      value: [0, 0, 0],
+      text: "",
+      id: "",
     };
   },
-  async onLoad(option) {           
-    console.log(this.$api.getRegion());
+  async onLoad(option) {
     var _self = this;
     // let title = '新增收货地址';
     if (option.type === "edit") {
@@ -169,147 +112,121 @@ export default {
     //   title,
     // });
   },
+  mounted() {
+    this.pickerClick();
+  },
   methods: {
     switchChange(e) {
-      this.addressData.defaultStatus = e.detail.value ? 1 : 0;
+      this.addressData.is_default = e.detail.value;
     },
-    // 加载省数据
-    initLoadArea() {
-      loadAddr().then((res) => {
-        if (res.status) {
-          this.province = res.data;
-          this.loadCity(this.province[0].id);
-        }
+    columnPicker: function (e, p) {
+      // 第几列 下标从0开始
+      let column = e.detail.column;
+      // 第几行 下标从0开始
+      let value = e.detail.value;
+      if (column === 0) {
+        this.provinceChoose(this.provinces[value].id);
+        this.value = [value, 0, 0];
+      } else if (column === 1) {
+        this.cityChoose(this.citys[value].id);
+        this.value = [this.value[0], value, 0];
+      }
+    },
+    picker: function (e) {
+      let value = e.detail.value;
+      this.value = value;
+      // this.addressData.receiverCity = this.citys[value[1]].name;
+      console.log('object',this.districts[value[2]]);
+      // this.addressData.receiverDistrict = this.districts[value[2]].name;
+      this.addressData.receiverDistrictId = this.districts[value[2]].id;
+      this.addressData.prov_id = this.provinces[value[0]].id;
+      this.addressData.city_id = this.provinces[value[1]].id;
+      this.addressData.dist_id = this.provinces[value[2]].id;
+      this.addressData.receiverRegionName =
+        this.provinces[value[0]].name +
+        " " +
+        this.citys[value[1]].name +
+        " " +
+        this.districts[value[2]].name;
+      this.addressData.receiverRegionShow =
+        this.provinces[value[0]].name +
+        " " +
+        this.citys[value[1]].name +
+        " " +
+        this.districts[value[2]].name;
+    },
+    provinceChoose: async function (stateId) {
+      let citys = await this.$api.getRegion({ parent_id: stateId });
+      this.citys = citys.data;
+      let districts = await this.$api.getRegion({
+        parent_id: this.citys[0].id,
       });
+      this.districts = districts.data;
+      this.multiArray = [
+        this.toArr(this.provinces),
+        this.toArr(this.citys),
+        this.toArr(this.districts),
+      ];
     },
-    // 加载市数据
-    loadCity(parentId) {
-      const params = {
-        parent_id: parentId,
-      };
+    cityChoose: async function (cityId) {
+      
+      let districts = await this.$api.getRegion({ parent_id: cityId });
+      this.districts = districts.data;
+      this.multiArray = [
+        this.toArr(this.provinces),
+        this.toArr(this.citys),
+        this.toArr(this.districts),
+      ];
+    },
+    toArr(object) {
+      let arr = [];
+      for (let i in object) {
+        arr.push(object[i].name);
+      }
+      return arr;
+    },
+    pickerClick: async function () {
+      let provinces = await this.$api.getRegion();
+      this.provinces = provinces.data;
+      console.log(this.provinces);
+      console.log(this.value);
 
-      loadChildAddr(params).then((res) => {
-        if (res.status) {
-          if (this.province[this.valueArr[0]].children === undefined) {
-            this.$set(this.province[this.valueArr[0]], "children", []);
-            res.data.forEach((item) => {
-              this.province[this.valueArr[0]].children.push(item);
-            });
-            this.loadArea(
-              this.province[this.valueArr[0]].children[this.valueArr[1]].id
-            );
-          }
-        }
+      let citysRes = await this.$api.getRegion({
+        parent_id: this.provinces[this.value[0]].id,
       });
-    },
-    // 加载区（县）数据
-    loadArea(parentId) {
-      const params = {
-        parent_id: parentId,
-      };
-      loadChildAddr(params).then((res) => {
-        if (res.status) {
-          this.area = res.data;
-          if (
-            this.province[this.valueArr[0]].children[this.valueArr[1]]
-              .children === undefined
-          ) {
-            this.$set(
-              this.province[this.valueArr[0]].children[this.valueArr[1]],
-              "children",
-              []
-            );
-            res.data.forEach((item) => {
-              this.province[this.valueArr[0]].children[
-                this.valueArr[1]
-              ].children.push(item);
-            });
-          }
-        }
+      this.citys = citysRes.data;
+      let districts = await this.$api.getRegion({
+        parent_id: this.citys[this.value[1]].id,
       });
+      this.districts = districts.data;
+      this.multiArray = [
+        this.toArr(this.provinces),
+        this.toArr(this.citys),
+        this.toArr(this.districts),
+      ];
     },
-    toggleTab() {
-      this.$refs.popup.open();
-
+    togglePopup() {
+      this.popupShow = !this.popupShow;
     },
-    cancel() {
-      this.$refs.popup.close();
-    },
-    bindChange(e) {
-			const val = e.detail.value;
-			if (this.valueArr[0] !== val[0]) {
-				this.loadCity(this.province[val[0]].id)
-			} else if (this.valueArr[1] !== val[1]) {
-				this.loadArea(this.province[val[0]].children[val[1]].id)
-			}
-			this.valueArr = val
-		},
-    //地图选择地址
-    chooseLocation() {
-      var _self = this;
-      uni.chooseLocation({
-        success: (data) => {
-          console.log(JSON.stringify(data));
-          //#ifndef APP-PLUS
-          Api.methods.addressResolution(data).then(function (res) {
-            var list = res.data.data;
-            if (list.length > 0) {
-              _self.addressData.province = list[0].province;
-              _self.addressData.city = list[0].city;
-              _self.addressData.region = list[0].county;
-              _self.addressData.detailAddress = list[0].village + data.name;
-            } else {
-              _self.addressData.province = "";
-              _self.addressData.city = data.address;
-            }
-          });
-          //#endif
-          //#ifdef APP-PLUS
-          Api.methods.addressResolution(data).then(function (res) {
-            var list = res.data.data;
-            if (list.length > 0) {
-              _self.addressData.province = list[0].province;
-              _self.addressData.city = list[0].city;
-              _self.addressData.region = list[0].county;
-              _self.addressData.detailAddress =
-                data.name == "地图位置" ? list[0].village : data.name;
-            } else {
-              _self.addressData.province = "";
-              _self.addressData.city = data.address;
-            }
-          });
-          // _self.addressData.province="";
-          // _self.addressData.region=data.address;
-          // _self.addressData.detailAddress=data.name;
-          //#endif
-        },
-      });
-    },
-
+  
     //提交
-    confirm() {
+    handleConfirm() {
       var _self = this;
       let data = this.addressData;
-      if (!data.name) {
+      if (!data.realname) {
         this.$toast("请填写收货人姓名");
         return;
       }
-      // if(!/(^1[3|4|5|7|8][0-9]{9}$)/.test(data.phoneNumber)){
-      if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(data.phoneNumber)) {
+      if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(data.mobile)) {
         this.$toast("请输入正确的手机号码");
         return;
       }
-      // if(!data.city){
-      // 	this.$toast('请在地图选择所在位置');
-      // 	return;
-      // }
-      if (!data.detailAddress) {
-        this.$toast("请填写门牌号信息");
+      if (!data.address) {
+        this.$toast("请填写详细地址信息");
         return;
       }
-      console.log(_self.manageType);
       if (_self.manageType === "add") {
-        Api.methods.addReceipt(_self.addressData).then(function (res) {
+        this.$api.addSendAddr(_self.addressData).then(function (res) {
           var result = res.data;
           if (result.code === 200) {
           } else {
@@ -317,12 +234,8 @@ export default {
           }
         });
       } else {
-        Api.methods.upReceipt(_self.addressData).then(function (res) {
-          var result = res.data;
-          if (result.code === 200) {
-          } else {
-            _self.$toast("修改失败，请重试");
-          }
+        this.$api.addSendAddr(_self.addressData).then(function (res) {
+            _self.$toast(res.info);
         });
       }
       //this.$api.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义
