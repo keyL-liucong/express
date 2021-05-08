@@ -189,6 +189,17 @@ export default {
             method: 'get'
         })
     },
+    // 新增/编辑寄件地址
+    addSendAddr(data) {
+        return request({
+            url: 'address/addPost',
+            data,
+            method: 'POST'
+        })
+    },
+
+
+
 	// 获取上传连接
 	getUploadUrl() {
 		return domain() + "member/upload";
