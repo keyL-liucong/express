@@ -7,7 +7,7 @@
       <view class="row">
        反馈内容:
       </view>
-      <textarea name="" id="" v-model="postData.desc" placeholder="描述一下您的问题，便于我们即时处理"></textarea>
+      <textarea name="" id="" v-model="postData.contents" placeholder="描述一下您的问题，便于我们即时处理"></textarea>
     </view>
     <view class="upload-img">
       <view class="row">
@@ -15,7 +15,7 @@
          <text>(最多三张)</text>
       </view>
       <view class="img-list">
-        <tui-upload :value="value" :serverUrl="serverUrl" @complete="result" @remove="remove"></tui-upload>
+        <tui-upload :value="value" limit=3 :serverUrl="serverUrl" :header="header" @complete="uploadComplete" @remove="uploadRemove"></tui-upload>
       </view>
     </view>
     <view class="bottom-content">
@@ -40,24 +40,82 @@ export default {
   data() {
     return {
       name:"",
-      id:"",
+	  serverUrl:"",
       postData:{
-        desc:"",
-        mobile:"18133657592",
+		type_id:0,
+        contents:"",
+        mobile:"",
         email:""
-      }
+      },
+	  header:{},
+      imageList:[]
     };
   },
   methods: {
     submit() {
+		if (this.postData.contents == "") {
+			this.$toast("请填写反馈内容");
+			return;
+		}
+		if(this.imageList.length == 0) {
+			this.$toast("请上传图片");
+			return;
+		}
+		this.postData.pic_urls = this.imageList.join(',')
+	
+		this.addComplaint(this.postData)
+    },
+	addComplaint(postData) {
+	    return new Promise((resolve, reject) => {
+	        this.$api.addComplaint(postData).then((res) => {
+	            if (res.status == 1) {
+	                resolve(res);
+					uni.showToast({
+					    title: "提交成功",
+					    duration: 1000,
+					    icon: "none",
+					});
+					setTimeout(()=>{
+						uni.navigateBack({
+							delta:2
+						})
+					},2000)
+	            } else {
+	                uni.showToast({
+	                    title: res.info,
+	                    duration: 1000,
+	                    icon: "none",
+	                });
+	            }
+	        });
+	    });
+	},
 
-    }
+ 
+    uploadComplete(e) {
+      this.imageList = e.imgArr;
+	 
+    },
+    uploadRemove(e) {
+
+    },
+	async initData() {
+		let res = await this.$api.getMemberInfo();
+		this.postData.mobile = res.data.userInfo.mobile;
+	}
   },
   created() {},
   mounted() {},
   onLoad(e) {
     this.name = e.name;
-    this.id = e.id;
+    this.postData.type_id = e.id;
+	this.postData.mobile = this.$cache.get("token")
+	this.header = {
+		token: this.$cache.get("token")
+	};
+	this.serverUrl = this.$api.getUploadUrl()
+	console.log(this.serverUrl)
+	this.initData();
   }
 };
 </script>

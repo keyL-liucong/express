@@ -127,13 +127,6 @@ export default {
         setTimeout(() => {
             this.animation = true;
         }, 600);
-        this.$toast("测试弹框");
-        this.$alert({
-            content: "测试alert",
-            success: () => {
-                this.$toast("测试弹框success");
-            },
-        });
     },
     methods: {
         navTo() {

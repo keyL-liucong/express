@@ -1,5 +1,8 @@
 import {get } from './cache';
 const BASE_URL = 'https://api.51mitui.com/';
+export const domain = (params) => {
+	return BASE_URL;
+}
 export const request = (params) => {
     return new Promise((resolve, reject) => {
         if (params.loading) {

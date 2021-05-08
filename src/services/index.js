@@ -1,4 +1,4 @@
-import { request } from '../utils/request'
+import { domain, request } from '../utils/request'
 export default {
     // 用户中心
     // 获取session
@@ -189,7 +189,8 @@ export default {
             method: 'get'
         })
     },
-
-
-
+	// 获取上传连接
+	getUploadUrl() {
+		return domain() + "member/upload";
+	}
 }

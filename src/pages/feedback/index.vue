@@ -19,7 +19,6 @@ export default {
   },
   methods: {
      navTo(e) {
-       console.log(e);
       uni.navigateTo({
           url: '/pages/feedback/form?id='+e.id+"&name="+e.name
       });
@@ -31,7 +30,6 @@ export default {
     if(res.data && res.data.length > 0) {
         this.typeList = res.data;
     }
-    console.log(res);
   },
   mounted() {},
 };
