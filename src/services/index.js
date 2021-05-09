@@ -248,5 +248,12 @@ export default {
 		    data,
 			method: 'POST'
 		})
+	},
+	// 资金明细
+	accountRecord(data) {
+		return request({
+		    url: 'finance/record',
+		    data,
+		})
 	}
 }
