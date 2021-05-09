@@ -1,13 +1,29 @@
 <script>
 export default {
     onLaunch: function () {
-        console.log("App Launch");
+		let that = this;
+		uni.checkSession({
+			success(suRes) {
+			},
+			fail(failRes) {
+				uni.login({
+				    provider: "weixin",
+				    success(res) {
+				        that.$api.getAuthSession({code:res.code}).then(function (sessionRes) {
+							that.$cache.put(
+							    "openId",
+							    sessionRes.data.open_id
+							);
+						});
+				        
+				    },
+				});
+			}
+		})
     },
     onShow: function () {
-        console.log("App Show");
     },
     onHide: function () {
-        console.log("App Hide");
     },
 };
 </script>

@@ -233,4 +233,20 @@ export default {
 		    data
 		})
 	},
+	// 发送验证码
+	sendSms(data) {
+		return request({
+		    url: 'auth/sendSms',
+		    data,
+			method: 'POST'
+		})
+	},
+	// 验证码登录
+	loginSms(data) {
+		return request({
+		    url: 'auth/loginSms',
+		    data,
+			method: 'POST'
+		})
+	}
 }

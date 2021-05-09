@@ -7,6 +7,7 @@
                     type="text"
                     placeholder="请输入手机号"
                     placeholder-class="mobile"
+					v-model="loginData.mobile"
                 />
             </div>
             <div class="row code-row">
@@ -15,8 +16,9 @@
                     class="code"
                     placeholder="请输入验证码"
                     placeholder-class="code"
+					v-model="loginData.code"
                 />
-                <button class="get-code">获取验证码</button>
+                <button class="get-code" :class="dynacodeData.isSend ? 'disabled-btn' : ''" @tap="sendSms">{{ dynacodeData.codeText}}</button>
                 <div class="desc">国外手机号接收不到验证码？</div>
             </div>
             <div class="row">
@@ -49,6 +51,18 @@ export default {
     data() {
         return {
             loginBtn: false,
+			isLogin:false,
+			codeIsSend:false,
+			loginData:{
+				mobile:"",
+				code:""
+			},
+			dynacodeData: {
+				seconds: 60,
+				timer: null,
+				codeText: '获取验证码',
+				isSend: false,
+			},
         };
     },
     methods: {
@@ -60,15 +74,8 @@ export default {
                 this.loginBtn = false;
                 return false;
             }
-            let code = await this.getLoginCode();
-            let code2sessionKey = await Api.getAuthSession({
-                code
-            });
-            let openid = code2sessionKey.data.open_id;
-            this.$cache.put(
-                "openId",
-                openid
-            );
+            
+            let openid = this.$cache.get("openId");
             let postData = {
                 avatarUrl: userInfo.avatarUrl,
                 gender: userInfo.gender,
@@ -121,20 +128,104 @@ export default {
                 mask: true,
             });
         },
-        getLoginCode() {
-            return new Promise((resolve,reject) => {
-                 uni.login({
-                    provider: "weixin",
-                    success(res) {
-                        console.log(res);
-                        resolve(res.code);
-                    },
-                });
-            })
-        },
         handleLogin(){
-            console.log('handleLogin');
-        }
+			let _this = this;
+			if(this.isLogin) {
+				return;
+			}
+            if(this.loginData.mobile == "") {
+				this.$toast("请输入手机号码");
+				return;
+			}
+			
+			if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginData.mobile)) {
+			  this.$toast("请输入正确的手机号码");
+			  return;
+			}
+			if(!this.codeIsSend) {
+				this.$toast("请先获取验证码");
+				return;
+			}
+			
+			if(this.loginData.code == "") {
+				this.$toast("请输入验证码");
+				return;
+			}
+			
+			let openId = this.$cache.get("openId");
+			this.isLogin = true;
+			uni.showLoading({
+				title:"登录中"
+			})
+			let postData = {
+				mobile:this.loginData.mobile,
+				code:this.loginData.code,
+				openid:openId,
+				}
+			this.$api.loginSms(postData).then(function(res){
+				console.log(res);
+				uni.hideLoading();
+				if(res.status == 1) {
+					_this.$cache.put("token", res.data.token);
+					uni.showToast({
+					    title: "登录成功",
+					    icon: "success",
+					    duration: 200,
+					});
+					setTimeout(() => {
+					    uni.reLaunch({
+					        url: "/pages/index/index",
+					    });
+					}, 100);
+				} else {
+					_this.isLogin = false;
+					_this.$toast(res.info);
+					return;
+				}
+			})
+			
+			
+        },
+		sendSms() {
+			let _that = this;
+			if(this.dynacodeData.isSend) {
+				return;
+			}
+			
+			if(this.loginData.mobile == "") {
+				this.$toast("请输入手机号码");
+				return;
+			}
+			if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginData.mobile)) {
+			  this.$toast("请输入正确的手机号码");
+			  return;
+			}
+			
+			this.dynacodeData.isSend = true;
+			let openId = this.$cache.get("openId");
+			this.codeIsSend = true;
+			this.$api.sendSms({mobile:this.loginData.mobile,openid:openId}).then(function (res) {
+				if(res.status == 1) {
+					_that.$toast(res.info);
+					_that.dynacodeData.timer = setInterval(() => {
+						_that.dynacodeData.seconds--;
+						_that.dynacodeData.codeText = _that.dynacodeData.seconds + 's后可重新获取';
+					}, 1000);
+					setTimeout(() => {
+						clearInterval(_that.dynacodeData.timer);
+						_that.dynacodeData = {
+							seconds: 60,
+							timer: null,
+							codeText: '获取验证码',
+							isSend: false,
+						}
+					}, 60000)
+				} else {
+					_that.$toast(res.info);
+				}
+			});
+			
+		}
     },
     created() {},
     mounted() {},
@@ -177,6 +268,7 @@ export default {
                 border-radius: 30rpx;
                 font-size: 28rpx;
                 color: #fff;
+				z-index: 111;
                 background-image: linear-gradient(to right, #ff9900, #ff7100);
             }
             .login-btn {
@@ -201,5 +293,11 @@ export default {
             padding-top: 200rpx;
         }
     }
+}
+
+.disabled-btn{
+	background-image: linear-gradient(to right, #eaeef1, #eaeef1) !important;
+	
+	color: #80848f !important;
 }
 </style>
