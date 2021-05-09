@@ -13,7 +13,7 @@
           <view class="mobile">{{ memberInfo.mobile }}</view>
           <view class="code">
             <view class="code-left">会员编号：{{ memberInfo.member_no }}</view>
-            <view class="code-right">
+            <view class="code-right"@click="navTo('/pages/tabbar-5/info')">
               <text>修改</text>
               <image src="../../static/white-arrow.png" mode="" />
             </view>
@@ -143,8 +143,11 @@ export default {
     //   });
     // },
   },
+  onShow() {
+  	this.initData();
+  },
   onLoad() {
-     this.initData();
+     // this.initData();
   },
   async created() {
    

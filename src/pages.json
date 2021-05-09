@@ -36,6 +36,12 @@
                 }
             }
         },
+		{
+		    "path": "pages/tabbar-5/info",
+		    "style": {
+		        "navigationBarTitleText": "个人资料"
+		    }
+		},
         {
             "path": "pages/login/index",
             "style": {
