@@ -25,7 +25,7 @@
         </view>
       </view>
       <view class="info-show-box">
-        <view class="left-box box">
+        <view class="left-box box" @click="navTo('/pages/tabbar-5/account')">
           <view class="num">{{ money }}</view>
           <view class="desc">余额</view>
         </view>

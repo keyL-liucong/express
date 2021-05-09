@@ -23,18 +23,11 @@
             </view>
           </view>
           <view class="coupon-bottom">
-            <!-- <view class="coupon-time"> 有效期：{{ item.end_time }}前 </view> -->
-            <view class="coupon-time">  </view>
-            <view class="coupon-btn use-btn" v-if="item.status === 3">
-              立即使用
+            <view class="coupon-time"> 有效期：{{ item.end_time }}前 </view>
+            <view class="coupon-btn use-btn" v-if="item.is_receive === 0" @click="handleRece(item.coupon_id)">立即领取</view>
+            <view class="coupon-btn no-use-btn" v-else-if="item.is_receive === 1">
+              已领取
             </view>
-            <view class="coupon-btn no-use-btn" v-else-if="item.status === 2">
-              已过期
-            </view>
-            <view class="coupon-btn no-use-btn" v-else-if="item.status === 1">
-              已使用
-            </view>
-            <view class="coupon-btn use-btn" @click="handleRece(item.coupon_id)">立即领取</view>
           </view>
         </view>
       </view>

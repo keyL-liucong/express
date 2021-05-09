@@ -1,8 +1,8 @@
 <template>
   <view class="app-container">
     <view class="item-list-wrap">
-      <tui-list-view  color="#777" v-for="(item, index) in typeList" :key="index">
-        <tui-list-cell arrow radius=true padding="30rpx" color="#000000"  @click="navTo(item)"> {{ item.name }} </tui-list-cell>
+      <tui-list-view  color="#777" >
+        <tui-list-cell arrow radius=true padding="30rpx" :lineRight="true" color="#000000" v-for="(item, index) in typeList" :key="index" @click="navTo(item)"> {{ item.name }} </tui-list-cell>
       </tui-list-view>
     </view>
   </view>
@@ -39,7 +39,9 @@ export default {
   background: #f3f3f3;
   padding: 15px;  
   height: 100vh;
- 
-  
+  .item-list-wrap{
+	  border-radius: 10rpx;
+	  overflow: hidden;
+  }
 }
 </style>
