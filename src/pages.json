@@ -42,6 +42,18 @@
 		        "navigationBarTitleText": "个人资料"
 		    }
 		},
+		{
+		    "path": "pages/tabbar-5/warehouse",
+		    "style": {
+		        "navigationBarTitleText": "自寄到仓地址"
+		    }
+		},
+		{
+		    "path": "pages/tabbar-5/warehouse_detail",
+		    "style": {
+		        "navigationBarTitleText": "自寄到仓地址"
+		    }
+		},
         {
             "path": "pages/login/index",
             "style": {

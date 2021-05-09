@@ -70,7 +70,7 @@
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的运单
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/tabbar-5/warehouse')">
           自寄到仓地址
         </tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">

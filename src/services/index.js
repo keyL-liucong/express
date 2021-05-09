@@ -219,4 +219,18 @@ export default {
 		    method: 'POST'
 		})
 	},
+	// 自寄到仓国家
+	warehouseCountry(data) {
+		return request({
+		    url: 'warehouse/getCountry',
+		    data
+		})
+	},
+	//自寄到仓详情
+	warehouseDetail(data) {
+		return request({
+		    url: 'warehouse/getHouse',
+		    data
+		})
+	},
 }
