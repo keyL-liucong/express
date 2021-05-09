@@ -108,7 +108,7 @@ export default {
             method: 'POST'
         })
     },
-    // 5. 地址薄详情
+    // 5. 地址薄收件详情
     // 请求参数：
     // address_id：1，//地址薄ID
     getAddressDetail(data) {
@@ -117,6 +117,14 @@ export default {
             data
         })
     },
+    // 地址寄件薄详情 
+    getPostDetail(data) {
+        return request({
+            url: 'address/getPostDetail',
+            data
+        })
+    },
+
     // 设置默认地址
     // 请求参数：
     // address_id：1，//地址薄ID
@@ -205,48 +213,16 @@ export default {
             method: 'POST'
         })
     },
-	
+    // 设置默认地址
+    setDefaultAddr(data) {
+        return request({
+            url: 'address/setDefault',
+            data,
+            method: 'POST'
+        })
+    },
     // 获取上传连接
     getUploadUrl() {
         return domain() + "member/upload";
-    },
-	
-	// 更新用户信息
-	memberUpdate(data) {
-		return request({
-		    url: 'member/update',
-		    data,
-		    method: 'POST'
-		})
-	},
-	// 自寄到仓国家
-	warehouseCountry(data) {
-		return request({
-		    url: 'warehouse/getCountry',
-		    data
-		})
-	},
-	//自寄到仓详情
-	warehouseDetail(data) {
-		return request({
-		    url: 'warehouse/getHouse',
-		    data
-		})
-	},
-	// 发送验证码
-	sendSms(data) {
-		return request({
-		    url: 'auth/sendSms',
-		    data,
-			method: 'POST'
-		})
-	},
-	// 验证码登录
-	loginSms(data) {
-		return request({
-		    url: 'auth/loginSms',
-		    data,
-			method: 'POST'
-		})
-	}
+    }
 }

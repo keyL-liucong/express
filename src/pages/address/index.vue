@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     navTo(url) {
-        this.$page.navigateTo({ url: url });
+        this.$href.navigateTo({ url: url });
     },
     handleDefault(e){
       console.log(e);
@@ -59,10 +59,15 @@ export default {
       let res = await this.$api.delAddress({address_id,type:this.type});
       this.$toast(res.info);
       this.initDate();
+    },
+    handleEdit(address_id){
+      this.$href.navigateTo({url:`/pages/address/send?address_id=${address_id}&type=edit`});
     }
 
   },
-   created() {
+  created() {
+  },
+  onShow() {
     this.initDate();
   },
   mounted() {

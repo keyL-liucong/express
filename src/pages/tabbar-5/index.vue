@@ -119,10 +119,10 @@ export default {
       }
     },
     handleLogin(){
-        this.$page.navigateTo({ url: "/pages/login/index" });
+        this.$href.navigateTo({ url: "/pages/login/index" });
     },
     navTo(url) {
-        this.$page.navigateTo({ url: url });
+        this.$href.navigateTo({ url: url });
     },
     // 退出登录
     handleExit(){

@@ -1,13 +1,13 @@
 import {get } from './cache';
 const BASE_URL = 'https://api.51mitui.com/';
 export const domain = (params) => {
-	return BASE_URL;
+    return BASE_URL;
 }
 export const request = (params) => {
     return new Promise((resolve, reject) => {
-        if (params.loading) {
+        if (!params.loading) {
             uni.showLoading({
-                title: '加载中'
+                title: '加载中...'
             });
         }
         uni.request({
@@ -27,7 +27,7 @@ export const request = (params) => {
                 console.log('请求失败', err);
             },
             complete: () => {
-                if (params.loading) {
+                if (!params.loading) {
                     uni.hideLoading();
                 }
             }
