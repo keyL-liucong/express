@@ -9,7 +9,7 @@ Vue.prototype.$cache = cache;
 Vue.prototype.$alert = alter;
 Vue.prototype.$toast = toast;
 Vue.prototype.$api = api;
-Vue.prototype.$page = navTo;
+Vue.prototype.$href = navTo;
 Vue.config.productionTip = false
 
 App.mpType = 'app'

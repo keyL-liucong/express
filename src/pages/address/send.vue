@@ -58,7 +58,7 @@
     <view class="row default-row">
       <text class="tit">设为默认寄件地址</text>
       <switch
-        :checked="addressData.is_default === 1"
+        :checked="addressData.is_default == 1"
         color="#ff7100"
         @change="switchChange"
       />
@@ -85,6 +85,7 @@ export default {
         address:'',
         realname: "",  // 姓名
         is_default: false,
+        address_id:''
       },
       selectList: [], // 接口返回picker数据,此处就直接使用本地测试数据
       multiArray: [], // picker数据
@@ -94,6 +95,7 @@ export default {
       value: [0, 0, 0],
       text: "",
       id: "",
+      address_id:''
     };
   },
   async onLoad(option) {
@@ -101,11 +103,12 @@ export default {
     // let title = '新增收货地址';
     if (option.type === "edit") {
       // title = "编辑收货地址";
-      Api.methods
-        .getReceiptInfoById({ id: option.addressId })
-        .then(function (res) {
-          _self.addressData = res.data.data;
-        });
+      this.addressData.address_id = option.address_id;
+      let res = await this.$api.getPostDetail({address_id:option.address_id});
+      this.addressData = res.data;
+      this.addressData.receiverRegionShow = this.addressData.prov + ' ' + this.addressData.city + ' ' + this.addressData.dist;
+      console.log(res);
+      
     }
     this.manageType = option.type;
     // uni.setNavigationBarTitle({
@@ -234,16 +237,17 @@ export default {
           }
         });
       } else {
-        this.$api.addSendAddr(_self.addressData).then(function (res) {
+        // _self.addressData.address_id = 
+        this.$api.addSendAddr(this.addressData).then(function (res) {
             _self.$toast(res.info);
         });
       }
       //this.$api.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义
-      this.$api.prePage().refreshList(data, this.manageType);
+      // this.$api.prePage().refreshList(data, this.manageType);
       this.$toast(`地址${this.manageType == "edit" ? "修改" : "添加"}成功`);
       setTimeout(() => {
         uni.navigateBack();
-      }, 800);
+      }, 400);
     },
   },
 };

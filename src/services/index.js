@@ -108,7 +108,7 @@ export default {
             method: 'POST'
         })
     },
-    // 5. 地址薄详情
+    // 5. 地址薄收件详情
     // 请求参数：
     // address_id：1，//地址薄ID
     getAddressDetail(data) {
@@ -117,6 +117,14 @@ export default {
             data
         })
     },
+    // 地址寄件薄详情 
+    getPostDetail(data) {
+        return request({
+            url: 'address/getPostDetail',
+            data
+        })
+    },
+
     // 设置默认地址
     // 请求参数：
     // address_id：1，//地址薄ID
@@ -205,10 +213,18 @@ export default {
             method: 'POST'
         })
     },
-	
+    // 设置默认地址
+    setDefaultAddr(data) {
+        return request({
+            url: 'address/setDefault',
+            data,
+            method: 'POST'
+        })
+    },
     // 获取上传连接
     getUploadUrl() {
         return domain() + "member/upload";
+    }
     },
 	
 	// 更新用户信息

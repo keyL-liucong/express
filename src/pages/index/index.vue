@@ -130,7 +130,7 @@ export default {
     },
     methods: {
         navTo() {
-            this.$page.navigateTo({ url: "/pages/feedback/form" });
+            this.$href.navigateTo({ url: "/pages/feedback/form" });
         },
     },
 };
