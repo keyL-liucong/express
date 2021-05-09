@@ -205,14 +205,11 @@ export default {
             method: 'POST'
         })
     },
+	
     // 获取上传连接
     getUploadUrl() {
         return domain() + "member/upload";
-    }
-	// 获取上传连接
-	getUploadUrl() {
-		return domain() + "member/upload";
-	},
+    },
 	
 	// 更新用户信息
 	memberUpdate(data) {
