@@ -1,22 +1,22 @@
 <template>
   <view class="content">
     <view class="row b-b">
-      <text class="tit">联系人</text>
+      <text class="tit">姓名</text>
       <input
         class="input"
         type="text"
         v-model="addressData.realname"
-        placeholder="收货人姓名"
+        placeholder="请输入姓名"
         placeholder-class="placeholder"
       />
     </view>
     <view class="row b-b">
-      <text class="tit">手机号</text>
+      <text class="tit">电话</text>
       <input
         class="input"
         type="number"
         v-model="addressData.mobile"
-        placeholder="收货人手机号码"
+        placeholder="请输入联系电话"
         placeholder-class="placeholder"
       />
     </view>
@@ -33,7 +33,7 @@
         <input
           type="text"
           v-model="addressData.receiverRegionShow"
-          placeholder="  省/市/区"
+          placeholder="选择省/市/区"
           @click="pickerClick"
           class="input"
           disabled="true"
@@ -50,16 +50,16 @@
         class="input"
         type="text"
         v-model="addressData.address"
-        placeholder="楼号、门牌"
+        placeholder="精确到门牌号"
         placeholder-class="placeholder"
       />
     </view>
 
     <view class="row default-row">
-      <text class="tit">设为默认</text>
+      <text class="tit">设为默认寄件地址</text>
       <switch
         :checked="addressData.is_default === 1"
-        color="#FF6C00"
+        color="#ff7100"
         @change="switchChange"
       />
     </view>
@@ -250,10 +250,11 @@ export default {
 </script>
 
 <style lang="scss">
-page {
-  background: $page-color-base;
-  padding-top: 16upx;
+.content{
+  padding: 0 30rpx;
+  background: #fff;
 }
+
 .popup {
   height: fit-content;
   width: 100%;
@@ -302,10 +303,12 @@ picker-view {
   padding: 0 30upx;
   height: 110upx;
   background: #fff;
+  border-bottom: 1px solid #F3F3F3;
 
   .tit {
+    display: block;
     flex-shrink: 0;
-    width: 120upx;
+    width: 150rpx;
     font-size: 30upx;
     color: $font-color-dark;
   }

@@ -6,38 +6,21 @@
     </view>
     <view class="addr-content">
       <view class="addr-list">
-        <radio-group color="#5677fc" :value="1">
-          <view class="addr-itme">
+        <radio-group color="#5677fc" :value="1" @change="handleDefault">
+          <view class="addr-itme" v-for="(item,index) in addrList" :key="index">
             <view class="row">
-              <text>jack kg</text>
-              <text>13111111111</text>
+              <text>{{ item.realname }}</text>
+              <text>{{ itme.mobile }}</text>
             </view>
-            <view class="row">**省**市**区</view>
+            <view class="row">{{ item.address }}</view>
             <view class="radio-row">
              <view class="left">
-                <radio color="#5677fc" :value="1"></radio>
-              <text class="thorui-left__sm">设置默认收件地址</text>
+                <radio :value="item.address_id" color="#ff7100" :checked="item.is_default == 1 ? true : false" ></radio>
+              <text class="thorui-left__sm">{{ item.is_default == 1 ? '默认寄件地址' : '设为默认寄件地址' }}</text>
              </view>
              <view class="right">
-               <text>编辑</text>
-               <text>删除</text>
-             </view>
-            </view>
-          </view>
-           <view class="addr-itme">
-            <view class="row">
-              <text>jack kg</text>
-              <text>13111111111</text>
-            </view>
-            <view class="row">**省**市**区</view>
-            <view class="radio-row">
-             <view class="left">
-                <radio color="#5677fc" :value="1"></radio>
-              <text class="thorui-left__sm">设置默认收件地址</text>
-             </view>
-             <view class="right">
-               <text>编辑</text>
-               <text>删除</text>
+               <text @click="handleEdit(item.address_id)">编辑</text>
+               <text @click="handleDel(item.address_id)">删除</text>
              </view>
             </view>
           </view>
@@ -55,15 +38,33 @@ export default {
   components: {},
   data() {
     return {
-      couponList: [],
+      addrList: [],
+      type:1   // 地址类型 1-寄件，2-收件 
     };
   },
   methods: {
     navTo(url) {
         this.$page.navigateTo({ url: url });
+    },
+    handleDefault(e){
+      console.log(e);
+      this.$api.setDefaultAddr({address_id:e.detail.value,type:this.type});
+      this.initDate();
+    },
+    async initDate(){
+      let res = await this.$api.getSendAddrList({page:1,size:100});
+      this.addrList = res.data.list;
+    },
+    async handleDel(address_id){
+      let res = await this.$api.delAddress({address_id,type:this.type});
+      this.$toast(res.info);
+      this.initDate();
     }
+
   },
-  async created() {},
+   created() {
+    this.initDate();
+  },
   mounted() {
      
   },
@@ -72,6 +73,7 @@ export default {
 <style lang='scss' scoped>
 .app-container {
   background: #f3f3f3;
+  padding-bottom: 140rpx;
   .tabs-box {
     background: #fff;
     width: 100%;
@@ -79,6 +81,7 @@ export default {
     padding-left: 20rpx;
     position: fixed;
     top: 0;
+    z-index: 2021;
     .tab-item {
       height: 80rpx;
       line-height: 80rpx;
@@ -91,10 +94,9 @@ export default {
     }
   }
   .addr-content{
-    padding: 20rpx;
-    padding-top: 120rpx;
+    padding: 120rpx 20rpx 0 20rpx;
     .addr-list{
-      height: calc(100vh - 60rpx);
+      // height: calc(100vh - 60rpx);
       .addr-itme{
         // padding: 20rpx;
         padding-left: 20rpx;

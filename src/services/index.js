@@ -197,6 +197,18 @@ export default {
             method: 'POST'
         })
     },
+    // 寄件地址列表
+    getSendAddrList(data) {
+        return request({
+            url: 'address/getPost',
+            data,
+            method: 'POST'
+        })
+    },
+    // 获取上传连接
+    getUploadUrl() {
+        return domain() + "member/upload";
+    }
 	// 获取上传连接
 	getUploadUrl() {
 		return domain() + "member/upload";
