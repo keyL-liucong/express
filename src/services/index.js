@@ -224,7 +224,6 @@ export default {
     // 获取上传连接
     getUploadUrl() {
         return domain() + "member/upload";
-    }
     },
 	
 	// 更新用户信息
@@ -271,5 +270,5 @@ export default {
 		    url: 'finance/record',
 		    data,
 		})
-	}
+	},
 }
