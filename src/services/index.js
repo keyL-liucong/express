@@ -225,50 +225,57 @@ export default {
     getUploadUrl() {
         return domain() + "member/upload";
     },
-	
-	// 更新用户信息
-	memberUpdate(data) {
-		return request({
-		    url: 'member/update',
-		    data,
-		    method: 'POST'
-		})
-	},
-	// 自寄到仓国家
-	warehouseCountry(data) {
-		return request({
-		    url: 'warehouse/getCountry',
-		    data
-		})
-	},
-	//自寄到仓详情
-	warehouseDetail(data) {
-		return request({
-		    url: 'warehouse/getHouse',
-		    data
-		})
-	},
-	// 发送验证码
-	sendSms(data) {
-		return request({
-		    url: 'auth/sendSms',
-		    data,
-			method: 'POST'
-		})
-	},
-	// 验证码登录
-	loginSms(data) {
-		return request({
-		    url: 'auth/loginSms',
-		    data,
-			method: 'POST'
-		})
-	},
-	// 资金明细
-	accountRecord(data) {
-		return request({
-		    url: 'finance/record',
-		    data,
-		})
-	},
+
+    // 更新用户信息
+    memberUpdate(data) {
+        return request({
+            url: 'member/update',
+            data,
+            method: 'POST'
+        })
+    },
+    // 自寄到仓国家
+    warehouseCountry(data) {
+        return request({
+            url: 'warehouse/getCountry',
+            data
+        })
+    },
+    //自寄到仓详情
+    warehouseDetail(data) {
+        return request({
+            url: 'warehouse/getHouse',
+            data
+        })
+    },
+    // 发送验证码
+    sendSms(data) {
+        return request({
+            url: 'auth/sendSms',
+            data,
+            method: 'POST'
+        })
+    },
+    // 验证码登录
+    loginSms(data) {
+        return request({
+            url: 'auth/loginSms',
+            data,
+            method: 'POST'
+        })
+    },
+    // 资金明细
+    accountRecord(data) {
+        return request({
+            url: 'finance/record',
+            data,
+        })
+    },
+    // 国家列表 is_china：是否是港澳台。0-否1-是
+    getCountryAddrList(data) {
+        return request({
+            url: 'address/getCountry',
+            data,
+        })
+    }
 }

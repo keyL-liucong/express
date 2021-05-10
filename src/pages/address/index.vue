@@ -28,7 +28,7 @@
       <empty v-else></empty>
     </view>
     <view class="bottom-btn-box">
-      <button @click="navTo('/pages/address/send')" v-if="currentTab == 0">新增收件地址</button>
+      <button @click="navTo('/pages/address/receive')" v-if="currentTab == 0">新增收件地址</button>
       <button @click="navTo('/pages/address/send')" v-if="currentTab == 1">新增寄件地址</button>
     </view>
   </view>
