@@ -69,6 +69,12 @@
 				}
 		    }
 		},
+		{
+		    "path": "pages/tabbar-5/invest",
+		    "style": {
+		        "navigationBarTitleText": "账户充值"
+		    }
+		},
         {
             "path": "pages/login/index",
             "style": {

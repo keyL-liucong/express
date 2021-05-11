@@ -19,7 +19,7 @@
 							<text class="money-data">0.00</text>
 						</view>
 						<view class="tui-right tui-col-5">
-							<text class="chongzhi">充值</text>
+							<text class="chongzhi" @click="invest">充值</text>
 						</view>
 					</view>
 					<view class="tui-flex tui-align-between mt20">
@@ -35,7 +35,7 @@
 		</view>
 		<view class="app-body">
 			<view class="body-tab">
-				<tui-tabs unlined="true" sliderWidth="400" sliderBgColor="#FF6C00" selectedColor="#FF6C00" color="##000000" :tabs="tabs" itemWidth="50%" :currentTab="currentTab" @change="change"></tui-tabs>
+				<tui-tabs unlined="true" height="100" sliderWidth="260" sliderBgColor="#FF6C00" selectedColor="#FF6C00" color="##000000" :tabs="tabs" itemWidth="50%" :currentTab="currentTab" @change="change"></tui-tabs>
 			</view>
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scroll="scroll" class="scroll-Y" @scrolltolower="lower">
 				<tui-list-view color="#777" unlined="all">
@@ -94,6 +94,11 @@
 				
 				this.old.scrollTop = e.detail.scrollTop
 			},
+			invest() {
+				uni.navigateTo({
+					url:'invest'
+				})
+			},
 			async getList() {
 				let getData = {
 					type:this.currentTab + 1,
@@ -134,8 +139,8 @@
 	}
 	.center-part-wrap{
 		height: 285rpx;
-		width: 640rpx;
-		margin: 60rpx 50rpx 0rpx 50rpx;
+		width: 710rpx;
+		margin: 60rpx 0rpx 0rpx 20rpx;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
 		background-image: url("../../static/account.png");
@@ -181,16 +186,24 @@
 				color: #7B7B7B;
 				font-size: 24rpx;
 			}
+			.tui-right{
+				text-align: right;
+			}
 		}
 	}
 	.app-body{
-		margin-top: 150rpx;
+		position: relative;
+		top: 150rpx;
+		margin: 0rpx 20rpx;
 		/* margin-left: 20rpx; */
 		/* margin-right: 20rpx; */
-		padding: 0rpx 20rpx;
+		/* padding: 0rpx 20rpx; */
 		border-radius: 16rpx;
 		overflow: hidden;
+		height: 600rpx;
+		background-color: #FFFFFF;
 		.body-tab{
+			line-height: 22rpx;
 			margin-right:20rpx;
 		}
 		.tui-right{
