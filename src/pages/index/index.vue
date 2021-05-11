@@ -107,10 +107,13 @@
             <button @click="navTo('/pages/feedback/form')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
 		<view class="app-customer">
-			<button open-type="contact" class="app-customer_data">
+			<button open-type="contact" class="app-customer_btn">
 				<view class="app-customer_data_flex">
 					<tui-icon name="kefu" size="28" color="#FFFFFF"></tui-icon>
-					<text class="kefu_text">在线客服</text>
+					
+					<text class="tui-grid-label">在线客服</text>
+					<!-- <tui-icon name="kefu" size="28" color="#FFFFFF"></tui-icon>
+					<text class="kefu_text">在线客服</text> -->
 				</view>
 				
 			</button>
@@ -385,22 +388,27 @@ export default {
 	position: fixed;
 	right: 84rpx;
 	bottom: 164rpx;
-	.app-customer_data{
-		width: 114rpx;
-		height: 114rpx;
+	.app-customer_btn::after{
+	 border: 0px;
+	}
+	.app-customer_btn{
 		border: 0px;
 		line-height: 57rpx;
-		background-color: #FF6C00;
-		border-radius: 25rpx;
+		background-color: rgba(255, 255, 255, 0);
 		.app-customer_data_flex{
 			display: flex;
+			width: 114rpx;
+			height: 114rpx;
+			background-color: #FF6C00;
 			flex-direction: column;
-			.kefu_text{
+			border-radius: 25rpx;
+			.tui-grid-label {
+				display: block;
+				text-align: center;
 				font-size: 22rpx;
 				color: #FFFFFF;
 			}
 		}
-		
 	}
 }
 </style>
