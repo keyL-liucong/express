@@ -21,9 +21,15 @@
         {
             "path": "pages/tabbar-4/index",
             "style": {
-                "navigationBarTitleText": "uni-app"
+                "navigationBarTitleText": "福利中心"
             }
         },
+		{
+		    "path": "pages/tabbar-4/webview",
+		    "style": {
+		        "navigationBarTitleText": "福利中心"
+		    }
+		},
         {
             "path": "pages/tabbar-5/index",
             "style": {

@@ -106,7 +106,15 @@
             <text>海外地址不会填？邀请收件人填写</text>  
             <button @click="navTo('/pages/feedback/form')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
-
+		<view class="app-customer">
+			<button open-type="contact" class="app-customer_data">
+				<view class="app-customer_data_flex">
+					<tui-icon name="kefu" size="28" color="#FFFFFF"></tui-icon>
+					<text class="kefu_text">在线客服</text>
+				</view>
+				
+			</button>
+		</view>
         <!-- <tui-modal :show="true"  title="提示" content="确定退出登录吗？"></tui-modal> -->
     </view>
 </template>
@@ -367,5 +375,27 @@ export default {
 .title {
     font-size: 36rpx;
     color: #8f8f94;
+}
+.app-customer{
+	position: fixed;
+	right: 84rpx;
+	bottom: 164rpx;
+	.app-customer_data{
+		width: 114rpx;
+		height: 114rpx;
+		border: 0px;
+		line-height: 57rpx;
+		background-color: #FF6C00;
+		border-radius: 25rpx;
+		.app-customer_data_flex{
+			display: flex;
+			flex-direction: column;
+			.kefu_text{
+				font-size: 22rpx;
+				color: #FFFFFF;
+			}
+		}
+		
+	}
 }
 </style>
