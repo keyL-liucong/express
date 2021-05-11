@@ -301,7 +301,7 @@ export default {
             data,
             method: 'POST'
         })
-    }
+    },
 	// 获取充值金额配置
 	getMoneyData(data) {
 		return request({
