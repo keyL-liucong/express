@@ -162,11 +162,11 @@ export default {
 .app-container {
   background: #f3f3f3;
   .font-size{
-	 font-size: 21rpx;
-	 font-weight: 100;
+	 font-size: 26rpx;
+	 font-weight: 900;
   }
   .font-sizes{
-	  font-size: 23rpx;
+	  font-size: 24rpx;
   }
   .top-part {
     height: 225px;

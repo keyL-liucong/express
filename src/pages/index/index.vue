@@ -68,17 +68,17 @@
                 <view class="desc-box"  @click="navTo('/pages/send/index')">  
                     <view class="left left-1"></view>
                     <view class="right">
-                        <view class="font-wight">上门取件</view>
-                        <view class="font-size">2小时上门取件</view>   
-                    </view>
+                        <view>上门取件</view>
+                        <view>2小时上门取件</view>   
+                    </view> 
                 </view>
             </view>
             <view class="piece bg-2">
                 <view class="desc-box">
                     <view class="left left-2"></view>
                     <view class="right">
-                        <view  class="font-wight">自寄到仓</view>
-                        <view class="font-size">2小时上门取件</view>
+                        <view>自寄到仓</view>
+                        <view>2小时上门取件</view>
                     </view>
                 </view>
             </view>
@@ -86,8 +86,8 @@
                 <view class="desc-box">
                     <view class="left left-3"></view>
                     <view class="right">
-                        <view  class="font-wight">推荐他人</view>
-                        <view class="font-size">下单拿现金</view>
+                        <view>推荐他人</view>
+                        <view>下单拿现金</view>
                     </view>
                 </view>
             </view>
@@ -95,8 +95,8 @@
                 <view class="desc-box">
                     <view class="left left-4"></view>
                     <view class="right">
-                        <view  class="font-wight">运费与实效</view>
-                        <view class="font-size">透明正规准时</view>
+                        <view>运费与实效</view>
+                        <view>透明正规准时</view>
                     </view>
                 </view>
             </view>
@@ -142,12 +142,6 @@ export default {
 .app-container {
 	.space{
 		height: 1rem;
-	}
-	.font-wight{
-		font-size: 17px;font-weight:700;
-	}
-	.font-size{
-		font-size: 11px;
 	}
     display: flex;
     flex-direction: column;
@@ -308,11 +302,12 @@ export default {
                 .right {
                     :nth-child(1) {
                         color: #000000;
-                        font-size: 36rpx;
+                        font-size: 35rpx;
+						font-weight: bold;
                     }
                     :nth-child(2) {
                         color: #7b7b7b;
-                        font-size: 28rpx;
+                        font-size: 27rpx;
                     }
                 }
             }
