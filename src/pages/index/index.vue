@@ -1,32 +1,5 @@
 <template>
     <view class="app-container">
-        <!-- board -->
-        <view class="tui-notice-board">
-            <view class="tui-rolling-news">
-                <tui-icon
-                    name="news-fill"
-                    :size="28"
-                    color="#FF4848"
-                ></tui-icon>
-                <swiper
-                    vertical
-                    autoplay
-                    circular
-                    interval="3000"
-                    class="tui-swiper"
-                >
-                    <swiper-item
-                        v-for="(item, index) in tipsList"
-                        :key="index"
-                        class="tui-swiper-item"
-                    >
-                        <view class="tui-news-item" @tap="detail">{{
-                            item.text
-                        }}</view>
-                    </swiper-item>
-                </swiper>
-            </view>
-        </view>
         <!-- 轮播图 -->
         <view class="tui-banner-box">
             <swiper
@@ -62,13 +35,41 @@
                 </swiper-item> -->
             </swiper>
         </view>
+		<!-- board -->
+		<view class="tui-notice-board">
+		    <view class="tui-rolling-news">
+		        <tui-icon
+		            name="news-fill"
+		            :size="28"
+		            color="#FF4848"
+		        ></tui-icon>
+		        <swiper
+		            vertical
+		            autoplay
+		            circular
+		            interval="3000"
+		            class="tui-swiper"
+		        >
+		            <swiper-item
+		                v-for="(item, index) in tipsList"
+		                :key="index"
+		                class="tui-swiper-item"
+		            >
+		                <view class="tui-news-item" @tap="detail">{{
+		                    item.text
+		                }}</view>
+		            </swiper-item>
+		        </swiper>
+		    </view>
+		</view>
+		<view class="space"></view>
         <view class="banner-part">
             <view class="piece bg-1">
-                <view class="desc-box">
+                <view class="desc-box"  @click="navTo('/pages/send/index')">  
                     <view class="left left-1"></view>
                     <view class="right">
-                        <view>上门取件</view>
-                        <view>2小时上门取件</view>
+                        <view class="font-wight">上门取件</view>
+                        <view class="font-size">2小时上门取件</view>   
                     </view>
                 </view>
             </view>
@@ -76,8 +77,8 @@
                 <view class="desc-box">
                     <view class="left left-2"></view>
                     <view class="right">
-                        <view>自寄到仓</view>
-                        <view>2小时上门取件</view>
+                        <view  class="font-wight">自寄到仓</view>
+                        <view class="font-size">2小时上门取件</view>
                     </view>
                 </view>
             </view>
@@ -85,8 +86,8 @@
                 <view class="desc-box">
                     <view class="left left-3"></view>
                     <view class="right">
-                        <view>推荐他人</view>
-                        <view>下单拿现金</view>
+                        <view  class="font-wight">推荐他人</view>
+                        <view class="font-size">下单拿现金</view>
                     </view>
                 </view>
             </view>
@@ -94,16 +95,16 @@
                 <view class="desc-box">
                     <view class="left left-4"></view>
                     <view class="right">
-                        <view>运费与实效</view>
-                        <view>透明正规准时</view>
+                        <view  class="font-wight">运费与实效</view>
+                        <view class="font-size">透明正规准时</view>
                     </view>
                 </view>
             </view>
         </view>
         <!-- write part -->
         <view class="write-address-part">
-            <text>海外地址不会填？邀请收件人填写</text>
-            <button @click="navTo">邀请填写</button>
+            <text>海外地址不会填？邀请收件人填写</text>  
+            <button @click="navTo('/pages/feedback/form')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
 
         <!-- <tui-modal :show="true"  title="提示" content="确定退出登录吗？"></tui-modal> -->
@@ -113,6 +114,7 @@
 <script>
 import Api from "../../services/index";
 export default {
+	components: {},
     data() {
         return {
             bannerList: [],  // 轮播图
@@ -129,15 +131,24 @@ export default {
         }, 600);
     },
     methods: {
-        navTo() {
-            this.$href.navigateTo({ url: "/pages/feedback/form" });
-        },
+        navTo(url) {
+            this.$href.navigateTo({ url: url });      
+		},
     },
 };
 </script>
 
 <style lang="scss">
 .app-container {
+	.space{
+		height: 1rem;
+	}
+	.font-wight{
+		font-size: 17px;font-weight:700;
+	}
+	.font-size{
+		font-size: 11px;
+	}
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -179,6 +190,7 @@ export default {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+			
         }
     }
     .tui-banner-box {

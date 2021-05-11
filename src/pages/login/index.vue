@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <div class="login-part">
-            <div class="row title">欢迎登陆/注册</div>
+            <div class="row title">欢迎登录/注册</div>
             <div class="row">
                 <input
                     type="text"
