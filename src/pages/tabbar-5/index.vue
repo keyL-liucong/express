@@ -62,7 +62,7 @@
     <view class="item-list-wrap">
       <tui-list-view color="#777">
       <!--  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
-          邀请下单
+          邀请下单 test
         </tui-list-cell> -->
        <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的运费
