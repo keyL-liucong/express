@@ -32,6 +32,18 @@
         </view>
       </view>
     </view>
+	<view class="app-more">
+		<view class="app-more_title">
+			<text>更多活动</text>
+		</view>
+		<view class="app-more_data">
+			<view class="tui-flex mt20">
+				<view class="tui-flex-1">
+					<image src="http://static.51mitui.com/20210511/609a3322953de.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+	</view>
   </view>
 </template>
 
@@ -131,5 +143,23 @@ export default {
       }
     }
   }
+  .app-more{
+	  margin-top: 50rpx;
+	  .app-more_title{
+		  text-align: center;
+		  margin-bottom: 20rpx;
+		  text{
+			  font-size: 32rpx;
+			  font-weight: bold;
+		  }
+	  }
+	  image{
+		  height: 200rpx;
+		  width: 100%;
+	  }
+  }
+}
+.mt20{
+	margin-bottom: 20rpx;
 }
 </style>
