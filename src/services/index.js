@@ -277,5 +277,13 @@ export default {
             url: 'address/getCountry',
             data,
         })
-    }
+    },
+	// 更多活动
+	getWelfare(data) {
+	    return request({
+	        url: 'home/getWelfare',
+	        data,
+			method: 'GET'
+	    })
+	},
 }
