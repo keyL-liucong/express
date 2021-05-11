@@ -117,6 +117,12 @@
                 "navigationBarTitleText": "寄件"
             }
         },
+		{
+		    "path": "pages/contraband/index",
+		    "style": {
+		        "navigationBarTitleText": "违禁品"
+		    }
+		},
         {
             "path": "pages/address/index",
             "style": {

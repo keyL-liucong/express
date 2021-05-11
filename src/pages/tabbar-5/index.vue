@@ -10,32 +10,32 @@
         </view>
         <view class="info-line" v-if="memberInfo">
           <view class="name">{{ memberInfo.nick_name }}</view>
-          <view class="mobile">{{ memberInfo.mobile }}</view>
+          <view class="mobile font-sizes">{{ memberInfo.mobile }}</view>
           <view class="code">
-            <view class="code-left">会员编号：{{ memberInfo.member_no }}</view>
+            <view class="code-left font-sizes">会员编号：{{ memberInfo.member_no }}</view>
             <view class="code-right"@click="navTo('/pages/tabbar-5/info')">
-              <text>修改</text>
+              <text class="font-sizes">修改</text>
               <image src="../../static/white-arrow.png" mode="" />
             </view>
           </view>
         </view>
         <view class="info-line" v-else @click="handleLogin">
-          <view class="name">登录 | 注册</view>
-          <view class="mobile">hello,欢迎来到米推客</view>
+          <view class="name font-size">登录 | 注册</view> 
+          <view class="mobile font-size">hello,欢迎来到米推客</view>
         </view>
       </view>
       <view class="info-show-box">
         <view class="left-box box" @click="navTo('/pages/tabbar-5/account')">
           <view class="num">{{ money }}</view>
-          <view class="desc">余额</view>
+          <view class="desc font-sizes">余额</view>
         </view>
         <view class="center-box box">
           <view class="num">{{ income  }}</view>
-          <view class="desc">累计收益</view>
+          <view class="desc font-sizes">累计收益</view>
         </view>
         <navigator class="right-box box"  @click="navTo('/pages/coupon/index')">
           <view class="num">{{ couponTotal }}</view>
-          <view class="desc">优惠卷</view>
+          <view class="desc font-sizes">优惠劵</view>
         </navigator>
       </view>
     </view>
@@ -43,42 +43,45 @@
       <view class="center-part">
         <view class="center-box" @click="navTo('/pages/address/index')">
           <img src="../../static/center-1.png" alt="" />
-          <text>地址簿</text>
+          <text class="font-size">地址簿</text>
         </view>
         <view class="center-box" @click="navTo('/pages/coupon/index')">
           <img src="../../static/center-2.png" alt="" />
-          <text>运费与实效</text>
+          <text class="font-size">运费与实效</text>
         </view>
-        <view class="center-box" @click="navTo('/pages/coupon/index')">
+        <view class="center-box" @click="navTo('/pages/contraband/index')">
           <img src="../../static/center-3.png" alt="" />
-          <text>违禁品</text>
+          <text class="font-size">违禁品</text>
         </view>
         <view class="center-box" @click="navTo('/pages/coupon/index')">
           <img src="../../static/center-4.png" alt="" />
-          <text>申请发票</text>
+          <text class="font-size">申请发票</text>
         </view>
       </view>
     </view>
     <view class="item-list-wrap">
       <tui-list-view color="#777">
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+      <!--  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           邀请下单
-        </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+        </tui-list-cell> -->
+       <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的运费
-        </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+        </tui-list-cell> -->
+       <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的运单
-        </tui-list-cell>
+        </tui-list-cell> -->
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/tabbar-5/warehouse')">
           自寄到仓地址
         </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+       <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           自提点查询
-        </tui-list-cell>
+        </tui-list-cell> -->
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的推荐
         </tui-list-cell>
+		<tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/feedback/index')">
+		  在线客服
+		</tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/feedback/index')">
           投诉建议
         </tui-list-cell>
@@ -158,6 +161,13 @@ export default {
 <style lang='scss' scoped>
 .app-container {
   background: #f3f3f3;
+  .font-size{
+	 font-size: 21rpx;
+	 font-weight: 100;
+  }
+  .font-sizes{
+	  font-size: 23rpx;
+  }
   .top-part {
     height: 225px;
     background-image: linear-gradient(to right, #ff9900, #ff7100);
