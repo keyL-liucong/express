@@ -68,7 +68,7 @@
                 <view class="desc-box"  @click="navTo('/pages/send/index')">  
                     <view class="left left-1"></view>
                     <view class="right">
-                        <view class="font-wight">不上门取件</view>
+                        <view class="font-wight">上门取件</view>
                         <view class="font-size">2小时上门取件</view>   
                     </view>
                 </view>
