@@ -286,4 +286,20 @@ export default {
 			method: 'GET'
 	    })
 	},
+	// 获取充值金额配置
+	getMoneyData(data) {
+		return request({
+			url: 'finance/getMoneyData',
+			data,
+			method: 'GET'
+		})	
+	},
+	// 支付充值金额
+	payRecharge(data) {
+		return request({
+			url: 'payment/recharge',
+			data,
+			method: 'POST'
+		})	
+	},
 }
