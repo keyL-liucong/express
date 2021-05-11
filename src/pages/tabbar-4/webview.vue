@@ -17,7 +17,6 @@
             }
         },
 		onLoad(e) {
-			
 			this.src = e.src;
 		}
     }

@@ -37,8 +37,8 @@
 			<text>更多活动</text>
 		</view>
 		<view class="app-more_data">
-			<view class="tui-flex mt20">
-				<view class="tui-flex-1" v-for="(item, index) in welfare" :key="index">
+			<view class="tui-flex mt20" v-for="(item, index) in welfare" :key="index">
+				<view class="tui-col-12">
 					<image :src="item.pic_url" mode="scaleToFill" @click="toWeb(item.link)"></image>
 				</view>
 			</view>
@@ -160,7 +160,7 @@ export default {
 		  }
 	  }
 	  image{
-		  height: 200rpx;
+		  height: 150rpx;
 		  width: 100%;
 	  }
   }
