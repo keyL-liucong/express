@@ -1,12 +1,11 @@
 <template>
   <view class="app-container">
     <view class="tabs-box">
-      <view class="tab-item active">收件地址簿</view>
-      <view class="tab-item">寄件地址簿</view>
+      <tui-tabs unlined="true" sliderWidth="400" sliderBgColor="#FF6C00" selectedColor="#FF6C00" color="##000000" :tabs="tabs" itemWidth="50%" :currentTab="currentTab" @change="change"></tui-tabs>
     </view>
     <view class="addr-content">
-      <view class="addr-list">
-        <radio-group color="#5677fc" :value="1" @change="handleDefault">
+      <view class="addr-list" v-if="addrList.length > 0">
+        <radio-group color="#ff7100" :value="1" @change="handleDefault">
           <view class="addr-itme" v-for="(item,index) in addrList" :key="index">
             <view class="row">
               <text>{{ item.realname }}</text>
@@ -26,19 +25,32 @@
           </view>
         </radio-group>
       </view>
+      <empty v-else></empty>
     </view>
     <view class="bottom-btn-box">
-      <button @click="navTo('/pages/address/send')">新增收件地址</button>
+      <button @click="navTo('/pages/address/receive')" v-if="currentTab == 0">新增收件地址</button>
+      <button @click="navTo('/pages/address/send')" v-if="currentTab == 1">新增寄件地址</button>
     </view>
   </view>
 </template>
 
 <script>
+import tuiTabs from "../../components/tui-tabs/tui-tabs";
+import empty from "../../components/empty";
 export default {
-  components: {},
+  components: {
+    tuiTabs,
+    empty
+  },
   data() {
     return {
       addrList: [],
+      currentTab:0,
+      tabs: [{
+					name: "收件地址簿"
+				}, {
+					name: "寄件地址簿"
+				}],
       type:1   // 地址类型 1-寄件，2-收件 
     };
   },
@@ -46,14 +58,25 @@ export default {
     navTo(url) {
         this.$href.navigateTo({ url: url });
     },
+    change(e) {
+      console.log(e);
+      this.currentTab = e.index;
+      this.initDate();
+    },
     handleDefault(e){
       console.log(e);
       this.$api.setDefaultAddr({address_id:e.detail.value,type:this.type});
       this.initDate();
     },
     async initDate(){
-      let res = await this.$api.getSendAddrList({page:1,size:100});
-      this.addrList = res.data.list;
+      if(this.currentTab == 0){
+        let res = await this.$api.getReceivedAddr({page:1,size:100});
+        this.addrList = res.data.list;
+      }else{
+        let res = await this.$api.getSendAddrList({page:1,size:100});
+        this.addrList = res.data.list;
+      }
+      
     },
     async handleDel(address_id){
       let res = await this.$api.delAddress({address_id,type:this.type});
@@ -142,7 +165,7 @@ export default {
       height: 66rpx;
       line-height: 66rpx;
       border-radius: 33rpx;
-      background: #3f81ff;
+      background: #ff7100;
       color: #fff;
     }
   }

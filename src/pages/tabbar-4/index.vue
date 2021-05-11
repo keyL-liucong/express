@@ -32,6 +32,18 @@
         </view>
       </view>
     </view>
+	<view class="app-more">
+		<view class="app-more_title">
+			<text>更多活动</text>
+		</view>
+		<view class="app-more_data">
+			<view class="tui-flex mt20" v-for="(item, index) in welfare" :key="index">
+				<view class="tui-col-12">
+					<image :src="item.pic_url" mode="scaleToFill" @click="toWeb(item.link)"></image>
+				</view>
+			</view>
+		</view>
+	</view>
   </view>
 </template>
 
@@ -40,21 +52,27 @@ export default {
   components: {},
   data() {
     return {
-        couponList:[]
+        couponList:[],
+		welfare:[],
     };
   },
   methods: {
       async handleRece(coupon_id){
           let res = await this.$api.getCouponReceive({coupon_id});
-          console.log(res);
           this.$toast(res.info);
-      }
+      },
+	  toWeb(e) {
+		  uni.navigateTo({
+		  	url:'webview?src='+e
+		  })
+	  }
   },
  async created() {
       let res = await this.$api.getCouponList({page:1,size:30});
-      console.log(res);
       this.couponList = res.data.list;
-      console.log(res);
+      let welfare = await this.$api.getWelfare();
+      this.welfare = welfare.data;
+
   },
   mounted() {},
 };
@@ -131,5 +149,23 @@ export default {
       }
     }
   }
+  .app-more{
+	  margin-top: 50rpx;
+	  .app-more_title{
+		  text-align: center;
+		  margin-bottom: 20rpx;
+		  text{
+			  font-size: 32rpx;
+			  font-weight: bold;
+		  }
+	  }
+	  image{
+		  height: 150rpx;
+		  width: 100%;
+	  }
+  }
+}
+.mt20{
+	margin-bottom: 20rpx;
 }
 </style>

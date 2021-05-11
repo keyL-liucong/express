@@ -1,6 +1,7 @@
 <template>
 	<view class="empty-content">
 		<image class="empty-content-image" :src="setSrc" mode="aspectFit"></image>
+		<text style="color: #ccc;">暂无数据~</text>
 	</view>
 </template>
 

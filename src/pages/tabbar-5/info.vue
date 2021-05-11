@@ -14,7 +14,7 @@
 					<view class="tui-item-box">
 						<text class="tui-list-cell_name">昵称</text>
 						<view class="tui-right-name">
-							<input placeholder="请填写用户昵称" class="tui-input" v-model="postData.nick_name"/>
+							<input placeholder="请输入昵称" class="tui-input" v-model="postData.nick_name"/>
 						</view>
 					</view>
 				</tui-list-cell>
@@ -157,10 +157,11 @@
 	}
 
 	.tui-logo {
-		height: 60rpx;
-		width: 60rpx;
+		height: 120rpx;
+		width: 120rpx;
 		flex-shrink: 0;
-		border-radius: 30rpx;
+		border-radius: 60rpx;
+		margin: 0rpx 26rpx;
 	}
 	.bottom-btn-box{
 		position: fixed;
@@ -172,6 +173,9 @@
 	}
 	.tui-input{
 		text-align: right;
+		font-size: 12px;
+		font-weight: 300;
+		color: #A9A9A9;
 	}
 	
 </style>
