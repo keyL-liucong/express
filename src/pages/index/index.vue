@@ -240,7 +240,7 @@ export default {
             background-color: none;
             justify-content: space-between;
         }
-
+		/* #endif */
         .tui-banner-swiper .uni-swiper-dot::before {
             content: "";
             flex-grow: 1;

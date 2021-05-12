@@ -5,152 +5,72 @@
         v-for="(item, index) in navList"
         :key="index"
         class="nav-item"
-        :class="{ current: tabCurrentIndex === index }"
-        @click="tabClick(index)"
+        :class="{ current: tabCurrentStatus == item.status }"
+        @click="tabClick(item)"
       >
         {{ item.text }}
       </view>
     </view>
 
-    <swiper
-      :current="tabCurrentIndex"
-      class="swiper-box"
-      duration="300"
-      @change="changeTab"
-    >
-      <swiper-item
-        class="tab-content"
-        v-for="(tabItem, tabIndex) in navList"
-        :key="tabIndex"
-      >
-        <scroll-view
-          class="list-scroll-content"
-          scroll-y
-          @scrolltolower="loadData"
-        >
-          <!-- 空白页 -->
-          <empty
-            v-if="tabItem.loaded === true && tabItem.orderList.length === 0"
-          ></empty>
+    <!-- <scroll-view
+      class="list-scroll-content"
+      scroll-y
+      @scrolltolower="loadData"
+    > -->
+    <view class="order-list">
+      <!-- 空白页 -->
+      <empty v-if="orderlist == 0"></empty>
 
-          <!-- 订单列表 -->
-          <view
-            v-for="(item, index) in tabItem.orderList"
-            :key="index"
-            class="order-item"
+      <!-- 订单列表 -->
+      <view v-for="(orderitem, orderindex) in orderlist" :key="item.order_sn" class="order-item">
+        
+        <view class="action-box b-t">
+          <button
+            class="action-btn"
+            v-if="item.omsOrder.status === 0"
+            @click="cancelOrder(item)"
           >
-            <view class="i-top b-b">
-              <text class="time">{{ item.omsOrder.createTime | time }}</text>
-              <text class="state" :style="{ color: item.stateTipColor }">{{
-                item.stateTip
-              }}</text>
-              <text
-                v-if="item.omsOrder.status === 5 || item.omsOrder.status === 4"
-                class="del-btn yticon icon-iconfontshanchu1"
-                @click="deleteOrder(item, index)"
-              ></text>
-            </view>
+            取消订单
+          </button>
+          <button
+            class="action-btn recom"
+            v-if="item.omsOrder.status === 0"
+            @click="toPay(item.omsOrder.orderSn)"
+          >
+            立即支付
+          </button>
+          <button
+            class="action-btn recom"
+            v-if="item.omsOrder.status === 2"
+            @click="confirmReceipt(item)"
+          >
+            确认收货
+          </button>
+          <button
+            class="action-btn recom"
+            v-if="item.omsOrder.status === 2 || item.omsOrder.status === 3"
+            @click="
+              navTo(
+                '/pages/order/aftersale/aftersale?orderSn=' +
+                  item.omsOrder.orderSn
+              )
+            "
+          >
+            申请售后
+          </button>
+        </view>
+      </view>
 
-            <scroll-view
-              v-if="item.items && item.items.length > 1"
-              class="goods-box"
-              scroll-x
-            >
-              <view
-                v-for="(goodsItem, goodsIndex) in item.items"
-                :key="goodsIndex"
-                class="goods-item"
-                @click="navTo('details?orderSn=' + item.omsOrder.orderSn)"
-              >
-                <image
-                  class="goods-img"
-                  :src="encodeURI(goodsItem.productPic)"
-                  mode="aspectFill"
-                ></image>
-              </view>
-            </scroll-view>
-            <view
-              v-if="item.items.length === 1"
-              class="goods-box-single"
-              v-for="(goodsItem, goodsIndex) in item.items"
-              :key="goodsIndex"
-              @click="navTo('details?orderSn=' + item.omsOrder.orderSn)"
-            >
-              <image
-                class="goods-img"
-                :src="encodeURI(goodsItem.productPic)"
-                mode="aspectFill"
-              ></image>
-              <view class="right">
-                <text class="title clamp">{{ goodsItem.productName }}</text>
-                <text class="attr-box"
-                  >{{ goodsItem.attr }} x {{ goodsItem.productQuantity }}</text
-                >
-                <text class="price">{{ goodsItem.productPrice }}</text>
-              </view>
-            </view>
-
-            <view
-              v-if="
-                item.omsOrder.status === 1 ||
-                item.omsOrder.status === 2 ||
-                item.omsOrder.status === 3
-              "
-              class="price-box"
-            >
-              <!-- 共
-							<text class="num">7</text>
-							件商品 -->
-              实付款
-              <text class="price">{{ item.omsOrder.totalAmount }}</text>
-            </view>
-            <view class="action-box b-t">
-              <button
-                class="action-btn"
-                v-if="item.omsOrder.status === 0"
-                @click="cancelOrder(item)"
-              >
-                取消订单
-              </button>
-              <button
-                class="action-btn recom"
-                v-if="item.omsOrder.status === 0"
-                @click="toPay(item.omsOrder.orderSn)"
-              >
-                立即支付
-              </button>
-              <button
-                class="action-btn recom"
-                v-if="item.omsOrder.status === 2"
-                @click="confirmReceipt(item)"
-              >
-                确认收货
-              </button>
-              <button
-                class="action-btn recom"
-                v-if="item.omsOrder.status === 2 || item.omsOrder.status === 3"
-                @click="
-                  navTo(
-                    '/pages/order/aftersale/aftersale?orderSn=' +
-                      item.omsOrder.orderSn
-                  )
-                "
-              >
-                申请售后
-              </button>
-            </view>
-          </view>
-
-          <uni-load-more :status="tabItem.loadingType"></uni-load-more>
-        </scroll-view>
-      </swiper-item>
-    </swiper>
+      <uni-load-more v-if="orderlist.length < orderTotal" :status="loadingType"></uni-load-more>
+    </view>
+    <!-- </scroll-view> -->
   </view>
 </template> 
 
 <script>
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import empty from "@/components/empty";
+import Api from "@/services/index";
 import Json from "@/Json";
 export default {
   components: {
@@ -159,10 +79,15 @@ export default {
   },
   data() {
     return {
+      pageNum: 1,
+      loadingType: "more",
       tabCurrentIndex: 0,
+      tabCurrentStatus: 0,
+      getorderListLock: false,
+      orderTotal: 0,
       navList: [
         {
-          state: 0,
+          status: 0,
           text: "全部订单",
           loadingType: "more",
           orderList: [],
@@ -171,7 +96,7 @@ export default {
           totalPage: 1,
         },
         {
-          state: 1,
+          status: 1,
           text: "待揽收",
           loadingType: "more",
           orderList: [],
@@ -180,7 +105,7 @@ export default {
           totalPage: 1,
         },
         {
-          state: 2,
+          status: 2,
           text: "待处理",
           loadingType: "more",
           orderList: [],
@@ -189,7 +114,7 @@ export default {
           totalPage: 1,
         },
         {
-          state: 3,
+          status: 3,
           text: "待支付",
           loadingType: "more",
           orderList: [],
@@ -198,7 +123,7 @@ export default {
           totalPage: 1,
         },
         {
-          state: 4,
+          status: 4,
           text: "运输中",
           loadingType: "more",
           orderList: [],
@@ -207,7 +132,7 @@ export default {
           totalPage: 1,
         },
         {
-          state: 4,
+          status: 5,
           text: "已签收",
           loadingType: "more",
           orderList: [],
@@ -216,136 +141,57 @@ export default {
           totalPage: 1,
         },
       ],
+      orderlist: {
+        0: [],
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+      },
     };
   },
-  onLoad(options) {},
-  onShow() {
-    // #ifndef MP
+  onLoad(options) {
+    console.log(options);
+    this.tabCurrentIndex = options.tabid || 0;
     this.loadData();
-    // #endif
-    // #ifdef MP
-    if (this.tabCurrentIndex == 0) {
-      this.loadData();
-    }
-    // #endif
+  },
+  onShow() {},
+  onReachBottom() {
+    this.loadData();
   },
   methods: {
     //获取订单列表
     loadData(source) {
       var _self = this;
-      //这里是将订单挂载到tab列表下
-      let index = _self.tabCurrentIndex;
-      let navItem = _self.navList[index];
-      let state = navItem.state;
-
-      if (source === "tabChange" && navItem.loaded === true) {
-        //tab切换只有第一次需要加载数据
+      if (_self.getorderListLock) {
         return;
       }
-      if (
-        navItem.loadingType === "loading" ||
-        navItem.loadingType === "noMore"
-      ) {
-        //防止重复加载
-        return;
-      }
-
-      navItem.loadingType = "loading";
-
-      setTimeout(() => {
-        var param = { size: navItem.pageSize, page: navItem.pageNo,user_id:25 };
-        if (index === 0) {
-          this.$api.getAllOrderList(param).then(function (res) {
-            if (res.data.code === 200) {
-              var result = res.data.data;
-              _self.orderListHandle(navItem, result, state);
-              navItem.pageNo++;
-            } else {
-              _self.$toast("加载失败，请重试");
-            }
-          });
-        } else if (index === 1) {
-          this.$api.getWaitingPayList(param).then(function (res) {
-            if (res.data.code === 200) {
-              var result = res.data.data;
-              _self.orderListHandle(navItem, result, state);
-              navItem.pageNo++;
-            } else {
-              _self.$toast("加载失败，请重试");
-            }
-          });
-        } else if (index === 2) {
-          Api.methods.getWaitingShipList(param).then(function (res) {
-            if (res.data.code === 200) {
-              var result = res.data.data;
-              _self.orderListHandle(navItem, result, state);
-              navItem.pageNo++;
-            } else {
-              _self.$toast("加载失败，请重试");
-            }
-          });
-        } else if (index === 3) {
-          Api.methods.getWaitingReceiptList(param).then(function (res) {
-            if (res.data.code === 200) {
-              var result = res.data.data;
-              _self.orderListHandle(navItem, result, state);
-              navItem.pageNo++;
-            } else {
-              _self.$toast("加载失败，请重试");
-            }
-          });
-        } else if (index === 4) {
-          Api.methods.getCompletedList(param).then(function (res) {
-            if (res.data.code === 200) {
-              var result = res.data.data;
-              _self.orderListHandle(navItem, result, state);
-              navItem.pageNo++;
-            } else {
-              _self.$toast("加载失败，请重试");
-            }
-          });
+      _self.getorderListLock = true;
+      // _self.pageNum > 1 && uni.showLoading({ title: "加载中1..." });
+      _self.loadingType = "loading";
+      var param = { size: 10, page: _self.pageNum, user_id: 25, order_status: _self.tabCurrentStatus};
+      this.$api.getAllOrderList(param).then(function (res) {
+        if (res.status === 1) {
+          _self.orderTotal = res.data.total;
+          _self.orderlist =
+            _self.pageNum == 1
+              ? res.data.list
+              : _self.orderlist.concat(res.data.list);
+          _self.pageNum++;
+        } else {
+          _self.$toast("加载失败，请重试");
         }
-      }, 600);
-    },
-    //订单列表处理
-    orderListHandle(navItem, result, state) {
-      // let orderList = result.list.filter(item=>{
-      // 	//添加不同状态下订单的表现形式
-      // 	item = Object.assign(item, this.orderStateExp(item.omsOrder.status));
-      // 	//演示数据所以自己进行状态筛选
-      // 	return item
-      // });
-      result.list.forEach((item) => {
-        item.items.forEach((product) => {
-          if (product.productAttr) {
-            let attr = JSON.parse(product.productAttr);
-            product.attr = "";
-            for (var i = 0; i < attr.length; i++) {
-              product.attr += attr[i].value + " ";
-            }
-          }
-        });
-        item = Object.assign(item, this.orderStateExp(item.omsOrder.status));
-        navItem.orderList.push(item);
+        console.log(_self.orderlist.length);
+        uni.hideLoading();
+        _self.getorderListLock = false;
       });
-      //loaded新字段用于表示数据加载完毕，如果为空可以显示空白页
-      this.$set(navItem, "loaded", true);
-      navItem.pageNo = result.pageNum;
-      var loadingType = "more";
-      if (result.pageNum + 1 >= result.totalPage) {
-        loadingType = "noMore";
-      }
-      //判断是否还有数据， 有改为 more， 没有改为noMore
-      navItem.loadingType = loadingType;
-    },
-    //swiper 切换
-    changeTab(e) {
-      this.tabCurrentIndex = e.target.current;
-      this.loadData("tabChange");
     },
     //顶部tab点击
-    tabClick(index) {
-      this.tabCurrentIndex = index;
+    tabClick(item) {
+      this.tabCurrentStatus = item.status;
+      this.loadData("tabChange");
+      this.pageNum = 1;
     },
     //删除订单
     deleteOrder(item, index) {
@@ -471,16 +317,11 @@ export default {
 </script>
 
 <style lang="scss">
+html, body, page{
+  background: #f3f3f3;
+}
 .content {
-  background: #fff;
-  height: 100%;
-}
-
-.swiper-box {
-  height: calc(100% - 40px);
-}
-.list-scroll-content {
-  height: 100%;
+  background: #f3f3f3;
 }
 
 .navbar {
@@ -516,9 +357,10 @@ export default {
   }
 }
 
-.uni-swiper-item {
-  height: auto;
+.order-list{
+  padding: 10rpx 15rpx;
 }
+
 .order-item {
   display: flex;
   flex-direction: column;
