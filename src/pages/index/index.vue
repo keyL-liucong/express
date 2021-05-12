@@ -110,10 +110,8 @@
 			<button open-type="contact" class="app-customer_btn">
 				<view class="app-customer_data_flex">
 					<tui-icon name="kefu" size="28" color="#FFFFFF" style="margin-top:9rpx;"></tui-icon>
-					
 					<text class="tui-grid-label">在线客服</text>
-					<!-- <tui-icon name="kefu" size="28" color="#FFFFFF"></tui-icon>
-					<text class="kefu_text">在线客服</text> -->
+				
 				</view>
 				
 			</button>
@@ -382,7 +380,7 @@ export default {
 .app-customer{
 	position: fixed;
 	right: 13rpx;
-	bottom: 164rpx;
+	bottom: 154rpx;
 	.app-customer_btn::after{
 	 border: 0px;
 	}

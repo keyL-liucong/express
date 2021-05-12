@@ -29,7 +29,7 @@
           <view class="num">{{ money }}</view>
           <view class="desc font-sizes">余额</view>
         </view>
-        <view class="center-box box" @click="navTo('/pages/invite/share')">
+        <view class="center-box box" @click="navTo('/pages/invite/index')">
           <view class="num">{{ income  }}</view>
           <view class="desc font-sizes">累计收益</view>
         </view>
