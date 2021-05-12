@@ -81,6 +81,18 @@
 		        "navigationBarTitleText": "账户充值"
 		    }
 		},
+		{
+		    "path": "pages/invite/index",
+		    "style": {
+		        "navigationBarTitleText": "我的推荐"
+		    }
+		},
+		{
+		    "path": "pages/invite/share",
+		    "style": {
+		        "navigationBarTitleText": "邀请下单"
+		    }
+		},
         {
             "path": "pages/login/index",
             "style": {
