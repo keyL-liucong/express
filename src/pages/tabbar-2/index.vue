@@ -30,7 +30,7 @@
       <empty v-if="orderlist == 0"></empty>
 
       <!-- 订单列表 -->
-      <orderItem v-for="(orderitem, orderindex) in orderlist" :item="orderitem"></orderItem>
+      <orderItem v-for="(orderitem, orderindex) in orderlist" :item="orderitem" :key="orderindex"></orderItem>
 
       <uni-load-more v-if="orderlist.length < orderTotal" :status="loadingType"></uni-load-more>
     </view>
@@ -117,12 +117,6 @@ export default {
         },
       ],
       orderlist: {
-        0: [],
-        1: [],
-        2: [],
-        3: [],
-        4: [],
-        5: [],
       },
     };
   },

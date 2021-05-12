@@ -31,12 +31,15 @@ export default {
   },
   data() {
     return {
-      winWidth: 0,
-      tabsWidth: 0,
-      scrollLeft: 0,
+     
     };
   },
-  methods: {},
+  mounted() {
+	console.log(this.item);
+  },
+  methods: {
+
+  },
 };
 </script>
 <style lang="scss">
