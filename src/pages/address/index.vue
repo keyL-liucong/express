@@ -132,7 +132,7 @@ export default {
         background: #fff;
         border-radius: 16rpx;
         .row{
-          height: 70rpx;
+          // height: 70rpx;
           line-height: 70rpx;
         }
         .radio-row{
