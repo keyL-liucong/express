@@ -2,24 +2,21 @@
 export default {
     onLaunch: function () {
 		let that = this;
-		uni.checkSession({
-			success(suRes) {
-			},
-			fail(failRes) {
-				uni.login({
-				    provider: "weixin",
-				    success(res) {
-				        that.$api.getAuthSession({code:res.code}).then(function (sessionRes) {
-							that.$cache.put(
-							    "openId",
-							    sessionRes.data.open_id
-							);
-						});
-				        
-				    },
-				});
-			}
-		})
+		let openId = that.$cache.get("openId");
+		if(typeof(openId) == "undefined") {
+			uni.login({
+			    provider: "weixin",
+			    success(res) {
+			        that.$api.getAuthSession({code:res.code}).then(function (sessionRes) {
+						that.$cache.put(
+						    "openId",
+						    sessionRes.data.open_id
+						);
+					});
+			        
+			    },
+			});
+		}
     },
     onShow: function () {
     },
