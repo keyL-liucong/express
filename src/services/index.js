@@ -277,5 +277,45 @@ export default {
             url: 'address/getCountry',
             data,
         })
-    }
+    },
+    // 更多活动
+    getWelfare(data) {
+        return request({
+            url: 'home/getWelfare',
+            data,
+            method: 'GET'
+        })
+    },
+    // 国外省市区
+    getRegionEnAddr(data) {
+        return request({
+            url: 'address/getRegionEn',
+            data,
+            method: 'GET'
+        })
+    },
+    // 编辑 新增收件地址 
+    addReceivedAddr(data) {
+        return request({
+            url: 'address/addReceived',
+            data,
+            method: 'POST'
+        })
+    },
+	// 获取充值金额配置
+	getMoneyData(data) {
+		return request({
+			url: 'finance/getMoneyData',
+			data,
+			method: 'GET'
+		})	
+	},
+	// 支付充值金额
+	payRecharge(data) {
+		return request({
+			url: 'payment/recharge',
+			data,
+			method: 'POST'
+		})	
+	},
 }

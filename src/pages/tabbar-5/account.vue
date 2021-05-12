@@ -6,11 +6,11 @@
 					<view class="tui-flex tui-align-between">
 						<view class="tui-left tui-col-7">
 							<text class="allowed-money">可用余额</text>
-							<text class="withdraw-action">申请提现</text>
+							<text class="withdraw-action"@click="apply">申请提现 > </text>
 						</view>
-						<view class="tui-right tui-col-5">
+						<!-- <view class="tui-right tui-col-5">
 							<text class="pay-pass">支付密码管理</text>
-						</view>
+						</view> -->
 					</view>
 					
 					<view class="tui-flex tui-align-between mt20 hl60">
@@ -19,7 +19,7 @@
 							<text class="money-data">0.00</text>
 						</view>
 						<view class="tui-right tui-col-5">
-							<text class="chongzhi">充值</text>
+							<text class="chongzhi" @click="invest">充值</text>
 						</view>
 					</view>
 					<view class="tui-flex tui-align-between mt20">
@@ -35,7 +35,7 @@
 		</view>
 		<view class="app-body">
 			<view class="body-tab">
-				<tui-tabs unlined="true" sliderWidth="400" sliderBgColor="#FF6C00" selectedColor="#FF6C00" color="##000000" :tabs="tabs" itemWidth="50%" :currentTab="currentTab" @change="change"></tui-tabs>
+				<tui-tabs unlined="true" height="100" sliderWidth="260" sliderBgColor="#FF6C00" selectedColor="#FF6C00" color="##000000" :tabs="tabs" itemWidth="50%" :currentTab="currentTab" @change="change"></tui-tabs>
 			</view>
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scroll="scroll" class="scroll-Y" @scrolltolower="lower">
 				<tui-list-view color="#777" unlined="all">
@@ -51,7 +51,20 @@
 				
 			</view>
 		</view>
-		
+		<tui-modal :show="showModal" @cancel="hideModal" :custom="true">
+			<view class="tui-modal-custom row">
+				<text class="title1">申请提现</text>
+				<text class="title2">目前暂时仅支持以下方式申请提现:</text>
+				<text class="title3">点击小程序首页【客服】浮窗，提供以下信息给客服人员：</text>
+				<text class="title4">1.提现金额</text>
+				<text class="title5">(最低5元)</text>
+				<text class="title4">2.提现账号</text>
+				<text class="title5">(目前仅支持提现至支付宝账户)</text>
+				<text class="title4">3.提现账号对应姓名</text>
+				<text class="title6">(提现将在15个工作日内到账，请耐心等待)</text>
+				<tui-button width="100%" margin="0 auto" height="72rpx" :size="28" type="warning" shape="circle" @click="handleClick">确定</tui-button>
+			</view>
+		</tui-modal>
 	</view>
 </template>
 
@@ -74,7 +87,8 @@
 				}],
 				currentTab:0,
 				dataList:[],
-				page:1
+				page:1,
+				showModal:false
 			};
 		},
 		methods: {
@@ -84,15 +98,28 @@
 			  });
 			},
 			change(e) {
-				console.log(e);
 				this.currentTab = e.index;
 			},
 			lower(e) {
 				console.log(e);
 			},
+			apply(e) {
+				this.showModal = true;
+			},
+			hideModal() {
+				this.showModal = false;
+			},
+			handleClick() {
+				this.hideModal();
+			},
 			scroll: function(e) {
 				
 				this.old.scrollTop = e.detail.scrollTop
+			},
+			invest() {
+				uni.navigateTo({
+					url:'invest'
+				})
 			},
 			async getList() {
 				let getData = {
@@ -100,8 +127,14 @@
 					page:this.page
 				};
 				let res = await this.$api.accountRecord(getData)
+				console.log(res);
 				if(res.data && res.data.list.length > 0) {
-					this.dataList.push(res.data.list);
+					if(this.dataList.length == 0) {
+						this.dataList = res.data.list;
+					} else {
+						this.dataList.push(res.data.list);
+					}
+					
 				}
 			}
 		},
@@ -134,8 +167,8 @@
 	}
 	.center-part-wrap{
 		height: 285rpx;
-		width: 640rpx;
-		margin: 60rpx 50rpx 0rpx 50rpx;
+		width: 710rpx;
+		margin: 60rpx 0rpx 0rpx 20rpx;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
 		background-image: url("../../static/account.png");
@@ -181,23 +214,56 @@
 				color: #7B7B7B;
 				font-size: 24rpx;
 			}
+			.tui-right{
+				text-align: right;
+			}
 		}
 	}
 	.app-body{
-		margin-top: 150rpx;
+		position: relative;
+		top: 150rpx;
+		margin: 0rpx 20rpx;
 		/* margin-left: 20rpx; */
 		/* margin-right: 20rpx; */
-		padding: 0rpx 20rpx;
+		/* padding: 0rpx 20rpx; */
 		border-radius: 16rpx;
 		overflow: hidden;
+		height: 600rpx;
+		background-color: #FFFFFF;
 		.body-tab{
+			line-height: 22rpx;
 			margin-right:20rpx;
 		}
 		.tui-right{
 			text-align: right;
 		}
 	}
-	
+	.tui-modal-custom{
+		text{
+			font-size: 26rpx;;
+		}
+		.title1{
+			font-weight: bold;
+			font-size: 32rpx;
+			color: #000000;
+		}
+		.title2{
+			margin: 30rpx 0rpx;
+		}
+		.title5{
+			color: #7B7B7B;
+		}
+		.title4{
+			font-weight: bold;
+		}
+		.title6{
+			margin: 40rpx 0rpx;
+		}
+	}
+	.row{
+		display: flex;
+		flex-direction: column;
+	}
 	.mt20{
 		margin-top: 40rpx;
 	}

@@ -1,7 +1,7 @@
 <template>
     <view class="app-container">
         <view class="coupon-part-list" v-if="couponList.length > 0">
-             <view class="coupon-item " :class="[item.status != 3 ? 'use-item' : 'no-use-item']" v-for="(item,index) in couponList" :key="index">
+             <view class="coupon-item " :class="[item.status == 3 ? 'use-item' : 'no-use-item']" v-for="(item,index) in couponList" :key="index">
                 <view class="coupon-top">
                     <view class="money-num" v-if="item.coupon_type == 1">
                         <text>￥</text><text class="num">{{ item.money }}</text>

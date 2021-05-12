@@ -21,9 +21,15 @@
         {
             "path": "pages/tabbar-4/index",
             "style": {
-                "navigationBarTitleText": "uni-app"
+                "navigationBarTitleText": "福利中心"
             }
         },
+		{
+		    "path": "pages/tabbar-4/webview",
+		    "style": {
+		        "navigationBarTitleText": "福利中心"
+		    }
+		},
         {
             "path": "pages/tabbar-5/index",
             "style": {
@@ -69,6 +75,12 @@
 				}
 		    }
 		},
+		{
+		    "path": "pages/tabbar-5/invest",
+		    "style": {
+		        "navigationBarTitleText": "账户充值"
+		    }
+		},
         {
             "path": "pages/login/index",
             "style": {
@@ -111,6 +123,12 @@
                 "navigationBarTitleText": "寄件"
             }
         },
+		{
+		    "path": "pages/contraband/index",
+		    "style": {
+		        "navigationBarTitleText": "违禁品"
+		    }
+		},
         {
             "path": "pages/address/index",
             "style": {

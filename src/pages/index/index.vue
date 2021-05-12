@@ -1,32 +1,5 @@
 <template>
     <view class="app-container">
-        <!-- board -->
-        <view class="tui-notice-board">
-            <view class="tui-rolling-news">
-                <tui-icon
-                    name="news-fill"
-                    :size="28"
-                    color="#FF4848"
-                ></tui-icon>
-                <swiper
-                    vertical
-                    autoplay
-                    circular
-                    interval="3000"
-                    class="tui-swiper"
-                >
-                    <swiper-item
-                        v-for="(item, index) in tipsList"
-                        :key="index"
-                        class="tui-swiper-item"
-                    >
-                        <view class="tui-news-item" @tap="detail">{{
-                            item.text
-                        }}</view>
-                    </swiper-item>
-                </swiper>
-            </view>
-        </view>
         <!-- 轮播图 -->
         <view class="tui-banner-box">
             <swiper
@@ -62,14 +35,42 @@
                 </swiper-item> -->
             </swiper>
         </view>
+		<!-- board -->
+		<view class="tui-notice-board">
+		    <view class="tui-rolling-news">
+		        <tui-icon
+		            name="news-fill"
+		            :size="28"
+		            color="#FF4848"
+		        ></tui-icon>
+		        <swiper
+		            vertical
+		            autoplay
+		            circular
+		            interval="3000"
+		            class="tui-swiper"
+		        >
+		            <swiper-item
+		                v-for="(item, index) in tipsList"
+		                :key="index"
+		                class="tui-swiper-item"
+		            >
+		                <view class="tui-news-item" @tap="detail">{{
+		                    item.text
+		                }}</view>
+		            </swiper-item>
+		        </swiper>
+		    </view>
+		</view>
+		<view class="space"></view>
         <view class="banner-part">
             <view class="piece bg-1">
-                <view class="desc-box">
+                <view class="desc-box"  @click="navTo('/pages/send/index')">  
                     <view class="left left-1"></view>
                     <view class="right">
                         <view>上门取件</view>
-                        <view>2小时上门取件</view>
-                    </view>
+                        <view>2小时上门取件</view>   
+                    </view> 
                 </view>
             </view>
             <view class="piece bg-2">
@@ -102,10 +103,21 @@
         </view>
         <!-- write part -->
         <view class="write-address-part">
-            <text>海外地址不会填？邀请收件人填写</text>
-            <button @click="navTo">邀请填写</button>
+            <text>海外地址不会填？邀请收件人填写</text>  
+            <button @click="navTo('/pages/feedback/form')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
-
+		<view class="app-customer">
+			<button open-type="contact" class="app-customer_btn">
+				<view class="app-customer_data_flex">
+					<tui-icon name="kefu" size="28" color="#FFFFFF"></tui-icon>
+					
+					<text class="tui-grid-label">在线客服</text>
+					<!-- <tui-icon name="kefu" size="28" color="#FFFFFF"></tui-icon>
+					<text class="kefu_text">在线客服</text> -->
+				</view>
+				
+			</button>
+		</view>
         <!-- <tui-modal :show="true"  title="提示" content="确定退出登录吗？"></tui-modal> -->
     </view>
 </template>
@@ -113,6 +125,7 @@
 <script>
 import Api from "../../services/index";
 export default {
+	components: {},
     data() {
         return {
             bannerList: [],  // 轮播图
@@ -129,15 +142,18 @@ export default {
         }, 600);
     },
     methods: {
-        navTo() {
-            this.$href.navigateTo({ url: "/pages/feedback/form" });
-        },
+        navTo(url) {
+            this.$href.navigateTo({ url: url });      
+		},
     },
 };
 </script>
 
 <style lang="scss">
 .app-container {
+	.space{
+		height: 1rem;
+	}
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -179,6 +195,7 @@ export default {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+			
         }
     }
     .tui-banner-box {
@@ -296,11 +313,12 @@ export default {
                 .right {
                     :nth-child(1) {
                         color: #000000;
-                        font-size: 36rpx;
+                        font-size: 35rpx;
+						font-weight: bold;
                     }
                     :nth-child(2) {
                         color: #7b7b7b;
-                        font-size: 28rpx;
+                        font-size: 27rpx;
                     }
                 }
             }
@@ -360,5 +378,32 @@ export default {
 .title {
     font-size: 36rpx;
     color: #8f8f94;
+}
+.app-customer{
+	position: fixed;
+	right: 84rpx;
+	bottom: 164rpx;
+	.app-customer_btn::after{
+	 border: 0px;
+	}
+	.app-customer_btn{
+		border: 0px;
+		line-height: 57rpx;
+		background-color: rgba(255, 255, 255, 0);
+		.app-customer_data_flex{
+			display: flex;
+			width: 114rpx;
+			height: 114rpx;
+			background-color: #FF6C00;
+			flex-direction: column;
+			border-radius: 25rpx;
+			.tui-grid-label {
+				display: block;
+				text-align: center;
+				font-size: 22rpx;
+				color: #FFFFFF;
+			}
+		}
+	}
 }
 </style>

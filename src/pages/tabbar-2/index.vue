@@ -11,7 +11,9 @@
         {{ item.text }}
       </view>
     </view>
-
+    <view class="message-">
+      
+    </view>
     <!-- <scroll-view
       class="list-scroll-content"
       scroll-y
@@ -66,7 +68,6 @@
     <!-- </scroll-view> -->
   </view>
 </template> 
-
 <script>
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import empty from "@/components/empty";
