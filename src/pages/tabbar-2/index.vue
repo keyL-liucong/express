@@ -11,8 +11,11 @@
         {{ item.text }}
       </view>
     </view>
-    <view class="message-">
-      
+    <view class="message-box">
+        <view class="icon-box">
+        <icon name="news"></icon>
+        </view>
+        
     </view>
     <!-- <scroll-view
       class="list-scroll-content"
@@ -71,12 +74,14 @@
 <script>
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import empty from "@/components/empty";
+import icon from "@/components/thorui/tui-icon";
 import Api from "@/services/index";
 import Json from "@/Json";
 export default {
   components: {
     uniLoadMore,
     empty,
+    icon
   },
   data() {
     return {
