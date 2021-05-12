@@ -11,11 +11,14 @@
         {{ item.text }}
       </view>
     </view>
-    <view class="message-box">
-        <view class="icon-box">
-        <icon name="news"></icon>
+    <view v-if="messageboxShow" class="message-box">
+        <icon class="close-icon" name="shut" :size="20" unit="rpx" color="#000000" index="1" @click="messagePopClose"></icon>
+        <icon class="news-icon" name="news" :size="32" unit="rpx" color="#ffffff"></icon>
+        <view class="message-info">
+          <text class="message-title">重要提示</text>
+          <text class="message-text">支付完成前可更改提货自提/派送到门，单独寄送/
+合箱寄送，支付后不可更改</text>
         </view>
-        
     </view>
     <!-- <scroll-view
       class="list-scroll-content"
@@ -27,44 +30,7 @@
       <empty v-if="orderlist == 0"></empty>
 
       <!-- 订单列表 -->
-      <view v-for="(orderitem, orderindex) in orderlist" :key="item.order_sn" class="order-item">
-        
-        <view class="action-box b-t">
-          <button
-            class="action-btn"
-            v-if="item.omsOrder.status === 0"
-            @click="cancelOrder(item)"
-          >
-            取消订单
-          </button>
-          <button
-            class="action-btn recom"
-            v-if="item.omsOrder.status === 0"
-            @click="toPay(item.omsOrder.orderSn)"
-          >
-            立即支付
-          </button>
-          <button
-            class="action-btn recom"
-            v-if="item.omsOrder.status === 2"
-            @click="confirmReceipt(item)"
-          >
-            确认收货
-          </button>
-          <button
-            class="action-btn recom"
-            v-if="item.omsOrder.status === 2 || item.omsOrder.status === 3"
-            @click="
-              navTo(
-                '/pages/order/aftersale/aftersale?orderSn=' +
-                  item.omsOrder.orderSn
-              )
-            "
-          >
-            申请售后
-          </button>
-        </view>
-      </view>
+      <orderItem v-for="(orderitem, orderindex) in orderlist" :item="orderitem"></orderItem>
 
       <uni-load-more v-if="orderlist.length < orderTotal" :status="loadingType"></uni-load-more>
     </view>
@@ -74,17 +40,20 @@
 <script>
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import empty from "@/components/empty";
-import icon from "@/components/thorui/tui-icon";
+import orderItem from "@/components/order-item/order-item.vue";
+import icon from "@/components/tui-icon/tui-icon.vue";
 import Api from "@/services/index";
 import Json from "@/Json";
 export default {
   components: {
     uniLoadMore,
     empty,
-    icon
+    icon,
+    orderItem
   },
   data() {
     return {
+      messageboxShow: true,
       pageNum: 1,
       loadingType: "more",
       tabCurrentIndex: 0,
@@ -198,6 +167,9 @@ export default {
       this.tabCurrentStatus = item.status;
       this.loadData("tabChange");
       this.pageNum = 1;
+    },
+    messagePopClose(pro){
+      this.messageboxShow = false;
     },
     //删除订单
     deleteOrder(item, index) {
@@ -362,155 +334,49 @@ html, body, page{
     }
   }
 }
+.message-box{
+  display: flex;
+  position: relative;
+  width: 690rpx;
+  height: 128rpx;
+  margin: 20rpx auto 0;
+  background-color: rgba(255, 217, 188, .8);
+  align-items: center;
+  border-radius: 20rpx;
+  .news-icon{
+    margin-left: 14rpx;
+    background-color: #FF4848;
+    margin-top: -8px;
+    border-radius: 50%;
+  }
+  .close-icon{
+    position: absolute;
+    top: 20rpx;
+    right: 36rpx;
+
+  }
+  .message-info {
+    margin-left: 16rpx;
+    color: #000;
+    font-weight: 600;
+  }
+  .message-title {
+    display: block;
+    height: 40rpx;
+    font-size: 28rpx;
+    line-height: 40rpx;
+  }
+  .message-text {
+    display: block;
+    font-size: 24rpx;
+    line-height: 34rpx;
+  }
+}
 
 .order-list{
-  padding: 10rpx 15rpx;
+  padding: 20rpx 30rpx;
 }
 
-.order-item {
-  display: flex;
-  flex-direction: column;
-  padding-left: 30upx;
-  background: #fff;
-  margin-top: 16upx;
-  .i-top {
-    display: flex;
-    align-items: center;
-    height: 80upx;
-    padding-right: 30upx;
-    font-size: 28rpx;
-    color: #303133;
-    position: relative;
-    .time {
-      flex: 1;
-    }
-    .state {
-      color: #fa436a;
-    }
-    .del-btn {
-      padding: 10upx 0 10upx 36upx;
-      font-size: 32rpx;
-      color: $font-color-light;
-      position: relative;
-      &:after {
-        content: "";
-        width: 0;
-        height: 30upx;
-        border-left: 1px solid $border-color-dark;
-        position: absolute;
-        left: 20upx;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-    }
-  }
-  /* 多条商品 */
-  .goods-box {
-    height: 160upx;
-    padding: 20upx 0;
-    white-space: nowrap;
-    .goods-item {
-      width: 120upx;
-      height: 120upx;
-      display: inline-block;
-      margin-right: 24upx;
-    }
-    .goods-img {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-  }
-  /* 单条商品 */
-  .goods-box-single {
-    display: flex;
-    padding: 20upx 0;
-    .goods-img {
-      display: block;
-      width: 120upx;
-      height: 120upx;
-    }
-    .right {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 0 30upx 0 24upx;
-      overflow: hidden;
-      .title {
-        font-size: 30rpx;
-        color: #303133;
-        line-height: 1;
-      }
-      .attr-box {
-        font-size: 26rpx;
-        color: $font-color-light;
-        padding: 10upx 12upx;
-      }
-      .price {
-        font-size: 30rpx;
-        color: #303133;
-        &:before {
-          content: "￥";
-          font-size: $font-sm;
-          margin: 0 2upx 0 8upx;
-        }
-      }
-    }
-  }
-
-  .price-box {
-    display: flex;
-    justify-content: flex-end;
-    align-items: baseline;
-    padding: 20upx 30upx;
-    font-size: 26rpx;
-    color: $font-color-light;
-    .num {
-      margin: 0 8upx;
-      color: #303133;
-    }
-    .price {
-      font-size: 32rpx;
-      color: #303133;
-      &:before {
-        content: "￥";
-        font-size: $font-sm;
-        margin: 0 2upx 0 8upx;
-      }
-    }
-  }
-  .action-box {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 100upx;
-    position: relative;
-    padding-right: 30upx;
-  }
-  .action-btn {
-    width: 160upx;
-    height: 60upx;
-    margin: 0;
-    margin-left: 24upx;
-    padding: 0;
-    text-align: center;
-    line-height: 60upx;
-    font-size: 26rpx;
-    color: #303133;
-    background: #fff;
-    border-radius: 100px;
-    &:after {
-      border-radius: 100px;
-    }
-    &.recom {
-      background: #fff9f9;
-      color: #fa436a;
-      &:after {
-        border-color: #f7bcc8;
-      }
-    }
-  }
-}
 
 /* load-more */
 .uni-load-more {
