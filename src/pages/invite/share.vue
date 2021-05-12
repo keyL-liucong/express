@@ -1,8 +1,19 @@
 <template>
     <view class="app-container">
 		<view class="app-body">
-			<view class="body-step_1">
-				
+			<view class="body-step_1 tui-flex">
+				<view class="body-step_1_data tui-center tui-col-3">
+					<text>邀请人数</text>
+					<text>0人</text>
+				</view>
+				<view class="body-step_1_data tui-center tui-col-3">
+					<text>累计收益</text>
+					<text>0</text>
+				</view>
+				<view class="body-step_1_data tui-center tui-col-3">
+					<text>累计优惠券</text>
+					<text>0</text>
+				</view>
 			</view>
 			<view class="body-step_2"></view>
 			<view class="body-step_3"></view>
