@@ -99,6 +99,12 @@
                 "navigationBarTitleText": "国际快递"
             }
         },
+		{
+		    "path": "pages/login/email",
+		    "style": {
+		        "navigationBarTitleText": "国际快递"
+		    }
+		},
         {
             "path": "pages/coupon/index",
             "style": {
