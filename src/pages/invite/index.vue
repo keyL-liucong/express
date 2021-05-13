@@ -7,7 +7,7 @@
 						<view class="title">剩余返现金额</view>
 						<view class="money_block">
 							<text class="money-tag">¥</text>
-							<text class="money-data">0.00</text>
+							<text class="money-data">{{ inviteData.withdrawable }}</text>
 						</view>
 						<view class="apply" @click="apply">申请提现</view>
 					</view>
@@ -15,7 +15,7 @@
 						<view class="title">累计返现收益</view>
 						<view class="money_block">
 							<text class="money-tag">¥</text>
-							<text class="money-data">0.00</text>
+							<text class="money-data">{{ inviteData.withdrawn }}</text>
 						</view>
 						<view class="apply_hidden">xxx</view>
 					</view>
@@ -24,15 +24,15 @@
 			<view class="middle-part">
 				<view class="middle-part-wrap tui-flex">
 					<view class="middle-part-wrap_data tui-center tui-flex-1">
-						<view class="middle-part-number">0</view>
+						<view class="middle-part-number">{{ inviteData.group_total }}</view>
 						<view class="middle-part-text">已推荐好友</view>
 					</view>
 					<view class="middle-part-wrap_data tui-center tui-flex-1">
-						<view class="middle-part-number">0</view>
+						<view class="middle-part-number">{{ inviteData.order_total }}</view>
 						<view class="middle-part-text">累计返利订单</view>
 					</view>
 					<view class="middle-part-wrap_data tui-center tui-flex-1">
-						<view class="middle-part-number">0</view>
+						<view class="middle-part-number">{{ inviteData.coupon_total }}</view>
 						<view class="middle-part-text">累计返劵数</view>
 					</view>
 				</view>
@@ -81,6 +81,7 @@
 	  data() {
 	    return {
 	      dataList:[],
+		  inviteData:[],
 		  showModal:false,
 		  currentTab:0,
 		  freshing:false,
@@ -153,10 +154,20 @@
 			}
 			this.freshing = false;
 			this.page++;
+		},
+		async init() {
+			let _this = this;
+			await this.$api.getSellerInfo().then(function(res){
+				if(res.data) {
+					_this.inviteData = res.data;
+				}
+			})
 		}
 	  },
 	  async created() {
+		  this.init();
 		  this.handleLoad();
+		  
 	  },
 	  mounted() {},
 	};

@@ -335,4 +335,12 @@ export default {
 			method: 'POST'
 		})	
 	},
+	// 获取推荐信息
+	getSellerInfo(data) {
+		return request({
+			url: 'seller/getInfo',
+			data,
+			method: 'POST'
+		})	
+	},
 }
