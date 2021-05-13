@@ -264,6 +264,23 @@ export default {
             method: 'POST'
         })
     },
+	
+	// 发送邮箱验证码
+	sendEmail(data) {
+	    return request({
+	        url: 'auth/sendEmail',
+	        data,
+	        method: 'POST'
+	    })
+	},
+	// 邮箱登录
+	loginEmail(data) {
+	    return request({
+	        url: 'auth/loginEmail',
+	        data,
+	        method: 'POST'
+	    })
+	},
     // 资金明细
     accountRecord(data) {
         return request({

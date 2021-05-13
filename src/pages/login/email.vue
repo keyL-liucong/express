@@ -104,11 +104,11 @@ export default {
 				title:"登录中"
 			})
 			let postData = {
-				mobile:this.loginData.mobile,
+				email:this.loginData.mobile,
 				code:this.loginData.code,
 				openid:openId,
 				}
-			this.$api.loginSms(postData).then(function(res){
+			this.$api.loginEmail(postData).then(function(res){
 				console.log(res);
 				uni.hideLoading();
 				if(res.status == 1) {
@@ -151,7 +151,7 @@ export default {
 			this.dynacodeData.isSend = true;
 			let openId = this.$cache.get("openId");
 			this.codeIsSend = true;
-			this.$api.sendSms({mobile:this.loginData.mobile,openid:openId}).then(function (res) {
+			this.$api.sendEmail({email:this.loginData.mobile,openid:openId}).then(function (res) {
 				if(res.status == 1) {
 					_that.$toast(res.info);
 					_that.dynacodeData.timer = setInterval(() => {
