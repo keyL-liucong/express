@@ -19,7 +19,7 @@
       </view>
     </view>
     <view class="send-info-box">
-      <tui-list-cell :hover="false">
+      <!-- <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">物品信息</view>
           <input
@@ -30,7 +30,7 @@
             disabled="true"
           />
         </view>
-      </tui-list-cell>
+      </tui-list-cell> -->
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">预估重量</view>

@@ -3,19 +3,33 @@
     <view class="send-part-box">
       <view class="row line">
         <view class="tag tag-1">寄</view>
-        <view class="send-info">
+        <view class="send-info" v-if="!sendAddr">
           <view class="row"> 寄件人信息 </view>
           <view class="row gray"> 点击填写寄件地址 </view>
         </view>
-        <view class="address"> 地址簿 </view>
+        <view class="send-info" v-else>
+          <view class="row"> 
+            <text class="name">{{ sendAddr.realname }}</text>
+            <text class="mobile">{{ sendAddr.mobile }}</text>
+          </view>
+          <view class="row gray"> {{sendAddr.address}} </view>
+        </view>
+        <view class="address" @click="navTo('/pages/address/index?currentTab=1')"> 地址簿 </view>
       </view>
       <view class="row">
         <view class="tag tag-2">收</view>
-        <view class="send-info">
-          <view class="row"> 寄件人信息 </view>
-          <view class="row gray"> 点击填写寄件地址 </view>
+        <view class="send-info" v-if="!receAddr" @click="navTo('')">
+          <view class="row"> 收件人信息 </view>
+          <view class="row gray"> 点击填写收件地址 </view>
         </view>
-        <view class="address"> 地址簿 </view>
+        <view class="send-info" v-else>
+          <view class="row"> 
+            <text>{{ receAddr.realname }}</text>
+            <text>{{ receAddr.mobile }}</text>
+          </view>
+          <view class="row gray"> {{receAddr.address}} </view>
+        </view>
+        <view class="address" @click="navTo('/pages/address/index?currentTab=0')"> 地址簿 </view>
       </view>
     </view>
     <view class="send-info-box">
@@ -116,25 +130,20 @@
         </view>
       </view>
     </view>
-    <label
-      class="thorui-radio"
-      style="margin-right: 20rpx"
-    >
+    <label class="thorui-radio" style="margin-right: 20rpx">
       <radio color="#5677fc" :value="1"></radio>
       <text class="thorui-left__sm">我已同意并阅读《物流服务协议》</text>
     </label>
     <view class="send-buy-box">
-        <view class="left">
-            <view class="top">
-                预估运费<text>￥ 0 </text>起
-            </view>
-            <view class="bottom">
-                最终运费以到仓称重确认为准 |<text>运费明细</text>
-            </view>
+      <view class="left">
+        <view class="top"> 预估运费<text>￥ 0 </text>起 </view>
+        <view class="bottom">
+          最终运费以到仓称重确认为准 |<text>运费明细</text>
         </view>
-        <view class="right">
-            <button>立即下单</button>
-        </view>
+      </view>
+      <view class="right">
+        <button>立即下单</button>
+      </view>
     </view>
   </view>
 </template>
@@ -149,9 +158,11 @@ export default {
     return {
       couponList: [],
       result: "",
+      sendAddr:null,
+      receAddr:null
     };
   },
-  onLoad() {
+  async onLoad() {
     let date = new Date();
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
@@ -159,9 +170,21 @@ export default {
     var hour = date.getHours();
     var minute = date.getMinutes();
     this.result = `${year}-${month}-${day} ${hour}:${minute}`;
+    this.sendAddr = await this.getDefaultAddr(1);
+    this.receAddr = await this.getDefaultAddr(2);
     //   this.show();
   },
   methods: {
+    navTo(url){
+      this.$href.navigateTo({url});
+    },
+    // 获取默认地址
+    async getDefaultAddr(type) {
+      let res = await this.$api.getDefaultAddr({
+        type, // 1默认寄件地址 2默认收件地址
+      });
+      return res.data[0];
+    },
     radioChange() {},
     dateShow: function (e) {
       this.$refs.dateTime.show();
@@ -212,6 +235,13 @@ export default {
         > .row {
           height: 50rpx;
           line-height: 50rpx;
+          > text{
+            margin-right: 20rpx;
+          }
+          .mobile{
+            font-size: 14px;
+            color: #ccc;
+          }
         }
         .gray {
           color: #ccc;
@@ -261,45 +291,43 @@ export default {
       height: 66rpx;
     }
   }
-  > .thorui-radio{
-      
+  > .thorui-radio {
   }
-  .send-buy-box{
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 10rpx 30rpx 50rpx 30rpx;
-      background: #fff;
-      font-size: 24rpx;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .left{
-          .top{
-              > text{
-                  color: #FF9800;
-                  font-size: 32rpx;
-                  margin-right: 10rpx;
-              }
-          }
-          .bottom{
-              > text{
-                  color: #3f81ff;
-                  margin-left: 10rpx;
-              }
-          }
-      }
-        .right{
-            button{
-                background: #3f81ff;
-                color: #fff;
-                height: 60rpx;
-                border-radius: 30rpx;
-                line-height: 60rpx;
-            }
-            
+  .send-buy-box {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10rpx 30rpx 50rpx 30rpx;
+    background: #fff;
+    font-size: 24rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left {
+      .top {
+        > text {
+          color: #ff9800;
+          font-size: 32rpx;
+          margin-right: 10rpx;
         }
+      }
+      .bottom {
+        > text {
+          color: #3f81ff;
+          margin-left: 10rpx;
+        }
+      }
+    }
+    .right {
+      button {
+        background: #3f81ff;
+        color: #fff;
+        height: 60rpx;
+        border-radius: 30rpx;
+        line-height: 60rpx;
+      }
+    }
   }
 }
 </style>
