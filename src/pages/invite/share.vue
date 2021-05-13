@@ -120,7 +120,7 @@
 		</view>
 		<uni-popup ref="showimage" :type="type" :mask-click="true">
 			<view class="uni-image">
-				<image class="pop-image" src="../../static/center-1.png" mode="scaleToFill" />
+				<image class="pop-image" src="https://static.51mitui.com/default/invite.png" mode="scaleToFill" />
 				<view class="uni-image-close tui-center" @click="cancel()">
 					<tui-button type="warning" width="240rpx" height="80rpx" :size="24" @click="saveShare">保存图片</tui-button>
 				</view>
@@ -358,6 +358,10 @@
 	}
 	.uni-image {
 		position: relative;
+	}
+	.pop-image{
+		width: 600rpx;
+		height: 1000rpx;
 	}
 	.uni-image-close {
 		margin-top: 20px;

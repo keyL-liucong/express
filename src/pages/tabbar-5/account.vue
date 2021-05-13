@@ -34,21 +34,22 @@
 			</view>
 		</view>
 		<view class="app-body">
-			<view class="body-tab">
-				<tui-tabs unlined="true" height="100" sliderWidth="260" sliderBgColor="#FF6C00" selectedColor="#FF6C00" color="##000000" :tabs="tabs" itemWidth="50%" :currentTab="currentTab" @change="change"></tui-tabs>
-			</view>
-			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scroll="scroll" class="scroll-Y" @scrolltolower="lower">
-				<tui-list-view color="#777" unlined="all">
-				  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="30rpx" color="#000000" v-for="(item, index) in dataList" :key="index">
-				    <view class="tui-flex tui-align-between">
-				    	<view class="tui-left tui-col-4">{{ item.money_text }}</view>
-				    	<view class="tui-right tui-col-4">+{{ item.money }}</view>
-				    </view>
-				  </tui-list-cell>
-				</tui-list-view>
-			</scroll-view>
-			<view class="item-list-wrap">
-				
+			<view class="middle-list">
+				<view class="middle-list-tab">
+					<tui-tabs :tabs="tabs" sliderWidth="350" padding="-10" sliderBgColor="#FF6C00" selectedColor="#FF6C00" :currentTab="currentTab" itemWidth="50%" @change="changeTab"></tui-tabs>
+				</view>
+				<view class="middle-list-data">
+					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad">
+						<tui-list-view color="#777" unlined="all">
+						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="30rpx" color="#000000" v-for="(item, index) in dataList" :key="index">
+						    <view class="tui-flex tui-align-between">
+						    	<view class="tui-left tui-col-4">{{ item.money_text }}</view>
+						    	<view class="tui-right tui-col-4">+{{ item.money }}</view>
+						    </view>
+						  </tui-list-cell>
+						</tui-list-view>
+					</scroll-view>
+				</view>
 			</view>
 		</view>
 		<tui-modal :show="showModal" @cancel="hideModal" :custom="true">
@@ -87,22 +88,25 @@
 				}],
 				currentTab:0,
 				dataList:[],
+				freshing:false,
+				isEnd:false,
 				page:1,
 				showModal:false
 			};
 		},
 		methods: {
-			navTo(e) {
-			  uni.navigateTo({
-				  url: '/pages/tabbar-5/warehouse_detail?id='+e.id+"&name="+e.name
-			  });
-			},
-			change(e) {
+			changeTab(e) {
+				if(e.index == this.currentTab) {
+					return;
+				}
+				
 				this.currentTab = e.index;
+				this.dataList = [];
+				this.page = 1;
+				this.isEnd = false;
+				this.handleLoad();
 			},
-			lower(e) {
-				console.log(e);
-			},
+			
 			apply(e) {
 				this.showModal = true;
 			},
@@ -112,34 +116,47 @@
 			handleClick() {
 				this.hideModal();
 			},
-			scroll: function(e) {
-				
-				this.old.scrollTop = e.detail.scrollTop
-			},
 			invest() {
 				uni.navigateTo({
 					url:'invest'
 				})
 			},
-			async getList() {
+			async handleLoad() {
+				if (this.isEnd) {
+					return;
+				}
+				if(this.freshing) {
+					return;
+				}
 				let getData = {
 					type:this.currentTab + 1,
 					page:this.page
 				};
+				this.freshing = true;
+				
+				uni.showLoading({
+					title:"加载中"
+				})
 				let res = await this.$api.accountRecord(getData)
-				console.log(res);
+					
+				if(res.data.list.length == 0) {
+					this.freshing = false;
+					this.isEnd = true;
+				}
 				if(res.data && res.data.list.length > 0) {
 					if(this.dataList.length == 0) {
 						this.dataList = res.data.list;
 					} else {
 						this.dataList.push(res.data.list);
 					}
-					
+					uni.hideLoading();
 				}
+				this.freshing = false;
+				this.page++;
 			}
 		},
 		async created() {
-			this.getList();
+			this.handleLoad();
 		},
 		onLoad() {
 			uni.setNavigationBarTitle({
@@ -222,17 +239,12 @@
 	.app-body{
 		position: relative;
 		top: 150rpx;
-		margin: 0rpx 20rpx;
-		/* margin-left: 20rpx; */
-		/* margin-right: 20rpx; */
-		/* padding: 0rpx 20rpx; */
-		border-radius: 16rpx;
-		overflow: hidden;
-		height: 600rpx;
-		background-color: #FFFFFF;
-		.body-tab{
-			line-height: 22rpx;
-			margin-right:20rpx;
+		padding: 20rpx;
+		.middle-list{
+			background-color: #FFFFFF;
+			border-radius: 16rpx;
+			width: 710rpx;
+			overflow: hidden;
 		}
 		.tui-right{
 			text-align: right;

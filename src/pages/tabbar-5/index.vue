@@ -33,7 +33,7 @@
           <view class="num">{{ income  }}</view>
           <view class="desc font-sizes">累计收益</view>
         </view>
-        <navigator class="right-box box"  @click="navTo('/pages/coupon/index')">
+        <navigator class="right-box box" @click="navTo('/pages/coupon/index')">
           <view class="num">{{ couponTotal }}</view>
           <view class="desc font-sizes">优惠劵</view>
         </navigator>
@@ -125,6 +125,7 @@ export default {
         this.$href.navigateTo({ url: "/pages/login/index" });
     },
     navTo(url) {
+		console.log(url);
         this.$href.navigateTo({ url: url });
     },
     // 退出登录
