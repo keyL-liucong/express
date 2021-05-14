@@ -5,7 +5,7 @@
             <div class="row">
                 <input
                     type="text"
-                    placeholder="请输入手机号"
+                    placeholder="请输入邮箱"
                     placeholder-class="mobile"
 					v-model="loginData.mobile"
                 />
@@ -19,26 +19,10 @@
 					v-model="loginData.code"
                 />
                 <button class="get-code" :class="dynacodeData.isSend ? 'disabled-btn' : ''" @tap="sendSms">{{ dynacodeData.codeText}}</button>
-                <div class="desc" @click="emailLogin">国外手机号接收不到验证码？</div>
+                <div class="desc">新用户登陆后将成为会员同意《快递》协议</div>
             </div>
             <div class="row">
                 <button class="login-btn" @click="handleLogin">登录</button>
-            </div>
-            <div class="row auth-row">
-                <tui-button
-                    class="login-btn"
-                    @click="showLo"
-                    :disabled="loginBtn"
-                    open-type="getPhoneNumber"
-                    @getphonenumber="getPhoneNumber"
-                    size="30"
-                    type="green"
-                    background="#00c25f!important;"
-                    :loading="loginBtn"
-                >
-                    微信用户一键登录
-                </tui-button>
-                <!-- <button class="auth-login-btn">微信授权登录</button> -->
             </div>
         </div>
     </div>
@@ -66,51 +50,7 @@ export default {
         };
     },
     methods: {
-		emailLogin() {
-			uni.navigateTo({
-				url: 'email',
-				
-			});
-		},
-        async getPhoneNumber(e) {
-            wx.hideLoading();
-            let userInfo = this.$cache.get("userInfo");
-            // 授权未允许
-            if (!e.encryptedData) {
-                this.loginBtn = false;
-                return false;
-            }
-            
-            let openid = this.$cache.get("openId");
-            let postData = {
-                avatarUrl: userInfo.avatarUrl,
-                gender: userInfo.gender,
-                encryptedData: e.encryptedData,
-                iv: e.iv,
-                nickName: userInfo.nickName,
-                openid,
-            };
-            let res = await this.login(postData);
-            if (res.data.token) {
-                this.$cache.put("token", res.data.token);
-                uni.showToast({
-                    title: "登录成功",
-                    icon: "success",
-                    duration: 100,
-                });
-                setTimeout(() => {
-                    uni.reLaunch({
-                        url: "/pages/index/index",
-                    });
-                }, 100);
-            } else {
-                uni.showToast({
-                    title: res.message || res.status,
-                    icon: "none",
-                    duration: 500,
-                });
-            }
-        },
+       
         // 登录
         login(postData) {
             return new Promise((resolve, reject) => {
@@ -140,12 +80,12 @@ export default {
 				return;
 			}
             if(this.loginData.mobile == "") {
-				this.$toast("请输入手机号码");
+				this.$toast("请输入请输入邮箱");
 				return;
 			}
-			
-			if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginData.mobile)) {
-			  this.$toast("请输入正确的手机号码");
+			let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+			if (!reg.test(this.loginData.mobile)) {
+			  this.$toast("请输入请输入邮箱地址");
 			  return;
 			}
 			if(!this.codeIsSend) {
@@ -164,11 +104,11 @@ export default {
 				title:"登录中"
 			})
 			let postData = {
-				mobile:this.loginData.mobile,
+				email:this.loginData.mobile,
 				code:this.loginData.code,
 				openid:openId,
 				}
-			this.$api.loginSms(postData).then(function(res){
+			this.$api.loginEmail(postData).then(function(res){
 				console.log(res);
 				uni.hideLoading();
 				if(res.status == 1) {
@@ -199,18 +139,19 @@ export default {
 			}
 			
 			if(this.loginData.mobile == "") {
-				this.$toast("请输入手机号码");
+				this.$toast("请输入请输入邮箱");
 				return;
 			}
-			if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginData.mobile)) {
-			  this.$toast("请输入正确的手机号码");
+			let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+			if (!reg.test(this.loginData.mobile)) {
+			  this.$toast("请输入请输入邮箱");
 			  return;
 			}
 			
 			this.dynacodeData.isSend = true;
 			let openId = this.$cache.get("openId");
 			this.codeIsSend = true;
-			this.$api.sendSms({mobile:this.loginData.mobile,openid:openId}).then(function (res) {
+			this.$api.sendEmail({email:this.loginData.mobile,openid:openId}).then(function (res) {
 				if(res.status == 1) {
 					_that.$toast(res.info);
 					_that.dynacodeData.timer = setInterval(() => {

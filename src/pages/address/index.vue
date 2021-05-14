@@ -54,6 +54,9 @@ export default {
       type:1   // 地址类型 1-寄件，2-收件 
     };
   },
+  onLoad(option){
+    this.currentTab = option.currentTab;
+  },
   methods: {
     navTo(url) {
         this.$href.navigateTo({ url: url });
@@ -92,6 +95,7 @@ export default {
   },
   onShow() {
     this.initDate();
+    console.log('omsjow');
   },
   mounted() {
      

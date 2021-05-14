@@ -19,20 +19,7 @@
                         mode="scaleToFill"
                     />
                 </swiper-item>
-                <!-- <swiper-item>
-                    <image
-                        :src="'https://zhizuxia-sit.obs.cn-north-1.myhuaweicloud.com/tgmini-img/share-2.png'"
-                        class="tui-slide-image"
-                        mode="scaleToFill"
-                    />
-                </swiper-item>
-                <swiper-item>
-                    <image
-                        :src="'../../static/tab-1-selected.png'"
-                        class="tui-slide-image"
-                        mode="scaleToFill"
-                    />
-                </swiper-item> -->
+              
             </swiper>
         </view>
 		<!-- board -->
@@ -92,7 +79,7 @@
                 </view>
             </view>
             <view class="piece bg-4">
-                <view class="desc-box">
+                <view class="desc-box" @click="navTo('/pages/freight/index')">
                     <view class="left left-4"></view>
                     <view class="right">
                         <view>运费与实效</view>
@@ -104,19 +91,84 @@
         <!-- write part -->
         <view class="write-address-part">
             <text>海外地址不会填？邀请收件人填写</text>  
-            <button @click="navTo('/pages/feedback/form')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
+            <button @click="navTo('/pages/invite/address')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
+		<view class="app-order">
+			<view class="app-order-wrap">
+				<view class="app-order-alert">
+					<view class="tui-flex">
+						<view class="tui-left tui-col-12">
+							<tui-icon name="news-fill" size="28" color="#FF4848"></tui-icon>
+							<text class="alert-text">这些包裹没有主人，快来认领</text>
+						</view>
+					</view>
+				</view>
+				<view class="app-order-search">
+					<view class="tui-flex tui-align-between">
+						<view class="tui-left tui-col-8 ">
+							<input placeholder="输入快递单号" class="search-input" />
+						</view>
+						<view class="tui-right">
+							<tui-button type="black" plain shape="circle" width="160rpx" height="60rpx" :size="28" @click="search">搜索</tui-button>
+						</view>
+					</view>
+				</view>
+				<view class="app-order-list">
+					
+					<tui-list-view color="#777" unlined="all">
+					  <tui-list-cell :arrow="false" unlined="true" :hover="false" padding="20rpx" color="#000000">
+						   <view class="tui-flex app-order-list_tab">
+							<view class="tui-left tui-col-4 title">快递单号</view>
+							<view class="tui-center tui-col-4 title">仓库签收时间</view>
+							<view class="tui-right tui-col-4 title">包裹状态</view>
+						   </view>
+					  </tui-list-cell>
+					</tui-list-view>
+					
+					<view class="app-order-list_data">
+						<tui-list-view color="#777" unlined="all">
+						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="20rpx" color="#000000">
+						    <view class="tui-flex">
+						    	<view class="tui-left tui-col-4 title">20201213</view>
+								<view class="tui-center tui-col-4 title">2021231</view>
+						    	<view class="tui-right tui-col-4 title">
+									<text class="btn-get">认领</text>
+								</view>
+						    </view>
+							
+						  </tui-list-cell>
+						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="20rpx" color="#000000">
+						    <view class="tui-flex">
+						    	<view class="tui-left tui-col-4 title">20201213</view>
+						  		<view class="tui-center tui-col-4 title">2021231</view>
+						    	<view class="tui-right tui-col-4 title">
+									<text class="btn-get-end">已经认领</text>
+								</view>
+						    </view>				
+						  </tui-list-cell>
+						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="20rpx" color="#000000">
+						    <view class="tui-flex">
+						    	<view class="tui-left tui-col-4 title">20201213</view>
+						  		<view class="tui-center tui-col-4 title">2021-03-12</view>
+						    	<view class="tui-right tui-col-4 title">
+									<text class="btn-get-wait">需要客服处理</text>
+						  		</view>
+						    </view>				
+						  </tui-list-cell>
+						</tui-list-view>
+					</view>
+				</view>
+			</view>
+			
+		</view>
 		<view class="app-customer">
 			<button open-type="contact" class="app-customer_btn">
 				<view class="app-customer_data_flex">
 					<tui-icon name="kefu" size="28" color="#FFFFFF" style="margin-top:9rpx;"></tui-icon>
 					<text class="tui-grid-label">在线客服</text>
-				
 				</view>
-				
 			</button>
 		</view>
-        <!-- <tui-modal :show="true"  title="提示" content="确定退出登录吗？"></tui-modal> -->
     </view>
 </template>
 
@@ -144,6 +196,13 @@ export default {
             this.$href.navigateTo({ url: url });      
 		},
     },
+	onShareAppMessage(res) {
+		let token = this.$cache.get('token');
+		return {
+			title:"龙马邀请你填写收件地址",
+			path:"pages/invite/address?token="+token
+		}
+	}
 };
 </script>
 
@@ -152,12 +211,14 @@ export default {
 	.space{
 		height: 1rem;
 	}
+	// height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20rpx 30rpx 0;
+    padding: 20rpx 30rpx;
     background: #f3f3f3;
+	
     .tui-notice-board {
         width: 100%;
         padding-right: 30rpx;
@@ -167,8 +228,11 @@ export default {
         background: rgba(255,217,188,0.5);
         display: flex;
         align-items: center;
+		border-radius: 16rpx;
+		overflow: hidden;
         .tui-rolling-news {
             width: 100%;
+		
             padding: 12rpx 30rpx;
             box-sizing: border-box;
             display: flex;
@@ -209,7 +273,7 @@ export default {
         .tui-banner-swiper {
             width: 100%;
             height: 240rpx;
-            border-radius: 12rpx;
+            border-radius: 16rpx;
             overflow: hidden;
             transform: translateY(0);
         }
@@ -348,6 +412,8 @@ export default {
         padding: 0 30rpx;
         font-size: 28rpx;
         box-sizing: border-box;
+		border-radius: 16rpx;
+		overflow: hidden;
         margin-bottom: 20rpx;
         > text {
             font-weight: bold;
@@ -360,6 +426,82 @@ export default {
             background-image: linear-gradient(to right, #ff9900, #ff7100);
         }
     }
+	
+	.app-order{
+		width: 100%;
+		border-radius: 16rpx;
+		overflow: hidden;
+		background-color: #FFFFFF;
+		.app-order-wrap{
+			padding: 20rpx;
+			border-radius: 16rpx;
+			.app-order-alert{
+				.tui-left{
+					display: inline-flex;
+					align-items: center;
+					text{
+						margin-left: 10rpx;
+					}
+				}
+				.alert-text{
+					font-size: 28rpx;
+				}
+			}
+			.app-order-search{
+				margin: 20rpx 0rpx;
+				.search-input{
+					border-radius: 50rpx;
+					width: 444rpx;
+					background-color: #F3F3F3;
+					height: 60rpx;
+					padding: 0rpx 20rpx;
+					font-size: 26rpx;
+				}
+				.search-btn{
+					border: 2rpx solid #000000;
+					color: #000000;
+				}
+			}
+			.app-order-list{
+				margin-top: 20rpx;
+				.title{
+					font-size: 28rpx;
+					color: #000000;
+				}
+				.app-order-list_data{
+					.btn-get{
+						padding: 10rpx 40rpx;
+						color: #fff;
+						height: 60rpx;
+						line-height: 60rpx;
+						border-radius: 30rpx;
+						font-size: 24rpx;
+						background-image: linear-gradient(to right, #ff9900, #ff7100);
+					}
+					
+					.btn-get-end{
+						padding: 10rpx 20rpx;
+						color: #fff;
+						height: 60rpx;
+						line-height: 60rpx;
+						border-radius: 30rpx;
+						font-size: 24rpx;
+						background-color: #ACACAC;
+					}
+					.btn-get-wait{
+						padding: 10rpx 20rpx;
+						color: #fff;
+						height: 60rpx;
+						line-height: 60rpx;
+						border-radius: 30rpx;
+						font-size: 24rpx;
+						background-color: #FF0000;
+					}
+				}
+			}
+		}
+		
+	}
 }
 
 .logo {
@@ -377,6 +519,10 @@ export default {
     font-size: 36rpx;
     color: #8f8f94;
 }
+.tui-right{
+	text-align: right;
+}
+
 .app-customer{
 	position: fixed;
 	right: 13rpx;
@@ -404,5 +550,7 @@ export default {
 			}
 		}
 	}
+	
+	
 }
 </style>
