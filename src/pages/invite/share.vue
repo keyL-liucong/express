@@ -4,7 +4,7 @@
 			<view class="body-step_1 tui-flex">
 				<view class="body-step_1_data tui-center tui-col-4">
 					<text class="title">邀请人数</text>
-					<text class="num">0人</text>
+					<text class="num">{{ inviteData.group_total }}人</text>
 				</view>
 				<view class="body-step_1_data tui-center tui-col-4">
 					<text class="title">累计收益</text>
@@ -12,7 +12,7 @@
 				</view>
 				<view class="body-step_1_data tui-center tui-col-4">
 					<text class="title">累计优惠券</text>
-					<text class="num">0</text>
+					<text class="num">{{ inviteData.coupon_total }}</text>
 				</view>
 			</view>
 			<view class="body-step_2 tui-flex">
@@ -33,7 +33,7 @@
 				</view>
 				<view class="body-step_1_data tui-center tui-col-4">
 					<view class="share-wx">
-						<text class="share-wx_code">{{ inviteData.member_no }}</text>
+						<text class="share-wx_code">{{ inviteData.code }}</text>
 					</view>
 					<text class="share-text" @click="copyCode">邀请码</text>
 				</view>
@@ -123,13 +123,12 @@
 			
 			<view class="uni-image">
 				<canvas @click.stop="" class="canvas-element" canvas-id="my-canvas"></canvas>
-				<!-- <image class="pop-image" src="https://static.51mitui.com/default/invite.png" mode="scaleToFill" /> -->
 				<view class="uni-image-close tui-center" @click="cancel()">
 					<tui-button type="warning" width="240rpx" height="80rpx" :size="24" @click="saveShare">保存图片</tui-button>
 				</view>
 			</view>
 		</uni-popup>
-		<!-- <tuiPoster v-if="showModel == true" :code="inviteData.code" :codeImg="codeImage"></tuiPoster> -->
+
 	</view>
 </template>
 
@@ -163,9 +162,13 @@
 			async initData() {
 				let _this = this;
 				await this.$api.getSellerInfo().then(function(res){
-					console.log(res)
+					
 					if(res.data) {
-						_this.inviteData = res.data;
+						_this.inviteData = {
+							code: res.data.member_no,
+							group_total:res.data.group_total,
+							coupon_total:res.data.coupon_total
+						};
 					}
 				})
 			},
