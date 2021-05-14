@@ -11,30 +11,56 @@
         {{ item.text }}
       </view>
     </view>
-    <view v-if="messageboxShow" class="message-box">
-        <icon class="close-icon" name="shut" :size="20" unit="rpx" color="#000000" index="1" @click="messagePopClose"></icon>
-        <icon class="news-icon" name="news" :size="32" unit="rpx" color="#ffffff"></icon>
-        <view class="message-info">
-          <text class="message-title">重要提示</text>
-          <text class="message-text">支付完成前可更改提货自提/派送到门，单独寄送/
-合箱寄送，支付后不可更改</text>
-        </view>
+    <view v-if="tabCurrentStatus == 2 && messageboxShow" class="message-box">
+      <icon
+        class="close-icon"
+        name="shut"
+        :size="20"
+        unit="rpx"
+        color="#000000"
+        index="1"
+        @click="messagePopClose"
+      ></icon>
+      <icon
+        class="news-icon"
+        name="news"
+        :size="32"
+        unit="rpx"
+        color="#ffffff"
+      ></icon>
+      <view class="message-info">
+        <text class="message-title">重要提示</text>
+        <text class="message-text"
+          >支付完成前可更改提货自提/派送到门，单独寄送/
+          合箱寄送，支付后不可更改</text
+        >
+      </view>
     </view>
-    <!-- <scroll-view
-      class="list-scroll-content"
-      scroll-y
-      @scrolltolower="loadData"
-    > -->
+
     <view class="order-list">
       <!-- 空白页 -->
       <empty v-if="orderlist == 0"></empty>
 
       <!-- 订单列表 -->
-      <orderItem v-for="(orderitem, orderindex) in orderlist" :item="orderitem" :key="orderindex"></orderItem>
+      <orderItem
+        v-for="(orderitem, orderindex) in orderlist"
+        :item="orderitem"
+        :key="orderindex"
+        v-on:setitempay="setOrderPay"
+      ></orderItem>
 
-      <uni-load-more v-if="orderlist.length < orderTotal" :status="loadingType"></uni-load-more>
+      <uni-load-more
+        v-if="orderlist.length < orderTotal"
+        :status="loadingType"
+      ></uni-load-more>
     </view>
-    <!-- </scroll-view> -->
+    <view class="bttom-pay">
+      <view class="price-box">
+        <text class="price-lab">应付金额:</text>
+        <text class="price-num">¥178</text>
+      </view>
+      <text class="pay-btn">立即支付</text>
+    </view>
   </view>
 </template> 
 <script>
@@ -49,7 +75,7 @@ export default {
     uniLoadMore,
     empty,
     icon,
-    orderItem
+    orderItem,
   },
   data() {
     return {
@@ -116,8 +142,7 @@ export default {
           totalPage: 1,
         },
       ],
-      orderlist: {
-      },
+      orderlist: {},
     };
   },
   onLoad(options) {
@@ -139,7 +164,12 @@ export default {
       _self.getorderListLock = true;
       // _self.pageNum > 1 && uni.showLoading({ title: "加载中1..." });
       _self.loadingType = "loading";
-      var param = { size: 10, page: _self.pageNum, user_id: 25, order_status: _self.tabCurrentStatus};
+      var param = {
+        size: 10,
+        page: _self.pageNum,
+        user_id: 25,
+        order_status: _self.tabCurrentStatus,
+      };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
           _self.orderTotal = res.data.total;
@@ -162,7 +192,7 @@ export default {
       this.loadData("tabChange");
       this.pageNum = 1;
     },
-    messagePopClose(pro){
+    messagePopClose(pro) {
       this.messageboxShow = false;
     },
     //删除订单
@@ -215,9 +245,26 @@ export default {
           });
       }, 600);
     },
+    setOrderPay(item) {
+      console.log(item);
+    },
     toPay(orderSn) {
-      uni.redirectTo({
-        url: "/pages/money/pay?orderSn=" + orderSn,
+      // uni.redirectTo({
+      //   url: "/pages/money/pay?orderSn=" + orderSn,
+      // });
+      uni.requestPayment({
+        provider: "wxpay",
+        timeStamp: String(Date.now()),
+        nonceStr: "A1B2C3D4E5",
+        package: "prepay_id=wx20180101abcdefg",
+        signType: "MD5",
+        paySign: "",
+        success: function (res) {
+          console.log("success:" + JSON.stringify(res));
+        },
+        fail: function (err) {
+          console.log("fail:" + JSON.stringify(err));
+        },
       });
     },
     confirmReceipt(item) {
@@ -289,7 +336,9 @@ export default {
 </script>
 
 <style lang="scss">
-html, body, page{
+html,
+body,
+page {
   background: #f3f3f3;
 }
 .content {
@@ -328,26 +377,25 @@ html, body, page{
     }
   }
 }
-.message-box{
+.message-box {
   display: flex;
   position: relative;
   width: 690rpx;
   height: 128rpx;
   margin: 20rpx auto 0;
-  background-color: rgba(255, 217, 188, .8);
+  background-color: rgba(255, 217, 188, 0.8);
   align-items: center;
   border-radius: 20rpx;
-  .news-icon{
+  .news-icon {
     margin-left: 14rpx;
-    background-color: #FF4848;
+    background-color: #ff4848;
     margin-top: -8px;
     border-radius: 50%;
   }
-  .close-icon{
+  .close-icon {
     position: absolute;
     top: 20rpx;
     right: 36rpx;
-
   }
   .message-info {
     margin-left: 16rpx;
@@ -367,10 +415,9 @@ html, body, page{
   }
 }
 
-.order-list{
+.order-list {
   padding: 20rpx 30rpx;
 }
-
 
 /* load-more */
 .uni-load-more {
@@ -501,6 +548,46 @@ html, body, page{
 
   100% {
     opacity: 0.2;
+  }
+}
+.bttom-pay {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120rpx;
+  background-color: #fff;
+  padding: 0 28rpx;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border-radius: 16rpx 16rpx 0 0;
+  .price-box {
+    display: flex;
+    align-items: center;
+    .price-lab {
+      font-size: 32rpx;
+      color: #000;
+      font-weight: bold;
+    }
+    .price-num {
+      margin-left: 18px;
+      font-size: 44rpx;
+      color: #ff0000;
+      font-weight: bold;
+    }
+  }
+  .pay-btn {
+    display: flex;
+    width: 290rpx;
+    height: 80rpx;
+    font-size: 36rpx;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50rpx;
+    background-image: linear-gradient(0deg, #ff9b00 0%, #ff6c00 100%);
   }
 }
 </style>
