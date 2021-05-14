@@ -85,9 +85,10 @@ export default {
     // 收件地址薄
     // 请求参数：
     // page：1，//当前页
-    getReceivedAddr() {
+    getReceivedAddr(data) {
         return request({
             url: 'address/getReceived',
+            data
         })
     },
     // 寄件地址薄
@@ -124,7 +125,13 @@ export default {
             data
         })
     },
-
+    // 获取默认地址
+    getDefaultAddr(data) {
+        return request({
+            url: 'address/getDefaultAddress',
+            data
+        })
+    },
     // 设置默认地址
     // 请求参数：
     // address_id：1，//地址薄ID
@@ -264,23 +271,23 @@ export default {
             method: 'POST'
         })
     },
-	
-	// 发送邮箱验证码
-	sendEmail(data) {
-	    return request({
-	        url: 'auth/sendEmail',
-	        data,
-	        method: 'POST'
-	    })
-	},
-	// 邮箱登录
-	loginEmail(data) {
-	    return request({
-	        url: 'auth/loginEmail',
-	        data,
-	        method: 'POST'
-	    })
-	},
+
+    // 发送邮箱验证码
+    sendEmail(data) {
+        return request({
+            url: 'auth/sendEmail',
+            data,
+            method: 'POST'
+        })
+    },
+    // 邮箱登录
+    loginEmail(data) {
+        return request({
+            url: 'auth/loginEmail',
+            data,
+            method: 'POST'
+        })
+    },
     // 资金明细
     accountRecord(data) {
         return request({
@@ -288,6 +295,12 @@ export default {
             data,
         })
     },
+	SellerInfo(data){
+		return request({
+		    url: 'Seller/getInfo',
+		    data,
+		})
+	},
     // 国家列表 is_china：是否是港澳台。0-否1-是
     getCountryAddrList(data) {
         return request({
@@ -319,18 +332,26 @@ export default {
             method: 'POST'
         })
     },
-	// 获取充值金额配置
-	getMoneyData(data) {
+    // 获取充值金额配置
+    getMoneyData(data) {
+        return request({
+            url: 'finance/getMoneyData',
+            data,
+            method: 'GET'
+        })
+    },
+    // 支付充值金额
+    payRecharge(data) {
+        return request({
+            url: 'payment/recharge',
+            data,
+            method: 'POST'
+        })
+    },
+	// 获取推荐信息
+	getSellerInfo(data) {
 		return request({
-			url: 'finance/getMoneyData',
-			data,
-			method: 'GET'
-		})	
-	},
-	// 支付充值金额
-	payRecharge(data) {
-		return request({
-			url: 'payment/recharge',
+			url: 'seller/getInfo',
 			data,
 			method: 'POST'
 		})	

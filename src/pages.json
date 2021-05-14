@@ -93,6 +93,12 @@
 		        "navigationBarTitleText": "邀请下单"
 		    }
 		},
+		{
+		    "path": "pages/invite/address",
+		    "style": {
+		        "navigationBarTitleText": "邀请你填写地址"
+		    }
+		},
         {
             "path": "pages/login/index",
             "style": {

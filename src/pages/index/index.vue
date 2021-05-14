@@ -79,7 +79,7 @@
                 </view>
             </view>
             <view class="piece bg-4">
-                <view class="desc-box">
+                <view class="desc-box" @click="navTo('/pages/freight/index')">
                     <view class="left left-4"></view>
                     <view class="right">
                         <view>运费与实效</view>
@@ -91,7 +91,7 @@
         <!-- write part -->
         <view class="write-address-part">
             <text>海外地址不会填？邀请收件人填写</text>  
-            <button @click="navTo('/pages/feedback/form')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
+            <button @click="navTo('/pages/invite/address')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
 		<view class="app-order">
 			<view class="app-order-wrap">
@@ -196,6 +196,13 @@ export default {
             this.$href.navigateTo({ url: url });      
 		},
     },
+	onShareAppMessage(res) {
+		let token = this.$cache.get('token');
+		return {
+			title:"龙马邀请你填写收件地址",
+			path:"pages/invite/address?token="+token
+		}
+	}
 };
 </script>
 

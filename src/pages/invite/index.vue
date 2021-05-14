@@ -7,7 +7,7 @@
 						<view class="title">剩余返现金额</view>
 						<view class="money_block">
 							<text class="money-tag">¥</text>
-							<text class="money-data">0.00</text>
+							<text class="money-data">{{ inviteData.withdrawable }}</text>
 						</view>
 						<view class="apply" @click="apply">申请提现</view>
 					</view>
@@ -15,7 +15,7 @@
 						<view class="title">累计返现收益</view>
 						<view class="money_block">
 							<text class="money-tag">¥</text>
-							<text class="money-data">0.00</text>
+							<text class="money-data">{{ inviteData.withdrawn }}</text>
 						</view>
 						<view class="apply_hidden">xxx</view>
 					</view>
@@ -24,15 +24,15 @@
 			<view class="middle-part">
 				<view class="middle-part-wrap tui-flex">
 					<view class="middle-part-wrap_data tui-center tui-flex-1">
-						<view class="middle-part-number">0</view>
+						<view class="middle-part-number">{{ inviteData.group_total }}</view>
 						<view class="middle-part-text">已推荐好友</view>
 					</view>
 					<view class="middle-part-wrap_data tui-center tui-flex-1">
-						<view class="middle-part-number">0</view>
+						<view class="middle-part-number">{{ inviteData.order_total }}</view>
 						<view class="middle-part-text">累计返利订单</view>
 					</view>
 					<view class="middle-part-wrap_data tui-center tui-flex-1">
-						<view class="middle-part-number">0</view>
+						<view class="middle-part-number">{{ inviteData.coupon_total }}</view>
 						<view class="middle-part-text">累计返劵数</view>
 					</view>
 				</view>
@@ -45,10 +45,28 @@
 					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad">
 						<tui-list-view color="#777" unlined="all">
 						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="30rpx" color="#000000" v-for="(item, index) in dataList" :key="index">
-						    <view class="tui-flex tui-align-between">
-						    	<view class="tui-left tui-col-4">{{ item.money_text }}</view>
-						    	<view class="tui-right tui-col-4">+{{ item.money }}</view>
+							  
+						    <view class="tui-flex tui-align-between" v-if="currentTab ==0" >
+								<view class=""><image style="width: 130rpx; height: 130rpx;border-radius: 73rpx;"
+									:src="item.avator || '../../static/index-1.png'"
+									mode="" 
+								  /></view>
+						    	<view class="">会员{{item.id}}({{item.mobile}})</view>
+						    	<view class="">注册日期：{{item.created}}</view>
 						    </view>
+							
+							<view class="tui-flex tui-align-between" v-if="currentTab ==1" >
+								<view class="tui-left tui-col-4">{{item.comment}}</view>
+								<view class="tui-right tui-col-4">{{item.created}}</view>
+								<view class="tui-right tui-col-4">+{{item.amount}}</view> 
+							</view>
+							
+							<view class="tui-flex tui-align-between" v-if="currentTab ==2" >
+								<view class="tui-left tui-col-4">{{item.comment}}</view>
+								<view class="tui-right tui-col-4">{{item.created}}</view>
+								<view class="tui-right tui-col-4">+1</view>
+							</view>
+							
 						  </tui-list-cell>
 						</tui-list-view>
 					</scroll-view>
@@ -81,6 +99,7 @@
 	  data() {
 	    return {
 	      dataList:[],
+		  inviteData:[],
 		  showModal:false,
 		  currentTab:0,
 		  freshing:false,
@@ -100,7 +119,6 @@
 			if(e.index == this.currentTab) {
 				return;
 			}
-			
 			this.currentTab = e.index;
 			this.dataList = [];
 			this.page = 1;
@@ -125,9 +143,6 @@
 			if (this.isEnd) {
 				return;
 			}
-			if(this.freshing) {
-				return;
-			}
 			let getData = {
 				type:this.currentTab + 1,
 				page:this.page
@@ -137,26 +152,35 @@
 			uni.showLoading({
 				title:"加载中"
 			})
-			let res = await this.$api.accountRecord(getData)
-				
-			if(res.data.list.length == 0) {
+			let res = await this.$api.SellerInfo(getData)
+			if(res.data.length == 0) {
 				this.freshing = false;
 				this.isEnd = true;
 			}
-			if(res.data && res.data.list.length > 0) {
+			if(res.data && res.data.length > 0) {
 				if(this.dataList.length == 0) {
-					this.dataList = res.data.list;
+					this.dataList = res.data;
 				} else {
-					this.dataList.push(res.data.list);
+					this.dataList.push(res.data);
 				}
 				uni.hideLoading();
 			}
 			this.freshing = false;
 			this.page++;
+		},
+		async init() {
+			let _this = this;
+			await this.$api.getSellerInfo().then(function(res){
+				if(res.data) {
+					_this.inviteData = res.data;
+				}
+			})
 		}
 	  },
 	  async created() {
+		  this.init();
 		  this.handleLoad();
+		  
 	  },
 	  mounted() {},
 	};
