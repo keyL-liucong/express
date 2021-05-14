@@ -33,7 +33,7 @@
 				</view>
 				<view class="body-step_1_data tui-center tui-col-4">
 					<view class="share-wx">
-						<text class="share-wx_code">{{ shareCode }}</text>
+						<text class="share-wx_code">{{ inviteData.member_no }}</text>
 					</view>
 					<text class="share-text" @click="copyCode">邀请码</text>
 				</view>
@@ -119,30 +119,41 @@
 			</view>
 		</view>
 		<uni-popup ref="showimage" :type="type" :mask-click="true">
-			<view class="uni-image">
+			<tuiPoster v-if="showModel == true" :code="inviteData.code" :codeImg="codeImg"></tuiPoster>
+			<!-- <view class="uni-image">
+				<canvas @click.stop="" class="canvas-element" canvas-id="my-canvas"></canvas>
 				<image class="pop-image" src="https://static.51mitui.com/default/invite.png" mode="scaleToFill" />
 				<view class="uni-image-close tui-center" @click="cancel()">
 					<tui-button type="warning" width="240rpx" height="80rpx" :size="24" @click="saveShare">保存图片</tui-button>
 				</view>
-			</view>
+			</view> -->
 		</uni-popup>
 	</view>
 </template>
 
 <script>
-	import uniPopup from '@/components/uni-popup/uni-popup.vue'
-	
+	import uniPopup from '@/components/uni-popup/uni-popup.vue';
+	import tuiPoster from '@/components/tui-poster/tui-poster';
 	export default {
 		components: {
-			uniPopup
+			uniPopup,
+			tuiPoster
 		},
 		data() {
 			return {
-				shareCode:"SHKHAD",
+				inviteData:[],
 				type: '',
+				showModel:false,
+				codeImage:"http://static.51mitui.com/20210514/daa51a6691d4da132add7dcd0dc33427.png"
 			};
 		},
+		async created() {
+			this.initData();
+		},
 		methods: {
+			initData() {
+				
+			},
 			copyCode() {
 				let data = this.shareCode;
 				uni.setClipboardData({
@@ -159,41 +170,11 @@
 				this.$nextTick(() => {
 					this.$refs['showimage'].open()
 				})
+				this.showModel = true
 				
 			},
 			cancel() {
 				this.$refs['showimage'].close()
-			},
-			saveShare() {
-				let _this = this;
-				uni.downloadFile({
-				    url: 'http://static.51mitui.com/20210511/609a4784df2a9.png', //仅为示例，并非真实的资源
-				    success: (res) => {
-						console.log(res);
-				        if (res.statusCode === 200) {
-							uni.saveImageToPhotosAlbum({
-							    filePath: res.tempFilePath,
-							    success: (saveRes) => {
-							    	uni.showToast({
-							    		icon:"success",
-										title:"保存成功"
-							    	})
-									_this.$refs['showimage'].close()
-							    },
-								fail: () => {
-									uni.showToast({
-										icon:"none",
-										title:"保存失败"
-									})
-									_this.$refs['showimage'].close()
-								}
-							});     
-				        }
-				    },
-					fail: (error) => {
-						console.log(error);
-					}
-				});
 			}
 		}
 	};
@@ -366,5 +347,9 @@
 	.uni-image-close {
 		margin-top: 20px;
 		text-align: center;
+	}
+	.canvas-element {
+		width: 600rpx;
+		height: 1000rpx;
 	}
 </style>
