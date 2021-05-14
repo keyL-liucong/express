@@ -11,7 +11,7 @@
         {{ item.text }}
       </view>
     </view>
-    <view v-if="messageboxShow" class="message-box">
+    <view v-if="tabCurrentStatus == 2 && messageboxShow" class="message-box">
       <icon
         class="close-icon"
         name="shut"
