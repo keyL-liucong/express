@@ -12,6 +12,12 @@
                 "navigationBarTitleText": "我的订单"
             }
         },
+		{
+		    "path": "pages/tabbar-2/shipping",
+		    "style": {
+		        "navigationBarTitleText": "物流详情"
+		    }
+		},
         {
             "path": "pages/tabbar-3/index",
             "style": {
