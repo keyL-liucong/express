@@ -21,7 +21,7 @@
         </view>
         <view class="info-line" v-else @click="handleLogin">
           <view class="name font-size">登录 | 注册</view> 
-          <view class="mobile font-size">hello,欢迎来到米推客</view>
+          <view class="mobile font-size">hello,欢迎来到赫德物流</view>
         </view>
       </view>
       <view class="info-show-box">

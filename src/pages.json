@@ -102,19 +102,19 @@
         {
             "path": "pages/login/index",
             "style": {
-                "navigationBarTitleText": "国际快递"
+                "navigationBarTitleText": "赫德物流"
             }
         },
 		{
 		    "path": "pages/login/email",
 		    "style": {
-		        "navigationBarTitleText": "国际快递"
+		        "navigationBarTitleText": "赫德物流"
 		    }
 		},
         {
             "path": "pages/coupon/index",
             "style": {
-                "navigationBarTitleText": "国际快递"
+                "navigationBarTitleText": "赫德物流"
             }
         },
         {
