@@ -1,69 +1,167 @@
 <template>
-
-  <view class="order-item">
-    <view class="top-right-box"> 
+  <view>
+    <view v-if="item.order_status==3" class="order-item-waitpay">
+      <view class="orderinfos">
+        <view class="order-num">
+          <text class="num-title">订单号</text>
+          <text class="num-text">1234121123</text>
+          <text class="copy-btn">复制</text>
+        </view>
+        <view class="order-data">
+          <text class="data-text">2020-03-23</text>
+          <text class="time-text">17:34</text>
+        </view>
+      </view>
+      <view class="address-info">
+        <view class="address-from">
+          <text class="address-from-city">广东深圳</text>
+          <text class="address-from-person">大表哥</text>
+        </view>
+        <view class="address-icon">
+          <text class="text">单独寄送</text>
+        </view>
+        <view class="address-to">
+          <text class="address-to-text">美国纽约</text>
+          <text class="address-to-person">大卫</text>
+          <text class="address-to-remark">(自提点自提)</text>
+        </view>
+      </view>
+      <view class="package-detail">
+        <text class="package-detail-btn">包裹详情</text>
+        <text class="icon"></text>
+      </view>
+      <view class="price-info-list">
+        <view class="info-item">
+          <text class="info-item-lab">基础运费</text>
+          <text class="info-item-val">¥122</text>
+        </view>
+      </view>
+      <view class="cancel-btn">
+        <text class="btn">取消订单</text>
+      </view>
+    </view>
+    <view v-else class="order-item">
+      <!-- 右上角按钮信息 -->
+      <view class="top-right-box">
         <!-- 待揽收 -->
         <view v-if="0" class="get-num">
-            <text class="info-title">取件码</text>
-            <text class="info-text">34567</text>
+          <text class="info-title">取件码</text>
+          <text class="info-text">34567</text>
         </view>
         <!-- 待处理 -->
         <view v-if="0" class="info-cancel">
-            <text class="info-text">已取消</text>
+          <text class="info-text">已取消</text>
         </view>
         <view v-if="0" class="info-btn he-xiang">
-            <text class="info-text">可合箱</text>
+          <text class="info-text">可合箱</text>
         </view>
-        <view class="info-btn kefu">
-            <text class="info-kefu-text">需要客服处理</text>
+        <view v-if="0" class="info-btn kefu">
+          <text class="info-kefu-text">需要客服处理</text>
         </view>
         <!-- 已签收 -->
-        <view class="info-btn qian-shou">
-            <text class="info-qianshou-text">成功签收</text>
+        <view v-if="0" class="info-btn qian-shou">
+          <text class="info-qianshou-text">成功签收</text>
         </view>
-        <view class="info-btn zi-ti">
-            <text class="info-ziti-text">到达自提点</text>
+        <view v-if="0" class="info-btn zi-ti">
+          <text class="info-ziti-text">到达自提点</text>
         </view>
-    </view>
-    <view class="orderinfo-item">
-      <text class="item-lab">运单号:</text>
-      <text class="item-val">123214123121</text>
-    </view>
-    <view class="orderinfo-item">
-      <text class="item-lab">国内快递单号:</text>
-      <text class="item-val">123214123121</text>
-    </view>
-    <view class="orderinfo-item">
-      <text class="item-lab">寄件人:</text>
-      <text class="item-val">大表格</text>
-    </view>
-    <view class="address-info">
-      <text class="address-from">广东深圳</text>
-      <view class="address-icon">
-        <text class="text">单独寄送</text>
       </view>
-      <view class="address-to">
-        <text class="address-to-text">美国纽约</text>
-        <text class="address-to-remark">(自提点自提)</text>
+      <!-- 单号信息 -->
+      <view class="orderinfos">
+        <view class="orderinfo-item">
+          <text class="item-lab">运单号:</text>
+          <text class="item-val">{{item.order_sn}}</text>
+        </view>
+        <view class="orderinfo-item">
+          <text class="item-lab">国内快递单号:</text>
+          <text class="item-val">123214123121</text>
+        </view>
+        <view class="orderinfo-item">
+          <text class="item-lab">寄件人:</text>
+          <text class="item-val">{{item.sender_name}}</text>
+        </view>
+      </view>
+      <!-- 最新物流轨迹 -->
+      <view class="newest-progress-message">
+        <text class="message-btn">查看物流信息</text>
+        <text class="message-tite">最新物流轨迹</text>
+        <text class="message-text"
+          >{{item.order_trajectory}}</text
+        >
+      </view>
+      <!-- 包裹详情 -->
+      <view class="package-detail">
+        <text class="detail-tite">包裹详情</text>
+        <view v-for="(orderitem, orderindex) in item.orderItems" :key="orderitem.order_id" class="detail-item">
+          <view class="item-name">
+            <text class="name-title">包裹1</text>
+            <text class="name-info">{{orderitem.item_name}}</text>
+          </view>
+          <view class="item-num">
+            <text class="num-title">国内快递单号</text>
+            <text class="num-info">{{orderitem.order_id}}</text>
+          </view>
+        </view>
+        <text class="message-btn">查看全部包裹</text>
+      </view>
+      <view class="address-info">
+        <text class="address-from">{{item.sender_addr}}</text>
+        <view class="address-icon">
+          <text class="text">单独寄送</text>
+        </view>
+        <view class="address-to">
+          <text class="address-to-text">{{item.addressee_addr}}</text>
+          <text class="address-to-remark">(自提点自提)</text>
+        </view>
+      </view>
+      <view class="bottom-data">
+        <view class="data-info-box">
+          <text class="bottom-data-title">下单时间</text>
+          <text class="data-text">2021-05-12</text>
+          <text class="time-text">20:23</text>
+        </view>
+        <text v-if="0" class="change-btn">更改</text>
+        <text class="share-btn">分享给收件人</text>
+      </view>
+      <view class="bottom-data lanshou">
+        <text class="bottom-data-title">预计揽收时间</text>
+        <text class="data-text">2021-05-12</text>
+        <text class="time-text">20:23</text>
       </view>
     </view>
-    <view class="bottom-data">
-      <text class="bottom-data-title">下单时间</text>
-      <text class="data-text">2021-05-12</text>
-      <text class="time-text">20:23</text>
-      <text class="change-btn">更改</text>
-    </view>
-    <view class="bottom-data lanshou">
-      <text class="bottom-data-title">预计揽收时间</text>
-      <text class="data-text">2021-05-12</text>
-      <text class="time-text">20:23</text>
+    <view v-if="item.order_status==3" class="bottom-wait-pay">
+      <view class="content">
+        <view class="lab">
+          <icon
+            class="wx-icon"
+            name="wechat"
+            size="50"
+            color="#2cb241"
+            unit="rpx"
+          ></icon>
+          <text class="lab-text">微信支付</text>
+        </view>
+        <icon
+          class="btn"
+          name="circle-fill"
+          size="40"
+          color="#2cb241"
+          unit="rpx"
+          @tap="setPay"
+        ></icon>
+      </view>
+      <text class="bottom-wait-pay-text">微信没钱？请联系客服</text>
     </view>
   </view>
 </template>
 
 
 <script>
+import icon from "@/components/tui-icon/tui-icon.vue";
 export default {
+  components: {
+    icon,
+  },
   name: "orderItem",
   props: {
     item: {
@@ -77,7 +175,11 @@ export default {
   mounted() {
     console.log(this.item);
   },
-  methods: {},
+  methods: {
+    setPay() {
+      this.$emit("setitempay", this.item);
+    },
+  },
 };
 </script>
 <style lang="scss">
@@ -112,12 +214,12 @@ export default {
     font-weight: bold;
     justify-content: space-between;
     .address-from {
-      height: 50rpx;
+        width: 240rpx;
     }
     .address-to {
       .address-to-text {
         display: block;
-        height: 50rpx;
+        max-width: 240rpx;
         text-align: center;
       }
       .address-to-remark {
@@ -130,13 +232,14 @@ export default {
     }
     .address-icon {
       display: block;
-      width: 194rpx;
+      flex: 1;
+    //   width: 194rpx;
       height: 50rpx;
-      background: url(@/static/orderlist-address-icon.png) no-repeat center;
+      background: url(@/static/orderlist-address-icon.png) no-repeat left;
       background-size: 194rpx 20rpx;
-      .text {
+      .text {   
         display: block;
-        width: 100%;
+        width: 194rpx;
         margin-top: 48rpx;
         font-size: 24rpx;
         font-weight: bold;
@@ -150,104 +253,404 @@ export default {
     display: flex;
     position: relative;
     margin-top: 20rpx;
-    padding-top: 18rpx;
+    padding-top: 20rpx;
     border-top: 2rpx dashed #b1afaf;
     font-size: 28rpx;
     color: #000;
     line-height: 40rpx;
     align-items: center;
     font-weight: bold;
+    justify-content: space-between;
     .bottom-data-title {
       margin-right: 20rpx;
     }
     .time-text {
       margin-left: 18rpx;
     }
-    .change-btn{
-        display: flex;
-        position: absolute;
-        top: 18rpx;
-        right: 0;
-        width: 120rpx;
-        height: 52rpx;
-        font-size: 28rpx;
-        color: #000;
-        font-weight: 600;
-        align-items: center;
-        justify-content: center;
-        border-radius: 30rpx;
-        border: 2rpx solid #000;
+    .change-btn {
+      display: flex;
+      width: 120rpx;
+      height: 52rpx;
+      font-size: 28rpx;
+      color: #000;
+      font-weight: 600;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30rpx;
+      border: 2rpx solid #000;
+    }
+    .share-btn {
+      display: flex;
+      height: 52rpx;
+      padding: 0 12rpx;
+      font-size: 28rpx;
+      color: #ff6c00;
+      font-weight: 600;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30rpx;
+      border: 2rpx solid #ff6c00;
     }
     &.lanshou {
+      justify-content: start;
       .data-text,
       .time-text {
         font-size: 36rpx;
       }
     }
-
   }
-  .top-right-box{
-      display: block;
-      position: absolute;
-      top: 30rpx;
-      right: 0;
-    .get-num{
-        padding-right: 28rpx;
-        font-weight: 600;
-        text-align: center;
-        .info-title{
-            display:block;
-            font-size: 28rpx;
-            color: #000;
-            line-height: 40rpx;
-        }
-        .info-text{
-            display: block;
-            margin-top: 2rpx;
-            font-size: 48rpx;
-            color: #015AD7;
-            line-height: 66rpx;
-        }
-    }
-    .info-cancel{
-        padding-right: 30rpx;
-        font-weight: 600;
-        color: #7B7B7B;
+  .top-right-box {
+    display: block;
+    position: absolute;
+    top: 30rpx;
+    right: 0;
+    .get-num {
+      padding-right: 28rpx;
+      font-weight: 600;
+      text-align: center;
+      .info-title {
+        display: block;
         font-size: 28rpx;
+        color: #000;
+        line-height: 40rpx;
+      }
+      .info-text {
+        display: block;
+        margin-top: 2rpx;
+        font-size: 48rpx;
+        color: #015ad7;
+        line-height: 66rpx;
+      }
     }
-    .info-btn{
-        display: flex;
+    .info-cancel {
+      padding-right: 30rpx;
+      font-weight: 600;
+      color: #7b7b7b;
+      font-size: 28rpx;
+    }
+    .info-btn {
+      display: flex;
+      height: 52rpx;
+      margin-right: 30rpx;
+      font-weight: 600;
+      color: #fff;
+      font-size: 24rpx;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30rpx;
+      &.he-xiang {
+        width: 120rpx;
         height: 52rpx;
-        margin-right: 30rpx;
-        font-weight: 600;
-        color: #fff;
-        font-size: 24rpx;
-        align-items: center;
-        justify-content: center;
-        border-radius: 30rpx;
-        &.he-xiang{
-            width: 120rpx;
-            height: 52rpx;
-            background-color: #2CB241;
-        }
-        &.kefu{
-            height: 52rpx;
-            padding: 0 12rpx;
-            background-color: #FF0000;
-        }
-        &.qian-shou{
-            margin: 0;
-            padding: 0 30rpx;
-            background-color: #2CB241;
-            border-radius: 30rpx 0 0 30rpx;
-        }
-        &.zi-ti{
-            margin: 0;
-            padding: 0 30rpx;
-            border-radius: 30rpx 0 0 30rpx;
-            background-color: #FF0000;
-        }
+        background-color: #2cb241;
+      }
+      &.kefu {
+        height: 52rpx;
+        padding: 0 12rpx;
+        background-color: #ff0000;
+      }
+      &.qian-shou {
+        margin: 0;
+        padding: 0 30rpx;
+        background-color: #2cb241;
+        border-radius: 30rpx 0 0 30rpx;
+      }
+      &.zi-ti {
+        margin: 0;
+        padding: 0 30rpx;
+        border-radius: 30rpx 0 0 30rpx;
+        background-color: #ff0000;
+      }
     }
   }
+  .newest-progress-message {
+    position: relative;
+    padding-top: 18rpx;
+    border-top: 2rpx dashed #b1afaf;
+    margin-top: 20rpx;
+    .message-btn {
+      display: flex;
+      position: absolute;
+      top: 18rpx;
+      right: 0;
+      padding: 0 12rpx;
+      height: 52rpx;
+      font-size: 26rpx;
+      color: #000;
+      border-radius: 30rpx;
+      border: 2rpx solid #000;
+      align-items: center;
+      justify-content: center;
+    }
+    .message-tite {
+      display: block;
+      height: 40rpx;
+      font-size: 28rpx;
+      color: #7b7b7b;
+      line-height: 40rpx;
+      font-weight: bold;
+    }
+    .message-text {
+      display: -webkit-box;
+      height: 68rpx;
+      width: 440rpx;
+      margin-top: 10rpx;
+      font-size: 24rpx;
+      color: #000;
+      line-height: 34rpx;
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-wrap: break-word;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+  }
+  .package-detail {
+    position: relative;
+    margin-top: 20rpx;
+    padding: 18rpx 0 96rpx;
+    border-top: 2rpx dashed #b1afaf;
+    border-bottom: 2rpx dashed #b1afaf;
+    .message-btn {
+      display: flex;
+      position: absolute;
+      bottom: 18rpx;
+      right: 0;
+      padding: 0 12rpx;
+      height: 52rpx;
+      font-size: 26rpx;
+      color: #000;
+      border-radius: 30rpx;
+      border: 2rpx solid #000;
+      align-items: center;
+      justify-content: center;
+    }
+    .detail-tite {
+      display: block;
+      height: 40rpx;
+      font-size: 28rpx;
+      color: #7b7b7b;
+      line-height: 40rpx;
+      font-weight: bold;
+    }
+    .detail-item {
+      display: flex;
+      margin-top: 3rpx;
+      align-items: center;
+      font-size: 28rpx;
+      font-weight: bold;
+    }
+    .item-name {
+      display: flex;
+      align-items: center;
+    }
+    .name-title,
+    .num-title {
+      margin-right: 12rpx;
+      color: #7b7b7b;
+    }
+    .name-info,
+    .num-info {
+      color: #000;
+    }
+    .name-info {
+      width: 200rpx;
+    }
+  }
+}
+.order-item-waitpay {
+  position: relative;
+  width: 690rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+  margin-bottom: 20rpx;
+  .orderinfos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40rpx;
+    .order-num {
+      display: flex;
+      align-items: center;
+    }
+    .num-title {
+      margin-right: 8rpx;
+      font-size: 28rpx;
+      color: #7b7b7b;
+    }
+    .num-text {
+      margin-right: 14rpx;
+      font-size: 28rpx;
+      color: #000;
+    }
+    .order-data {
+      display: flex;
+      align-items: center;
+      font-size: 24rpx;
+      color: #7b7b7b;
+    }
+    .time-text {
+      margin-left: 20rpx;
+    }
+  }
+  .address-info {
+    display: flex;
+    margin-top: 30rpx;
+    padding-bottom: 14rpx;
+    align-items: flex-start;
+    font-size: 36rpx;
+    color: #000;
+    line-height: 50rpx;
+    font-weight: bold;
+    justify-content: space-between;
+    border-bottom: 2rpx dashed #b1afaf;
+    .address-from {
+      height: 50rpx;
+      .address-from-city {
+        display: block;
+      }
+      .address-from-person {
+        display: block;
+        font-size: 28rpx;
+        color: #7b7b7b;
+        line-height: 40rpx;
+      }
+    }
+    .address-to {
+      .address-to-text {
+        display: block;
+        height: 50rpx;
+        text-align: center;
+      }
+      .address-to-remark,
+      .address-to-person {
+        display: block;
+        font-size: 28rpx;
+        line-height: 40rpx;
+        color: #7b7b7b;
+        font-weight: 400;
+      }
+    }
+    .address-icon {
+      display: block;
+      width: 194rpx;
+      height: 50rpx;
+      margin-top: 35rpx;
+      background: url(@/static/orderlist-address-icon.png) no-repeat center;
+      background-size: 194rpx 20rpx;
+      .text {
+        display: block;
+        width: 100%;
+        margin-top: -28rpx;
+        font-size: 28rpx;
+        font-weight: bold;
+        color: #ff6c00;
+        text-align: center;
+        line-height: 34rpx;
+      }
+    }
+  }
+
+  .package-detail {
+    display: flex;
+    padding: 24rpx 0 30rpx;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2rpx dashed #b1afaf;
+    .package-detail-btn {
+      position: relative;
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #000;
+      &::after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: -24rpx;
+        width: 12rpx;
+        height: 24rpx;
+        transform: translateY(-50%);
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAUCAMAAACOLiwjAAAAb1BMVEUAAABlZWVwcHBwcHBvb29tbW1ubm5oaGhwcHBvb29wcHBvb29vb29sbGxwcHBvb29vb29vb29vb29vb29vb29tbW1paWlsbGxmZmZwcHBvb29vb29vb29wcHBvb29vb29tbW1tbW1ubm5vb29sbGzJG0uwAAAAJXRSTlMABfXndjpTE/z48Mu0I+LezZ6WjFlLLx4M69HFvLmuk4BuQScaK6idbQAAAG1JREFUGNNVj0UCgDAMBGkqtKW4u/7/jZySQE47h6xEtY74ZNYIgjb3aiDqElvGRP1m15QorqG4iMT5t5GgxMcGyodtZrvQm8n9gVo5adC8chN2TAMEjNWF27GQ4QyhvDSYV0HC88Zw81I9sH4BX6AEVmgVFj0AAAAASUVORK5CYII=)
+          no-repeat center;
+        background-size: 100%;
+        content: "";
+      }
+    }
+  }
+  .price-info-list {
+    padding: 30rpx 0;
+    border-bottom: 2rpx dashed #b1afaf;
+    .info-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 32rpx;
+      color: #000;
+      font-weight: bold;
+      .info-item-lab {
+        font-weight: 400;
+      }
+    }
+  }
+  .cancel-btn {
+    display: flex;
+    margin-top: 28rpx;
+    justify-content: flex-end;
+    .btn {
+      display: flex;
+      width: 170rpx;
+      height: 52rpx;
+      font-size: 28rpx;
+      color: #000;
+      border-radius: 30rpx;
+      border: 2rpx solid #000;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+.bottom-wait-pay{
+    width: 690rpx;
+    margin: 20rpx auto;
+    .content{
+        display: flex;
+        width: 100%;
+        height: 110rpx;
+        padding: 0 28rpx;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #fff;
+        border-radius: 20rpx;
+        box-sizing: border-box;
+        .lab{
+            display: flex;
+            align-items: center;
+        }
+        .lab-text{
+            margin-left: 20rpx;
+            font-size: 32rxp;
+            font-weight: bold;
+            color: #000;
+        }
+        .btn{
+            display: block;
+        }
+    }
+    .bottom-wait-pay-text{
+        display: block;
+        width: 100%;
+        margin-top: 20rpx;
+        padding: 0 32rpx;
+        font-size: 28rpx;
+        font-weight: bold;
+        color: #000;
+        text-align: end;
+        box-sizing: border-box;
+    }
 }
 </style>
