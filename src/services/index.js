@@ -295,6 +295,12 @@ export default {
             data,
         })
     },
+	SellerInfo(data){
+		return request({
+		    url: 'Seller/getInfo',
+		    data,
+		})
+	},
     // 国家列表 is_china：是否是港澳台。0-否1-是
     getCountryAddrList(data) {
         return request({

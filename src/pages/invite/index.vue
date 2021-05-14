@@ -45,10 +45,28 @@
 					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad">
 						<tui-list-view color="#777" unlined="all">
 						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="30rpx" color="#000000" v-for="(item, index) in dataList" :key="index">
-						    <view class="tui-flex tui-align-between">
-						    	<view class="tui-left tui-col-4">{{ item.money_text }}</view>
-						    	<view class="tui-right tui-col-4">+{{ item.money }}</view>
+							  
+						    <view class="tui-flex tui-align-between" v-if="currentTab ==0" >
+								<view class=""><image style="width: 130rpx; height: 130rpx;border-radius: 73rpx;"
+									:src="item.avator || '../../static/index-1.png'"
+									mode="" 
+								  /></view>
+						    	<view class="">会员{{item.id}}({{item.mobile}})</view>
+						    	<view class="">注册日期：{{item.created}}</view>
 						    </view>
+							
+							<view class="tui-flex tui-align-between" v-if="currentTab ==1" >
+								<view class="tui-left tui-col-4">{{item.comment}}</view>
+								<view class="tui-right tui-col-4">{{item.created}}</view>
+								<view class="tui-right tui-col-4">+{{item.amount}}</view> 
+							</view>
+							
+							<view class="tui-flex tui-align-between" v-if="currentTab ==2" >
+								<view class="tui-left tui-col-4">{{item.comment}}</view>
+								<view class="tui-right tui-col-4">{{item.created}}</view>
+								<view class="tui-right tui-col-4">+1</view>
+							</view>
+							
 						  </tui-list-cell>
 						</tui-list-view>
 					</scroll-view>
@@ -101,7 +119,6 @@
 			if(e.index == this.currentTab) {
 				return;
 			}
-			
 			this.currentTab = e.index;
 			this.dataList = [];
 			this.page = 1;
@@ -126,9 +143,6 @@
 			if (this.isEnd) {
 				return;
 			}
-			if(this.freshing) {
-				return;
-			}
 			let getData = {
 				type:this.currentTab + 1,
 				page:this.page
@@ -138,17 +152,16 @@
 			uni.showLoading({
 				title:"加载中"
 			})
-			let res = await this.$api.accountRecord(getData)
-				
-			if(res.data.list.length == 0) {
+			let res = await this.$api.SellerInfo(getData)
+			if(res.data.length == 0) {
 				this.freshing = false;
 				this.isEnd = true;
 			}
-			if(res.data && res.data.list.length > 0) {
+			if(res.data && res.data.length > 0) {
 				if(this.dataList.length == 0) {
-					this.dataList = res.data.list;
+					this.dataList = res.data;
 				} else {
-					this.dataList.push(res.data.list);
+					this.dataList.push(res.data);
 				}
 				uni.hideLoading();
 			}

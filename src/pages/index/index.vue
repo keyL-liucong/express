@@ -79,7 +79,7 @@
                 </view>
             </view>
             <view class="piece bg-4">
-                <view class="desc-box">
+                <view class="desc-box" @click="navTo('/pages/freight/index')">
                     <view class="left left-4"></view>
                     <view class="right">
                         <view>运费与实效</view>
