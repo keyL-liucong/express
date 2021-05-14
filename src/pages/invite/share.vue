@@ -135,11 +135,11 @@
 
 <script>
 	import uniPopup from '@/components/uni-popup/uni-popup.vue';
-	import tuiPoster from '@/components/tui-poster/tui-poster';
+
 	export default {
 		components: {
-			uniPopup,
-			tuiPoster
+			uniPopup
+			
 		},
 		data() {
 			return {
@@ -161,12 +161,13 @@
 		},
 		methods: {
 			async initData() {
-				// let _this = this;
-				// await this.$api.getSellerInfo().then(function(res){
-				// 	if(res.data) {
-				// 		_this.inviteData = res.data;
-				// 	}
-				// })
+				let _this = this;
+				await this.$api.getSellerInfo().then(function(res){
+					console.log(res)
+					if(res.data) {
+						_this.inviteData = res.data;
+					}
+				})
 			},
 			copyCode() {
 				let data = this.shareCode;
