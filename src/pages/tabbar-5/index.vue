@@ -13,6 +13,9 @@
           <view class="mobile font-sizes">{{ memberInfo.mobile }}</view>
           <view class="code">
             <view class="code-left font-sizes">会员编号：{{ memberInfo.member_no }}</view>
+			<view class="tui-right tui-col-4 mr">
+				<text class="copy-text" @click="copyData()" style="position: absolute;margin: 1px 1px;font-size: 22rpx;">复制</text>
+			</view>
             <view class="code-right"@click="navTo('/pages/tabbar-5/info')">
               <text class="font-sizes">修改</text>
               <image src="../../static/white-arrow.png" mode="" />
@@ -106,6 +109,16 @@ export default {
     };
   },
   methods: {
+	  copyData() {
+	  	uni.setClipboardData({
+	  	    data: this.memberInfo.member_no,
+	  	    success: function () {
+	  	        uni.showToast({
+	  	        	title:"编码已复制"
+	  	        })
+	  	    }
+	  	});
+	  },
     async initData(){
       this.isLogin = this.$cache.get("token") ? true : false;
       if (this.$cache.get("token")) {
