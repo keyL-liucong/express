@@ -118,16 +118,18 @@
 				</view>
 			</view>
 		</view>
+		
 		<uni-popup ref="showimage" :type="type" :mask-click="true">
-			<tuiPoster v-if="showModel == true" :code="inviteData.code" :codeImg="codeImg"></tuiPoster>
-			<!-- <view class="uni-image">
+			
+			<view class="uni-image">
 				<canvas @click.stop="" class="canvas-element" canvas-id="my-canvas"></canvas>
-				<image class="pop-image" src="https://static.51mitui.com/default/invite.png" mode="scaleToFill" />
+				<!-- <image class="pop-image" src="https://static.51mitui.com/default/invite.png" mode="scaleToFill" /> -->
 				<view class="uni-image-close tui-center" @click="cancel()">
 					<tui-button type="warning" width="240rpx" height="80rpx" :size="24" @click="saveShare">保存图片</tui-button>
 				</view>
-			</view> -->
+			</view>
 		</uni-popup>
+		<!-- <tuiPoster v-if="showModel == true" :code="inviteData.code" :codeImg="codeImage"></tuiPoster> -->
 	</view>
 </template>
 
@@ -141,18 +143,30 @@
 		},
 		data() {
 			return {
-				inviteData:[],
+				context:null,
+				inviteData:{
+					code:"AHJADA"
+				},
 				type: '',
 				showModel:false,
-				codeImage:"http://static.51mitui.com/20210514/daa51a6691d4da132add7dcd0dc33427.png"
+				headerImg:"https://static.51mitui.com/default/invite.png",
+				codeImage:"https://static.51mitui.com/20210514/daa51a6691d4da132add7dcd0dc33427.png"
 			};
 		},
-		async created() {
+		async onLoad() {
 			this.initData();
 		},
+		onReady() {
+			this.context = uni.createCanvasContext('my-canvas', this)
+		},
 		methods: {
-			initData() {
-				
+			async initData() {
+				// let _this = this;
+				// await this.$api.getSellerInfo().then(function(res){
+				// 	if(res.data) {
+				// 		_this.inviteData = res.data;
+				// 	}
+				// })
 			},
 			copyCode() {
 				let data = this.shareCode;
@@ -165,17 +179,107 @@
 				    }
 				});
 			},
-			shareImage() {
-				this.type = "center"
-				this.$nextTick(() => {
-					this.$refs['showimage'].open()
-				})
-				this.showModel = true
+			async shareImage() {
 				
+				uni.showLoading({
+					title:"生成中"
+				})
+				
+				let hW = uni.upx2px(600);
+				let hH = uni.upx2px(1000);
+				let headerImg = await this.getImageInfo(this.headerImg)
+				this.context.drawImage(headerImg.path, 0, 0, hW, hH)
+				let fontSize = uni.upx2px(32);
+
+				this.context.setFontSize(fontSize)
+				this.context.setFillStyle('#FFFFFF');
+				this.context.fillText(this.inviteData.code, 60, 500)
+				
+				let codeW = uni.upx2px(160);
+				let codeH = uni.upx2px(160);
+				let codeImg = await this.getImageInfo(this.codeImage)
+				this.context.drawImage(codeImg.path, 205, 430, codeW, codeH)
+					
+				//延迟渲染
+				setTimeout(()=>{
+					this.context.draw(true)
+					uni.hideLoading()
+					this.type = "center"
+					this.$nextTick(() => {
+						this.$refs['showimage'].open()
+					})
+				},500)
 			},
 			cancel() {
 				this.$refs['showimage'].close()
-			}
+			},
+			saveShare() {
+				let _this = this;
+				uni.getSetting({
+					success(res) {
+						if (Object.keys(res.authSetting).length > 0) {
+							//判断是否有相册权限
+							if (res.authSetting['scope.writePhotosAlbum'] == undefined) {
+								//打开设置权限
+								uni.openSetting({
+									success(res) {
+										console.log('设置权限', res.authSetting)
+									}
+								})
+							} else {
+								if (!res.authSetting['scope.writePhotosAlbum']) {
+									//打开设置权限
+									uni.openSetting({
+										success(res) {
+											console.log('设置权限', res.authSetting)
+										}
+									})
+								}
+							}
+						} else {
+							return
+						}
+					}
+				})
+				uni.canvasToTempFilePath({
+					canvasId: 'my-canvas',
+					quality: 1,
+					success: function(res) {
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePath,
+							success(res) {
+								uni.showToast({
+									title: '已保存到相册',
+									icon: 'success',
+									duration: 2000
+								})
+								setTimeout(() => {
+									_this.$refs['showimage'].close()
+								}, 2000)
+							}
+						})
+					},
+					fail: function(err) {
+						console.error(JSON.stringify(err))
+					}
+				})
+			},
+			//获取图片
+			getImageInfo(imgSrc){
+				return new Promise((resolve, reject) => {
+					uni.getImageInfo({
+						src: imgSrc,
+						success: (image) => {
+							resolve(image);
+							console.log('获取图片成功',image)
+						},
+						fail: (err) => {
+							reject(err);
+							console.log('获取图片失败',err)
+						}
+					});
+				});
+			},
 		}
 	};
 </script>
