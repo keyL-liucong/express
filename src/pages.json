@@ -164,7 +164,13 @@
             "style": {
                 "navigationBarTitleText": "地址簿"
             }
-        }
+        },
+		{
+		    "path": "pages/freight/index",
+		    "style": {
+		        "navigationBarTitleText": "运费试算"
+		    }
+		}
 
     ],
     "tabBar": {

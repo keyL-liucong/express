@@ -149,8 +149,14 @@
 				type: '',
 				showModel:false,
 				headerImg:"https://static.51mitui.com/default/invite.png",
-				codeImage:"https://static.51mitui.com/20210514/daa51a6691d4da132add7dcd0dc33427.png"
 			};
+		},
+		
+		onShareAppMessage() {
+			return {
+				title:"注册领取新人大礼包!",
+				path:"/pages/index/index?scene="+this.inviteData.code
+			}
 		},
 		async onLoad() {
 			this.initData();
@@ -184,11 +190,14 @@
 				});
 			},
 			async shareImage() {
-				
+				let qrcodeResult = await this.$api.getQrcode();
+				if(qrcodeResult.status == 0) {
+					this.$toast("生成失败");
+					return;
+				}
 				uni.showLoading({
 					title:"生成中"
 				})
-				
 				let hW = uni.upx2px(600);
 				let hH = uni.upx2px(1000);
 				let headerImg = await this.getImageInfo(this.headerImg)
@@ -201,7 +210,7 @@
 				
 				let codeW = uni.upx2px(160);
 				let codeH = uni.upx2px(160);
-				let codeImg = await this.getImageInfo(this.codeImage)
+				let codeImg = await this.getImageInfo(qrcodeResult.data.src)
 				this.context.drawImage(codeImg.path, 205, 430, codeW, codeH)
 					
 				//延迟渲染

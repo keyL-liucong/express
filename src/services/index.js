@@ -356,4 +356,11 @@ export default {
 			method: 'POST'
 		})	
 	},
+	// 获取小程序二维码
+	getQrcode(data) {
+		return request({
+			url: 'seller/getQrcode',
+			data,
+		})	
+	},
 }
