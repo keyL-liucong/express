@@ -14,7 +14,7 @@
 							<text class="get">收</text>
 							<text class="get_address">收件地址</text>
 						</view>
-						<view class="tui-right tab-active-no tui-col-4">
+						<view class="tui-right tab-active-no tui-col-4" @click="clear">
 							<text class="clear">清空</text>
 						</view>
 					</view>
@@ -260,6 +260,8 @@
 		components: {},
 		data() {
 			return {
+				isEnd:false,
+				isSubmit:false,
 				currentTab: 1,
 				indexEn:'',
 				currentCountryName:"请选择",
@@ -270,6 +272,7 @@
 					stateName:"请选择",
 					stateData:[]
 				},
+				token:"",
 				postEnData:{
 					realname:"",
 					mobile:"",
@@ -278,9 +281,11 @@
 					is_china:0,
 					city_id:"",
 					state_id:"",
+					dist_id:"",
 					zipcode:"",
 					address:"",
 					company_name:"",
+					
 				},
 				requstCountry:{
 					is_china:1,
@@ -289,6 +294,7 @@
 					currentProv:"请选择",
 					currentProvId:"",
 					currentCity:"请选择",
+					currentCityId:"",
 					country:"",
 					country_id:"",
 					currentTab:0,
@@ -303,6 +309,7 @@
 					currentProv:"请选择",
 					currentProvId:"",
 					currentCity:"请选择",
+					currentCityId:"",
 					country:"",
 					country_id:"",
 					currentTab:0,
@@ -323,6 +330,7 @@
 					currentProv:requstCountry.currentProv,
 					currentProvId:requstCountry.currentProvId,
 					currentCity:requstCountry.currentCity,
+					currentCityId:requstCountry.currentCityId,
 					country:requstCountry.country,
 					country_id:requstCountry.country_id,
 					currentTab:requstCountry.currentTab,
@@ -330,8 +338,13 @@
 					currentId:requstCountry.currentId
 				}
 				this.postEnData.country_id = this.sureData.country_id;
-				this.postEnData.state_id = this.sureData.currentProvId;
-				this.postEnData.city_id = this.sureData.currentCity;
+				if (this.currentTab == 1) {
+					this.postEnData.state_id = this.sureData.currentProvId;
+					this.postEnData.city_id = this.sureData.currentCityId;
+				} else {
+					this.postEnData.city_id = this.sureData.currentProvId;
+					this.postEnData.dist_id = this.sureData.currentCityId;
+				}
 				this.$refs['showpopup'].close()
 			},
 			checkData(e, currentTab) {
@@ -344,7 +357,7 @@
 					this.requstCountry.currentProv = e.name;
 					this.requstCountry.currentProvId = e.id;
 				} else if(currentTab == 2) {
-					
+					this.requstCountry.currentCityId = e.id;
 					this.requstCountry.currentCity = e.name;
 				}
 				this.requstCountry.currentId = e.id;
@@ -372,51 +385,83 @@
 				})
 			},
 			async submit() {
-				if(this.currentTab == 1) {
-					let data = this.postEnData;
-					let _this = this;
-					if(!data.realname) {
-						this.$toast("请填写收货人姓名");
-						return;
-					}
-					if(!data.country_id) {
-						this.$toast("请选择国家");
-						return;
-					}
-					if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(data.mobile)) {
-					  this.$toast("请输入正确的手机号码");
-					  return;
-					}
-					if(!data.mobile_code) {
-						this.$toast("请输入电话区号");
-						return;
-					}
-					if(!data.zipcode) {
-						this.$toast("请输入邮政编码");
-						return;
-					}
-					
-					if (!data.address) {
-					  this.$toast("请填写详细地址信息");
-					  return;
-					}
-					uni.showLoading({
-						title:"保存中"
-					})
-					await this.$api.addReceivedAddr(data).then(function(res) {
-						uni.hideLoading();
-						if(res.status == 1) {
-							_this.$toast("保存成功")
-						} else {
-							_this.$toast("保存失败");
-						}
-					})
+				if(this.isEnd) {
+					this.$toast("您已经添加过");
+					return;
 				}
+				if (this.isSubmit) {
+					return;
+				}
+				let data = this.postEnData;
+				let _this = this;
+				if(!data.realname) {
+					this.$toast("请填写收货人姓名");
+					return;
+				}
+				if(!data.country_id) {
+					this.$toast("请选择国家");
+					return;
+				}
+				if(this.currentTab == 1 && !data.state_id) {
+					this.$toast("请选择州(省)");
+					return;
+				}
+				if(this.currentTab == 1 && !data.city_id) {
+					this.$toast("请选择城市");
+					return;
+				}
+				if(this.currentTab == 2 && !data.city_id) {
+					this.$toast("请选择城市");
+					return;
+				}
+				if(this.currentTab == 2 && !data.dist_id) {
+					this.$toast("请选择区");
+					return;
+				}
+				if (!data.mobile) {
+				  this.$toast("请输入手机号码");
+				  return;
+				}
+				if(!data.mobile_code) {
+					this.$toast("请输入电话区号");
+					return;
+				}
+				if(!data.zipcode) {
+					this.$toast("请输入邮政编码");
+					return;
+				}
+				
+				if (!data.address) {
+				  this.$toast("请填写详细地址信息");
+				  return;
+				}
+				data.token = this.token;
+				data.openid = this.$cache.get("openId");
+				this.isSubmit = true;
+				uni.showLoading({
+					title:"保存中"
+				})
+				await this.$api.addInviteAddr(data).then(function(res) {
+					uni.hideLoading();
+					_this.isEnd = true;
+					if(res.status == 1) {
+						uni.showToast({
+							icon:"success",
+							title:"保存成功"
+						})
+						
+					} else {
+						_this.$toast(res.info);
+					}
+					_this.isSubmit = false;
+				})
+				
 			},
 			tapTab(e) {
 				if(e == this.currentTab) {
 					return;
 				}
+				this.postEnData.is_china = e == 2 ? 1 : 0;
 				this.currentTab = e;
 				this.requstCountry = this.sureData = {
 					is_china:1,
@@ -431,16 +476,39 @@
 					popupTitle:"",
 					currentId:""
 				},
-				this.postEnData.country_id = "";
-				this.postEnData.state_id = "";
-				this.postEnData.city_id = "";
-				console.log(this.postEnData);
+				this.postEnData = {
+					realname:"",
+					mobile:"",
+					mobile_code:"",
+					country_id:"",
+					is_china:0,
+					city_id:"",
+					state_id:"",
+					dist_id:"",
+					zipcode:"",
+					address:"",
+					company_name:"",
+				};
+			},
+			clear() {
+				this.postEnData = {
+					realname:"",
+					mobile:"",
+					mobile_code:"",
+					country_id:"",
+					is_china:0,
+					city_id:"",
+					state_id:"",
+					dist_id:"",
+					zipcode:"",
+					address:"",
+					company_name:"",
+				};
 			}
 		},
-		async created() {
-			
-		},
-		mounted() {},
+		onLoad(e) {
+			this.token = e.token
+		}
 	};
 </script>
 <style lang='scss' scoped>

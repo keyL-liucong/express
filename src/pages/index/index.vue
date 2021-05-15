@@ -91,7 +91,7 @@
         <!-- write part -->
         <view class="write-address-part">
             <text>海外地址不会填？邀请收件人填写</text>  
-            <button @click="navTo('/pages/invite/address')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
+            <button open-type="share" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
 		<view class="app-order">
 			<view class="app-order-wrap">
@@ -199,7 +199,7 @@ export default {
 	onShareAppMessage(res) {
 		let token = this.$cache.get('token');
 		return {
-			title:"龙马邀请你填写收件地址",
+			title:"邀请你填写收件地址",
 			path:"pages/invite/address?token="+token
 		}
 	}

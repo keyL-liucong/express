@@ -363,4 +363,12 @@ export default {
 			data,
 		})	
 	},
+	// 新增邀请地址
+	addInviteAddr(data) {
+	    return request({
+	        url: 'invite/address',
+	        data,
+	        method: 'POST'
+	    })
+	},
 }
