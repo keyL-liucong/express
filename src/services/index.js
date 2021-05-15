@@ -91,6 +91,13 @@ export default {
             data
         })
     },
+	// 收件地址薄详情
+	getReceivedDetail(data) {
+	    return request({
+	        url: 'address/getReceivedDetail',
+	        data
+	    })
+	},
     // 寄件地址薄
     // 请求参数：
     // page：1，//当前页

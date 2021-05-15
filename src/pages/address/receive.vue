@@ -8,20 +8,7 @@
 				<view class="tui-center tui-col-6" :class="navShow == 'right' ? 'tab-active-right' : 'tab-right'" @click="handleNavShow('right')">港台地址</view>
 			</view>
 		</view>
-      <!-- <view class="title">
-        <view
-          @click="handleNavShow('left')"
-          class="title-left"
-          :class="[navShow === 'left' ? 'selected' : '']"
-          >国际</view
-        >
-        <view
-          @click="handleNavShow('right')"
-          class="title-right"
-          :class="[navShow === 'right' ? 'selected-2' : '']"
-          >港台地区</view
-        >
-      </view> -->
+     
       <view class="buy-content" v-if="navShow === 'left'">
         <view class="right-progress">
           <view class="content">
@@ -30,7 +17,7 @@
                 <view>收</view>
                 <view>收件地址</view>
               </view>
-              <view>清空</view>
+              <view @click="clearData">清空</view>
             </view>
             <view class="line-2"> 注意：国际收件人信息请用英文填写 </view>
             <view class="line-3">
@@ -304,7 +291,6 @@
             <view class="line-3">
               <view class="left">
                 <view>公司名称</view>
-                <view>Company Address</view>
               </view>
               <view class="right">
                 <input type="text" placeholder="(选填)如：EXPRESS CO,LTD" />
@@ -317,7 +303,7 @@
     <view class="row default-row">
       <text class="tit">设为默认寄件地址</text>
       <switch
-        :checked="addressData.is_default == 1"
+        :checked="postData.is_default == 1"
         color="#ff7100"
         @change="switchChange"
       />
@@ -359,6 +345,27 @@ export default {
     };
   },
   methods: {
+	clearData() {
+		let postData = this.postData;
+		this.postData = {
+			realname: "",
+			mobile: "",
+			mobile_code: "",
+			country_id: "",
+			is_china: "",
+			city_id: "",
+			dist_id: "",
+			state_id: "",
+			zipcode: "",
+			address: "",
+			is_default: "",
+			address_id: postData.address_id,
+			company_name: "",
+		} 
+		this.country_name = "";
+		this.cityName = "";
+		this.stateName = "";
+	},
     switchChange(e) {
       this.postData.is_default = e.detail.value;
     },
@@ -449,7 +456,17 @@ export default {
       this.regionVisible = false;
     },
   },
-  async onLoad() {
+  async onLoad(option) {
+	  console.log(option);
+	 if (option.type === "edit") {
+		 let res = await this.$api.getReceivedDetail({address_id:option.address_id});
+		 console.log(res);
+		 this.postData = res.data;
+		 this.postData.address_id = res.data.id;
+		 this.country_name = res.data.country;
+		 this.stateName = res.data.state;
+		 this.cityName = res.data.city;
+	 }
     if (this.navShow == "left") {
       let res = await this.$api.getCountryAddrList({ is_china: 0 });
       this.regionList = res.data;

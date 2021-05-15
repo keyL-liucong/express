@@ -68,7 +68,8 @@ export default {
       this.initDate();
     },
     handleDefault(e){
-      this.$api.setDefaultAddr({address_id:e.detail.value,type:this.type});
+	  let type = this.currentTab == 0 ? 2 : 1;
+      this.$api.setDefaultAddr({address_id:e.detail.value,type:type});
       this.initDate();
     },
     async initDate(){
