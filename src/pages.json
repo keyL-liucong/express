@@ -69,16 +69,7 @@
 		{
 		    "path": "pages/tabbar-5/account",
 		    "style": {
-		        "navigationBarTitleText": "我的余额",
-				"backgroundColor":"#F3F3F3",
-				"navigationStyle": "custom",
-				"app-plus": {
-				    "titleNView": {
-						"titleText":"我的余额",
-						"titleColor":"#FFFFFF",
-				        "backgroundImage": "linear-gradient(to right, #ff9900, #ff7100)"
-				    }
-				}
+		        "navigationBarTitleText": "我的余额"
 		    }
 		},
 		{

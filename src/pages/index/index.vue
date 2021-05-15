@@ -211,11 +211,10 @@ export default {
 	.space{
 		height: 1rem;
 	}
-	// height: 100vh;
+	height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding: 20rpx 30rpx;
     background: #f3f3f3;
 	
@@ -265,11 +264,7 @@ export default {
         box-sizing: border-box;
         margin-top: 20rpx;
         margin-bottom: 20rpx;
-        // position: absolute;
-        /* overflow: hidden; */
-        // z-index: 99;
-        // bottom: -80rpx;
-        // left: 0;
+        box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
         .tui-banner-swiper {
             width: 100%;
             height: 240rpx;
@@ -340,6 +335,7 @@ export default {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
         margin-bottom: 16rpx;
         .piece {
             width: calc(50% - 2rpx);
@@ -414,7 +410,9 @@ export default {
         box-sizing: border-box;
 		border-radius: 16rpx;
 		overflow: hidden;
-        margin-bottom: 20rpx;
+		
+        margin: 20rpx 0rpx;
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
         > text {
             font-weight: bold;
         }

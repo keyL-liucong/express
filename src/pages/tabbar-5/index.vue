@@ -63,37 +63,40 @@
       </view>
     </view>
     <view class="item-list-wrap">
-      <tui-list-view color="#777">
-      <!--  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
-          邀请下单 test
-        </tui-list-cell> -->
-       <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
-          我的运费
-        </tui-list-cell> -->
-       <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
-          我的运单
-        </tui-list-cell> -->
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/tabbar-5/warehouse')">
-          自寄到仓地址
-        </tui-list-cell>
-       <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
-          自提点查询
-        </tui-list-cell> -->
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
-          我的推荐
-        </tui-list-cell>
-		<tui-list-cell arrow padding="30rpx" color="#000000">
-		  <button open-type="contact" class="contact-btn">
-			  <view class="contact-btn-text">在线客服</view>
-		  </button>
-		</tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/feedback/index')">
-          投诉建议
-        </tui-list-cell>
-        <tui-list-cell arrow padding="30rpx" color="#000000" v-if="isLogin" @click="handleExit">
-          退出
-        </tui-list-cell>
-      </tui-list-view>
+		<view class="item-list-wrap_data">
+			<tui-list-view color="#777">
+			<!--  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+			    邀请下单 test
+			  </tui-list-cell> -->
+			 <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+			    我的运费
+			  </tui-list-cell> -->
+			 <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+			    我的运单
+			  </tui-list-cell> -->
+			  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/tabbar-5/warehouse')">
+			    自寄到仓地址
+			  </tui-list-cell>
+			 <!-- <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+			    自提点查询
+			  </tui-list-cell> -->
+			  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
+			    我的推荐
+			  </tui-list-cell>
+					<tui-list-cell arrow padding="30rpx" color="#000000">
+					  <button open-type="contact" class="contact-btn">
+						  <view class="contact-btn-text">在线客服</view>
+					  </button>
+					</tui-list-cell>
+			  <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/feedback/index')">
+			    投诉建议
+			  </tui-list-cell>
+			  <tui-list-cell arrow padding="30rpx" color="#000000" v-if="isLogin" @click="handleExit">
+			    退出
+			  </tui-list-cell>
+			</tui-list-view>
+		</view>
+      
     </view>
   </view>
 </template>
@@ -177,6 +180,7 @@ export default {
 <style lang='scss' scoped>
 .app-container {
   background: #f3f3f3;
+  height: 100vh;
   .font-size{
 	 font-size: 26rpx;
 	 font-weight: 900;
@@ -262,8 +266,10 @@ export default {
     }
   }
   .center-part-wrap {
+	  
     padding: 0 30rpx;
     .center-part {
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
       position: relative;
       bottom: 51px;
       display: flex;
@@ -288,7 +294,12 @@ export default {
     position: relative;
     bottom: 70rpx;
     padding: 0 30rpx;
-    border-radius: 16rpx;
+    
+	.item-list-wrap_data{
+		border-radius: 16rpx;
+		overflow: hidden;
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
+	}
   }
 }
 .contact-btn{

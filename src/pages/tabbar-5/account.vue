@@ -167,25 +167,17 @@
 </script>
 
 <style lang='scss' scoped>
-	page{
-		background: #F3F3F3 !important;
-	}
+	
 	.app-container{
 		background: #F3F3F3;
 		height: 100vh;
 		.top-part {
-			height: 125px;
-			background-image: linear-gradient(to right, #ff9900, #ff7100);
-			border-bottom-right-radius: 50rpx;
-			border-bottom-left-radius: 50rpx;
-			color: #fff;
-			padding-top: 100rpx;
+			padding: 20rpx 20rpx;
 		}
 	}
 	.center-part-wrap{
 		height: 285rpx;
 		width: 710rpx;
-		margin: 60rpx 0rpx 0rpx 20rpx;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
 		background-image: url("https://static.51mitui.com/wxMini/static/account.png");
@@ -237,8 +229,6 @@
 		}
 	}
 	.app-body{
-		position: relative;
-		top: 150rpx;
 		padding: 20rpx;
 		.middle-list{
 			background-color: #FFFFFF;

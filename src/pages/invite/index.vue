@@ -227,7 +227,6 @@
 						font-weight: bold;
 					}
 				}
-				
 				.apply{
 					font-size: 24rpx;
 					color: #707070;

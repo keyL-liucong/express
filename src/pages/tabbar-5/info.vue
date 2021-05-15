@@ -131,6 +131,11 @@
 		padding: 15px;
 		height: 100vh;
 	}
+	.item-list-wrap{
+		overflow: hidden;
+		border-radius: 16rpx;
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
+	}
 
 	.tui-item-box {
 		width: 100%;
@@ -157,11 +162,10 @@
 	}
 
 	.tui-logo {
-		height: 120rpx;
-		width: 120rpx;
+		height: 60rpx;
+		width: 60rpx;
 		flex-shrink: 0;
 		border-radius: 60rpx;
-		margin: 0rpx 26rpx;
 	}
 	.bottom-btn-box{
 		position: fixed;
