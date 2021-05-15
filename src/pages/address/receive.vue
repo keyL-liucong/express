@@ -1,7 +1,14 @@
 <template>
   <view class="app-container">
     <view class="progress-box">
-      <view class="title">
+		
+		<view class="app-body-tab">
+			<view class="tui-flex tui-align-between">
+				<view class="tui-center tui-col-6" :class="navShow == 'left' ? 'tab-active-left' : 'tab-left'" @click="handleNavShow('left')">国际</view>
+				<view class="tui-center tui-col-6" :class="navShow == 'right' ? 'tab-active-right' : 'tab-right'" @click="handleNavShow('right')">港台地址</view>
+			</view>
+		</view>
+      <!-- <view class="title">
         <view
           @click="handleNavShow('left')"
           class="title-left"
@@ -14,7 +21,7 @@
           :class="[navShow === 'right' ? 'selected-2' : '']"
           >港台地区</view
         >
-      </view>
+      </view> -->
       <view class="buy-content" v-if="navShow === 'left'">
         <view class="right-progress">
           <view class="content">
@@ -382,6 +389,7 @@ export default {
       console.log(this.postData);
       this.postData.is_china = this.navShow == 'left' ? 0 : 1;
       let res = await this.$api.addReceivedAddr(this.postData);
+
       this.$toast(res.info);
       this.$href.navigateBack()
     },
@@ -453,6 +461,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .app-container {
+	background: #f3f3f3;
   padding: 40rpx 30rpx;
   padding-bottom: 120rpx;
   .progress-box {
@@ -488,7 +497,7 @@ export default {
     }
     .buy-content {
       display: flex;
-      padding: 40rpx;
+      padding: 20rpx;
       background: #fff;
       border-radius: 24rpx;
       .left-progress {
@@ -627,4 +636,20 @@ export default {
     }
   }
 }
+
+.app-body-tab {
+				height: 96rpx;
+				line-height: 104rpx;
+				background-color: #FFF0E5;
+
+				.tab-active-left {
+					border-top-right-radius: 20rpx;
+					background-color: #FFFFFF;
+				}
+				.tab-active-right{
+					border-top-left-radius: 20rpx;
+					background-color: #FFFFFF;
+				}
+				
+			}
 </style>

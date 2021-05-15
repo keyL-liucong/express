@@ -8,8 +8,8 @@
         <radio-group color="#ff7100" :value="1" @change="handleDefault">
           <view class="addr-itme" v-for="(item,index) in addrList" :key="index">
             <view class="row">
-              <text>{{ item.realname }}</text>
-              <text>{{ itme.mobile }}</text>
+              <text class="name-text">{{ item.realname }}</text>
+              <text class="mobile-text">{{ item.mobile }}</text>
             </view>
             <view class="row">{{ item.address }}</view>
             <view class="radio-row">
@@ -55,31 +55,30 @@ export default {
     };
   },
   onLoad(option){
-    this.currentTab = option.currentTab;
+	  if(option.currentTab) {
+		  this.currentTab = option.currentTab;
+	  }
   },
   methods: {
     navTo(url) {
         this.$href.navigateTo({ url: url });
     },
     change(e) {
-      console.log(e);
       this.currentTab = e.index;
       this.initDate();
     },
     handleDefault(e){
-      console.log(e);
       this.$api.setDefaultAddr({address_id:e.detail.value,type:this.type});
       this.initDate();
     },
     async initDate(){
       if(this.currentTab == 0){
-        let res = await this.$api.getReceivedAddr({page:1,size:100});
+        let res = await this.$api.getReceivedAddr({page:1,size:50});
         this.addrList = res.data.list;
       }else{
-        let res = await this.$api.getSendAddrList({page:1,size:100});
+        let res = await this.$api.getSendAddrList({page:1,size:50});
         this.addrList = res.data.list;
       }
-      
     },
     async handleDel(address_id){
       let res = await this.$api.delAddress({address_id,type:this.type});
@@ -87,7 +86,12 @@ export default {
       this.initDate();
     },
     handleEdit(address_id){
-      this.$href.navigateTo({url:`/pages/address/send?address_id=${address_id}&type=edit`});
+		if(this.currentTab == 0) {
+			this.$href.navigateTo({url:`/pages/address/receive?address_id=${address_id}&type=edit`});
+		} else {
+			this.$href.navigateTo({url:`/pages/address/send?address_id=${address_id}&type=edit`});
+		}
+      
     }
 
   },
@@ -95,7 +99,6 @@ export default {
   },
   onShow() {
     this.initDate();
-    console.log('omsjow');
   },
   mounted() {
      
@@ -105,10 +108,12 @@ export default {
 <style lang='scss' scoped>
 .app-container {
   background: #f3f3f3;
+  height: 100vh;
   padding-bottom: 140rpx;
   .tabs-box {
     background: #fff;
     width: 100%;
+	
     display: flex;
     padding-left: 20rpx;
     position: fixed;
@@ -173,5 +178,8 @@ export default {
       color: #fff;
     }
   }
+}
+.name-text{
+	margin-right: 20rpx;
 }
 </style>
