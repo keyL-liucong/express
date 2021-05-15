@@ -516,7 +516,8 @@ export default {
       display: flex;
       padding: 20rpx;
       background: #fff;
-      border-radius: 24rpx;
+	  border-bottom-left-radius: 24rpx;
+	  border-bottom-right-radius: 24rpx;
       .left-progress {
         display: flex;
         flex-direction: column;

@@ -45,19 +45,19 @@
     <view class="center-part-wrap">
       <view class="center-part">
         <view class="center-box" @click="navTo('/pages/address/index')">
-          <img src="../../static/center-1.png" alt="" />
+          <img src="https://static.51mitui.com/wxMini/static/center-1.png" alt="" />
           <text class="font-size">地址簿</text>
         </view>
         <view class="center-box" @click="navTo('/pages/freight/index')">
-          <img src="../../static/center-2.png" alt="" />
+          <img src="https://static.51mitui.com/wxMini/static/center-2.png" alt="" />
           <text class="font-size">运费与实效</text>
         </view>
         <view class="center-box" @click="navTo('/pages/contraband/index')">
-          <img src="../../static/center-3.png" alt="" />
+          <img src="https://static.51mitui.com/wxMini/static/center-3.png" alt="" />
           <text class="font-size">违禁品</text>
         </view>
         <view class="center-box" @click="navTo('/pages/coupon/index')">
-          <img src="../../static/center-4.png" alt="" />
+          <img src="https://static.51mitui.com/wxMini/static/center-4.png" alt="" />
           <text class="font-size">申请发票</text>
         </view>
       </view>

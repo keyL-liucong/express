@@ -194,11 +194,11 @@
 			padding: 20rpx 20rpx;
 		}
 		.top-part {
-			height: 230rpx;
+			height: 210rpx;
 			width: 710rpx;
 			background-size: 100% 100%;
 			background-repeat: no-repeat;
-			background-image: url(../../static/invite_bg.png);
+			background-image: url(https://static.51mitui.com/wxMini/static/invite_bg.png);
 			.center-part-wrap{
 				padding: 20rpx;
 				vertical-align: middle;

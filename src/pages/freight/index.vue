@@ -14,7 +14,7 @@
 					
 				</view>
 				<view class="tui-center  tui-flex-1">
-					<image class="from-to" src="../../static/from_to.png" mode="widthFix"></image>
+					<image class="from-to" src="https://static.51mitui.com/wxMini/static/from_to.png" mode="widthFix"></image>
 				</view>
 				<view class="tui-center tui-flex-1">
 					<picker @change="bindPickerChange" :value="countryEnData.indexEn" :range="countryEnData.countryEn" range-key="name">

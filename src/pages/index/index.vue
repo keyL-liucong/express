@@ -431,6 +431,7 @@ export default {
 		width: 100%;
 		border-radius: 16rpx;
 		overflow: hidden;
+		display: none;
 		background-color: #FFFFFF;
 		.app-order-wrap{
 			padding: 20rpx;

@@ -188,7 +188,7 @@
 		margin: 60rpx 0rpx 0rpx 20rpx;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
-		background-image: url("../../static/account.png");
+		background-image: url("https://static.51mitui.com/wxMini/static/account.png");
 		.center-part{
 			padding: 30rpx;
 			.allowed-money{
