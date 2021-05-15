@@ -82,8 +82,10 @@
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/coupon/index')">
           我的推荐
         </tui-list-cell>
-		<tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/feedback/index')">
-		  在线客服
+		<tui-list-cell arrow padding="30rpx" color="#000000">
+		  <button open-type="contact" class="contact-btn">
+			  <view class="contact-btn-text">在线客服</view>
+		  </button>
 		</tui-list-cell>
         <tui-list-cell arrow padding="30rpx" color="#000000" @click="navTo('/pages/feedback/index')">
           投诉建议
@@ -288,5 +290,20 @@ export default {
     padding: 0 30rpx;
     border-radius: 16rpx;
   }
+}
+.contact-btn{
+	padding: 0rpx;
+	margin: 0rpx;
+	line-height: inherit;
+	background-color: rgba(255, 255, 255, 0);
+}
+.contact-btn::after{
+	border: 0px;
+	
+}
+.contact-btn-text{
+	text-align: left;
+	color: #000000;
+	font-size: 28rpx;
 }
 </style>
