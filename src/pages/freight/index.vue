@@ -3,7 +3,15 @@
 		<view class="app-body">
 			<view class="tui-flex">
 				<view class="tui-center tui-flex-1">
-					<text class="from">广州深圳</text>
+					<picker
+					  :value="value"
+					  mode="multiSelector"
+					  @change="picker"
+					  @columnchange="columnPicker" :range="multiArray" class="pick"
+					>
+					 <text class="from" @click="pickerClick"> {{ addressData.receiverRegionName }}</text>
+					</picker>
+					
 				</view>
 				<view class="tui-center  tui-flex-1">
 					<image class="from-to" src="../../static/from_to.png" mode="widthFix"></image>
@@ -189,24 +197,7 @@
 				</view>
 			</view>
 		</uni-popup>
-		<view class="tui-mask-screen" :class="[showPickerStatus?'tui-mask-show':'']" @tap="hidePicker"></view>
-		<view class="tui-picker-box" :class="[showPickerStatus?'tui-pickerbox-show':'']">
-			<view class="picker-header tui-list-item">
-				<view class="btn-cancle" hover-class="tui-opcity" :hover-stay-time="150" @tap.stop="hidePicker">取消</view>
-				<view class="btn-sure" hover-class="tui-opcity" :hover-stay-time="150" @tap.stop="picker">确定</view>
-			</view>
-			<picker-view indicator-style="height: 50px;" class="picker-view" :value="value" @change="columnPicker">
-				<picker-view-column>
-					<view v-for="(item,index) in proviceArr" :key="index" class="item">{{item}}</view>
-				</picker-view-column>
-				<picker-view-column>
-					<view v-for="(item,index) in cityArr" :key="index" class="item">{{item}}</view>
-				</picker-view-column>
-				<picker-view-column>
-					<view v-for="(item,index) in districtArr" :key="index" class="item">{{item}}</view>
-				</picker-view-column>
-			</picker-view>
-		</view>
+		<tui-bottom-popup :show="popupShow"> </tui-bottom-popup>
 	</view>
 </template>
 
@@ -221,6 +212,7 @@
 		data() {
 			return {
 				showPickerStatus: false,
+				popupShow: false,
 				typeList: [],
 				weight:0,//重量
 				currentWeight:0,
@@ -238,9 +230,103 @@
 					currentCountryName:"",
 					indexEn:0
 				},
+				addressData: {
+				  receiverDistrictId: "",
+				  receiverRegionName: "",
+				  receiverRegionShow: "",
+				  prov_id:"",
+				  city_id:"",
+				  dist_id:"",
+				},
+				selectList: [], // 接口返回picker数据,此处就直接使用本地测试数据
+				multiArray: [], // picker数据
+				provinces: [],
+				citys: [],
+				districts: [],
+				value: [0, 0, 0],
 			};
 		},
 		methods: {
+			columnPicker: function (e, p) {
+			  // 第几列 下标从0开始
+			  let column = e.detail.column;
+			  // 第几行 下标从0开始
+			  let value = e.detail.value;
+			  if (column === 0) {
+			    this.provinceChoose(this.provinces[value].id);
+			    this.value = [value, 0, 0];
+			  } else if (column === 1) {
+			    this.cityChoose(this.citys[value].id);
+			    this.value = [this.value[0], value, 0];
+			  }
+			},
+			toArr(object) {
+			  let arr = [];
+			  for (let i in object) {
+			    arr.push(object[i].name);
+			  }
+			  return arr;
+			},
+			picker: function (e) {
+			  let value = e.detail.value;
+			  this.value = value;
+			  // this.addressData.receiverCity = this.citys[value[1]].name;
+			  console.log('object',this.districts[value[2]]);
+			  // this.addressData.receiverDistrict = this.districts[value[2]].name;
+			  this.addressData.receiverDistrictId = this.districts[value[2]].id;
+			  this.addressData.prov_id = this.provinces[value[0]].id;
+			  this.addressData.city_id = this.provinces[value[1]].id;
+			  this.addressData.dist_id = this.provinces[value[2]].id;
+			  this.addressData.receiverRegionName =
+			    this.provinces[value[0]].name +
+			    "" +
+			    this.citys[value[1]].name;
+			},
+			provinceChoose: async function (stateId) {
+			  let citys = await this.$api.getRegion({ parent_id: stateId });
+			  this.citys = citys.data;
+			  let districts = await this.$api.getRegion({
+			    parent_id: this.citys[0].id,
+			  });
+			  this.districts = districts.data;
+			  this.multiArray = [
+			    this.toArr(this.provinces),
+			    this.toArr(this.citys),
+			    this.toArr(this.districts),
+			  ];
+			},
+			cityChoose: async function (cityId) {
+			  
+			  let districts = await this.$api.getRegion({ parent_id: cityId });
+			  this.districts = districts.data;
+			  this.multiArray = [
+			    this.toArr(this.provinces),
+			    this.toArr(this.citys),
+			    this.toArr(this.districts),
+			  ];
+			},
+			pickerClick: async function () {
+			  let provinces = await this.$api.getRegion();
+			  this.provinces = provinces.data;
+			  this.addressData.receiverRegionName = this.provinces[this.value[0]].name
+			  let citysRes = await this.$api.getRegion({
+			    parent_id: this.provinces[this.value[0]].id,
+			  });
+			  this.citys = citysRes.data;
+			  this.addressData.receiverRegionName += this.citys[this.value[0]].name
+			  let districts = await this.$api.getRegion({
+			    parent_id: this.citys[this.value[1]].id,
+			  });
+			  this.districts = districts.data;
+			  this.multiArray = [
+			    this.toArr(this.provinces),
+			    this.toArr(this.citys),
+			    this.toArr(this.districts),
+			  ];
+			},
+			togglePopup() {
+			  this.popupShow = !this.popupShow;
+			},
 			navTo(e) {
 				uni.navigateTo({
 					url: '/pages/feedback/form?id=' + e.id + "&name=" + e.name
@@ -312,7 +398,9 @@
 		async created() {
 			this.getCountry()
 		},
-		mounted() {},
+		mounted() {
+		  this.pickerClick();
+		},
 	};
 </script>
 
@@ -320,7 +408,7 @@
 	.app-container {
 	  background: #f3f3f3;
 	  padding: 15px;  
-	  height: 100%;
+	  height: 100vh;
 	  .common{
 		  border-radius: 16rpx;
 		  background-color: #FFFFFF;
@@ -332,17 +420,17 @@
 		  border-radius: 16rpx;
 		  background-color: #FFFFFF;
 		  overflow: hidden;
-		  padding: 20rpx 40rpx;
+		  padding: 20rpx 20rpx;
 		  margin-bottom: 20rpx;
 		  .from{
-			  font-size: 36rpx;
+			  font-size: 32rpx;
 		  }
 		  .from-to{
 			  width: 194rpx;
 			  height: 20rpx;
 		  }
 		  .to{
-			  font-size: 36rpx;
+			  font-size: 32rpx;
 		  }
 	  }
 	  .app-middle{

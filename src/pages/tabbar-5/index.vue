@@ -48,7 +48,7 @@
           <img src="../../static/center-1.png" alt="" />
           <text class="font-size">地址簿</text>
         </view>
-        <view class="center-box" @click="navTo('/pages/coupon/index')">
+        <view class="center-box" @click="navTo('/pages/freight/index')">
           <img src="../../static/center-2.png" alt="" />
           <text class="font-size">运费与实效</text>
         </view>
