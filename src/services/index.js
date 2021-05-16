@@ -91,13 +91,13 @@ export default {
             data
         })
     },
-	// 收件地址薄详情
-	getReceivedDetail(data) {
-	    return request({
-	        url: 'address/getReceivedDetail',
-	        data
-	    })
-	},
+    // 收件地址薄详情
+    getReceivedDetail(data) {
+        return request({
+            url: 'address/getReceivedDetail',
+            data
+        })
+    },
     // 寄件地址薄
     // 请求参数：
     // page：1，//当前页
@@ -183,6 +183,46 @@ export default {
     getOrderInfo() {
         return request({
             url: 'order/getInfo',
+            data,
+            method: 'POST'
+        })
+    },
+    // 创建订单
+    createOrder(data) {
+        return request({
+            url: 'Order/add',
+            data,
+            method: 'POST'
+        })
+    },
+    // 获取全部申报信息
+    getAllList(data) {
+        return request({
+            url: 'declare/getList',
+            data,
+            method: 'POST'
+        })
+    },
+    //获取一级申报信息
+    getFirstList(data) {
+        return request({
+            url: 'declare/getClassa',
+            data,
+            method: 'POST'
+        })
+    },
+    //获取二级申报信息
+    getSecList(data) {
+        return request({
+            url: 'declare/getSecondLevel',
+            data,
+            method: 'POST'
+        })
+    },
+    // 获取订单预估金额 
+    getOrderPrice(data) {
+        return request({
+            url: 'Order/getAjaxPrice',
             data,
             method: 'POST'
         })
@@ -302,12 +342,12 @@ export default {
             data,
         })
     },
-	SellerInfo(data){
-		return request({
-		    url: 'Seller/getInfo',
-		    data,
-		})
-	},
+    SellerInfo(data) {
+        return request({
+            url: 'Seller/getInfo',
+            data,
+        })
+    },
     // 国家列表 is_china：是否是港澳台。0-否1-是
     getCountryAddrList(data) {
         return request({
@@ -355,27 +395,27 @@ export default {
             method: 'POST'
         })
     },
-	// 获取推荐信息
-	getSellerInfo(data) {
-		return request({
-			url: 'seller/getInfo',
-			data,
-			method: 'POST'
-		})	
-	},
-	// 获取小程序二维码
-	getQrcode(data) {
-		return request({
-			url: 'seller/getQrcode',
-			data,
-		})	
-	},
-	// 新增邀请地址
-	addInviteAddr(data) {
-	    return request({
-	        url: 'invite/address',
-	        data,
-	        method: 'POST'
-	    })
-	},
+    // 获取推荐信息
+    getSellerInfo(data) {
+        return request({
+            url: 'seller/getInfo',
+            data,
+            method: 'POST'
+        })
+    },
+    // 获取小程序二维码
+    getQrcode(data) {
+        return request({
+            url: 'seller/getQrcode',
+            data,
+        })
+    },
+    // 新增邀请地址
+    addInviteAddr(data) {
+        return request({
+            url: 'invite/address',
+            data,
+            method: 'POST'
+        })
+    },
 }
