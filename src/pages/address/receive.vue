@@ -309,7 +309,9 @@
       />
     </view>
     <view class="bottom-btn">
-      <button @click="handleSubmit">确定</button>
+		<view class="bottom-btn-wrapp">
+			 <button @click="handleSubmit">确定</button>
+		</view>
     </view>
   </view>
 </template>
@@ -621,6 +623,8 @@ export default {
   }
   .default-row {
     margin-top: 16upx;
+	border-radius: 16rpx;
+	overflow: hidden;
     .tit {
       flex: 1;
     }
@@ -643,31 +647,37 @@ export default {
     left: 0;
     right: 0;
     background: #fff;
-    padding-bottom: 40rpx;
-    > button {
-      width: 90%;
-      height: 70rpx;
-      border-radius: 35rpx;
-      line-height: 70rpx;
-      background: #ff7100;
-      color: #fff;
-    }
+    
+	.bottom-btn-wrapp{
+		padding: 20rpx 0rpx;
+		> button {
+		  width: 90%;
+		  height: 70rpx;
+		  border-radius: 35rpx;
+		  line-height: 70rpx;
+		  background: #ff7100;
+		  color: #fff;
+		}
+	}
+    
   }
 }
 
 .app-body-tab {
-				height: 96rpx;
-				line-height: 104rpx;
-				background-color: #FFF0E5;
-
-				.tab-active-left {
-					border-top-right-radius: 20rpx;
-					background-color: #FFFFFF;
-				}
-				.tab-active-right{
-					border-top-left-radius: 20rpx;
-					background-color: #FFFFFF;
-				}
+	height: 96rpx;
+	line-height: 104rpx;
+	background-color: #FFF0E5;
+	border-top-left-radius: 16rpx;
+	border-top-right-radius: 16rpx;
+	overflow: hidden;
+	.tab-active-left {
+		border-top-right-radius: 20rpx;
+		background-color: #FFFFFF;
+	}
+	.tab-active-right{
+		border-top-left-radius: 20rpx;
+		background-color: #FFFFFF;
+	}
 				
-			}
+}
 </style>
