@@ -103,9 +103,9 @@ export default {
     // let title = '新增收货地址';
     if (option.type === "edit") {
       // title = "编辑收货地址";
-      this.addressData.address_id = option.address_id;
       let res = await this.$api.getPostDetail({address_id:option.address_id});
       this.addressData = res.data;
+	  this.addressData.address_id = option.address_id;
       this.addressData.receiverRegionShow = this.addressData.prov + ' ' + this.addressData.city + ' ' + this.addressData.dist;
       console.log(res);
       
@@ -216,6 +216,7 @@ export default {
     handleConfirm() {
       var _self = this;
       let data = this.addressData;
+	  console.log(data);
       if (!data.realname) {
         this.$toast("请填写收货人姓名");
         return;
@@ -237,7 +238,7 @@ export default {
           }
         });
       } else {
-        // _self.addressData.address_id = 
+		  
         this.$api.addSendAddr(this.addressData).then(function (res) {
             _self.$toast(res.info);
         });

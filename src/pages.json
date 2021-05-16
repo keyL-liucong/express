@@ -12,6 +12,12 @@
                 "navigationBarTitleText": "我的订单"
             }
         },
+		{
+		    "path": "pages/tabbar-2/shipping",
+		    "style": {
+		        "navigationBarTitleText": "物流详情"
+		    }
+		},
         {
             "path": "pages/tabbar-3/index",
             "style": {
@@ -63,16 +69,7 @@
 		{
 		    "path": "pages/tabbar-5/account",
 		    "style": {
-		        "navigationBarTitleText": "我的余额",
-				"backgroundColor":"#F3F3F3",
-				"navigationStyle": "custom",
-				"app-plus": {
-				    "titleNView": {
-						"titleText":"我的余额",
-						"titleColor":"#FFFFFF",
-				        "backgroundImage": "linear-gradient(to right, #ff9900, #ff7100)"
-				    }
-				}
+		        "navigationBarTitleText": "我的余额"
 		    }
 		},
 		{
@@ -102,19 +99,19 @@
         {
             "path": "pages/login/index",
             "style": {
-                "navigationBarTitleText": "国际快递"
+                "navigationBarTitleText": "赫德物流"
             }
         },
 		{
 		    "path": "pages/login/email",
 		    "style": {
-		        "navigationBarTitleText": "国际快递"
+		        "navigationBarTitleText": "赫德物流"
 		    }
 		},
         {
             "path": "pages/coupon/index",
             "style": {
-                "navigationBarTitleText": "国际快递"
+                "navigationBarTitleText": "赫德物流"
             }
         },
         {
@@ -170,7 +167,13 @@
             "style": {
                 "navigationBarTitleText": "发票申请"
             }
-        }
+        },
+		{
+		    "path": "pages/freight/index",
+		    "style": {
+		        "navigationBarTitleText": "运费试算"
+		    }
+		}
 
     ],
     "tabBar": {

@@ -2,6 +2,7 @@
   <view class="app-container">
     <view class="rece-wrap">
       <view class="title">领券专区</view>
+	  <tuiEmpty source="coupon" emptyText="暂无优惠券" v-if="couponList.length == 0"></tuiEmpty>
       <view class="coupon-part-list" v-if="couponList.length > 0">
         <view
           class="coupon-item"
@@ -39,7 +40,7 @@
 		<view class="app-more_data">
 			<view class="tui-flex mt20" v-for="(item, index) in welfare" :key="index">
 				<view class="tui-col-12">
-					<image :src="item.pic_url" mode="scaleToFill" @click="toWeb(item.link)"></image>
+					<image class="welfare-image" :src="item.pic_url" mode="scaleToFill" @click="toWeb(item.link)"></image>
 				</view>
 			</view>
 		</view>
@@ -48,8 +49,11 @@
 </template>
 
 <script>
+import tuiEmpty from '@/components/tui-empty/tui-empty.vue';	
 export default {
-  components: {},
+  components: {
+	  tuiEmpty
+  },
   data() {
     return {
         couponList:[],
@@ -150,7 +154,7 @@ export default {
     }
   }
   .app-more{
-	  margin-top: 50rpx;
+	  margin-top: 20rpx;
 	  .app-more_title{
 		  text-align: center;
 		  margin-bottom: 20rpx;
@@ -159,9 +163,17 @@ export default {
 			  font-weight: bold;
 		  }
 	  }
-	  image{
-		  height: 150rpx;
+	  .app-more_data{
 		  width: 100%;
+		  height: 180rpx;
+		  border-radius: 8rpx;
+		  overflow: hidden;
+	  }
+	  .welfare-image{
+		  height: 180rpx;
+		  width: 100%;
+		  display: block;
+		  overflow: hidden;
 	  }
   }
 }

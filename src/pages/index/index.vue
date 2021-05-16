@@ -60,12 +60,12 @@
                     </view> 
                 </view>
             </view>
-            <view class="piece bg-2" @click="navTo('/pages/tabbar-5/warehouse')">
+            <view class="piece bg-2" @click="navTo('/pages/contraband/index')">
                 <view class="desc-box">
                     <view class="left left-2"></view>
                     <view class="right">
-                        <view>自寄到仓</view>
-                        <view>2小时上门取件</view>
+                        <view>违禁物品</view>
+                        <view>违禁物品集合</view>
                     </view>
                 </view>
             </view>
@@ -91,7 +91,7 @@
         <!-- write part -->
         <view class="write-address-part">
             <text>海外地址不会填？邀请收件人填写</text>  
-            <button @click="navTo('/pages/invite/address')" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
+            <button open-type="share" style="padding:0px 9px;font-size: 14px;">邀请填写</button>
         </view>
 		<view class="app-order">
 			<view class="app-order-wrap">
@@ -169,6 +169,19 @@
 				</view>
 			</button>
 		</view>
+		<view class="follow-wrapp" v-if="followShow == true">
+			<view class="follow-block tui-flex">
+				<view class="tui-left tui-col-2">
+					<tui-icon @click="closeFollow" name="shut" size="18" color="#FFFFFF"></tui-icon>
+				</view>
+				<view class="tui-center tui-col-7">
+					<text class="follow-text">关注赫德速递公众号，包裹动态实时掌握</text>
+				</view>
+				<view class="tui-right tui-col-3" @click="followTo">
+					<text class="follow-btn">立即关注</text>
+				</view>
+			</view>
+		</view>
     </view>
 </template>
 
@@ -180,6 +193,7 @@ export default {
         return {
             bannerList: [],  // 轮播图
             tipsList: [],  // 提示
+			followShow:false
         }; 
     },
     async onLoad() {
@@ -195,11 +209,19 @@ export default {
         navTo(url) {
             this.$href.navigateTo({ url: url });      
 		},
+		closeFollow() {
+			this.followShow = false;
+		},
+		followTo() {
+			let url = "/pages/tabbar-4/webview?src="+"https://www.baidu.com";
+
+			this.$href.navigateTo({url : url});
+		}
     },
 	onShareAppMessage(res) {
 		let token = this.$cache.get('token');
 		return {
-			title:"龙马邀请你填写收件地址",
+			title:"邀请你填写收件地址",
 			path:"pages/invite/address?token="+token
 		}
 	}
@@ -211,11 +233,10 @@ export default {
 	.space{
 		height: 1rem;
 	}
-	// height: 100vh;
+	height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding: 20rpx 30rpx;
     background: #f3f3f3;
 	
@@ -265,11 +286,7 @@ export default {
         box-sizing: border-box;
         margin-top: 20rpx;
         margin-bottom: 20rpx;
-        // position: absolute;
-        /* overflow: hidden; */
-        // z-index: 99;
-        // bottom: -80rpx;
-        // left: 0;
+        box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
         .tui-banner-swiper {
             width: 100%;
             height: 240rpx;
@@ -340,6 +357,7 @@ export default {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
         margin-bottom: 16rpx;
         .piece {
             width: calc(50% - 2rpx);
@@ -414,7 +432,9 @@ export default {
         box-sizing: border-box;
 		border-radius: 16rpx;
 		overflow: hidden;
-        margin-bottom: 20rpx;
+		
+        margin: 20rpx 0rpx;
+		box-shadow:0px 0px 20px 2px rgba(255,108,0,0.1);
         > text {
             font-weight: bold;
         }
@@ -431,6 +451,7 @@ export default {
 		width: 100%;
 		border-radius: 16rpx;
 		overflow: hidden;
+		display: none;
 		background-color: #FFFFFF;
 		.app-order-wrap{
 			padding: 20rpx;
@@ -522,7 +543,35 @@ export default {
 .tui-right{
 	text-align: right;
 }
-
+.follow-wrapp{
+	width: 100%;
+	left: 0rpx;
+	position: fixed;
+	bottom: 10rpx;
+	
+	.follow-block{
+		margin: 20rpx 30rpx;
+		padding: 5rpx 20rpx;
+		justify-content: center;
+		align-items: center;
+		 background-image: linear-gradient(to right, #ff9900, #ff7100);
+		border-radius: 50rpx;
+		overflow: hidden;
+		.follow-text{
+			font-size: 24rpx;
+			color: #FFFFFF;
+		}
+		.follow-btn{
+			background-color: #FFFFFF;
+			padding: 4rpx 12rpx;
+			color: #FF6C00;
+			font-size: 24rpx;
+			border-radius: 50rpx;
+			overflow: hidden;
+		}
+	}
+	
+}
 .app-customer{
 	position: fixed;
 	right: 13rpx;

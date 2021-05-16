@@ -42,7 +42,8 @@
 					<tui-tabs :tabs="tabs" sliderWidth="236" padding="-8" sliderBgColor="#FF6C00" selectedColor="#FF6C00" :currentTab="currentTab" itemWidth="33.33%" @change="changeTab"></tui-tabs>
 				</view>
 				<view class="middle-list-data">
-					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad">
+					<tuiEmpty source="data" v-if="dataList.length == 0"></tuiEmpty>
+					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad" v-if="dataList.length > 0">
 						<tui-list-view color="#777" unlined="all">
 						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="30rpx" color="#000000" v-for="(item, index) in dataList" :key="index">
 							  
@@ -94,8 +95,11 @@
 </template>
 
 <script>
+	import tuiEmpty from '@/components/tui-empty/tui-empty.vue';
 	export default {
-	  components: {},
+	  components: {
+		  tuiEmpty
+	  },
 	  data() {
 	    return {
 	      dataList:[],
@@ -194,11 +198,11 @@
 			padding: 20rpx 20rpx;
 		}
 		.top-part {
-			height: 230rpx;
+			height: 210rpx;
 			width: 710rpx;
 			background-size: 100% 100%;
 			background-repeat: no-repeat;
-			background-image: url(../../static/invite_bg.png);
+			background-image: url(https://static.51mitui.com/wxMini/static/invite_bg.png);
 			.center-part-wrap{
 				padding: 20rpx;
 				vertical-align: middle;
@@ -227,7 +231,6 @@
 						font-weight: bold;
 					}
 				}
-				
 				.apply{
 					font-size: 24rpx;
 					color: #707070;
@@ -319,4 +322,6 @@
 	.tui-right{
 		text-align: right;
 	}
+	
+	
 </style>

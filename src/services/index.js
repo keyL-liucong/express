@@ -91,6 +91,13 @@ export default {
             data
         })
     },
+	// 收件地址薄详情
+	getReceivedDetail(data) {
+	    return request({
+	        url: 'address/getReceivedDetail',
+	        data
+	    })
+	},
     // 寄件地址薄
     // 请求参数：
     // page：1，//当前页
@@ -355,5 +362,20 @@ export default {
 			data,
 			method: 'POST'
 		})	
+	},
+	// 获取小程序二维码
+	getQrcode(data) {
+		return request({
+			url: 'seller/getQrcode',
+			data,
+		})	
+	},
+	// 新增邀请地址
+	addInviteAddr(data) {
+	    return request({
+	        url: 'invite/address',
+	        data,
+	        method: 'POST'
+	    })
 	},
 }

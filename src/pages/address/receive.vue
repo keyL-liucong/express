@@ -1,20 +1,14 @@
 <template>
   <view class="app-container">
     <view class="progress-box">
-      <view class="title">
-        <view
-          @click="handleNavShow('left')"
-          class="title-left"
-          :class="[navShow === 'left' ? 'selected' : '']"
-          >国际</view
-        >
-        <view
-          @click="handleNavShow('right')"
-          class="title-right"
-          :class="[navShow === 'right' ? 'selected-2' : '']"
-          >港台地区</view
-        >
-      </view>
+		
+		<view class="app-body-tab">
+			<view class="tui-flex tui-align-between">
+				<view class="tui-center tui-col-6" :class="navShow == 'left' ? 'tab-active-left' : 'tab-left'" @click="handleNavShow('left')">国际</view>
+				<view class="tui-center tui-col-6" :class="navShow == 'right' ? 'tab-active-right' : 'tab-right'" @click="handleNavShow('right')">港台地址</view>
+			</view>
+		</view>
+     
       <view class="buy-content" v-if="navShow === 'left'">
         <view class="right-progress">
           <view class="content">
@@ -23,7 +17,7 @@
                 <view>收</view>
                 <view>收件地址</view>
               </view>
-              <view>清空</view>
+              <view @click="clearData">清空</view>
             </view>
             <view class="line-2"> 注意：国际收件人信息请用英文填写 </view>
             <view class="line-3">
@@ -297,7 +291,6 @@
             <view class="line-3">
               <view class="left">
                 <view>公司名称</view>
-                <view>Company Address</view>
               </view>
               <view class="right">
                 <input type="text" placeholder="(选填)如：EXPRESS CO,LTD" />
@@ -310,13 +303,15 @@
     <view class="row default-row">
       <text class="tit">设为默认寄件地址</text>
       <switch
-        :checked="addressData.is_default == 1"
+        :checked="postData.is_default == 1"
         color="#ff7100"
         @change="switchChange"
       />
     </view>
     <view class="bottom-btn">
-      <button @click="handleSubmit">确定</button>
+		<view class="bottom-btn-wrapp">
+			 <button @click="handleSubmit">确定</button>
+		</view>
     </view>
   </view>
 </template>
@@ -352,6 +347,27 @@ export default {
     };
   },
   methods: {
+	clearData() {
+		let postData = this.postData;
+		this.postData = {
+			realname: "",
+			mobile: "",
+			mobile_code: "",
+			country_id: "",
+			is_china: "",
+			city_id: "",
+			dist_id: "",
+			state_id: "",
+			zipcode: "",
+			address: "",
+			is_default: "",
+			address_id: postData.address_id,
+			company_name: "",
+		} 
+		this.country_name = "";
+		this.cityName = "";
+		this.stateName = "";
+	},
     switchChange(e) {
       this.postData.is_default = e.detail.value;
     },
@@ -382,6 +398,7 @@ export default {
       console.log(this.postData);
       this.postData.is_china = this.navShow == 'left' ? 0 : 1;
       let res = await this.$api.addReceivedAddr(this.postData);
+
       this.$toast(res.info);
       this.$href.navigateBack()
     },
@@ -441,7 +458,17 @@ export default {
       this.regionVisible = false;
     },
   },
-  async onLoad() {
+  async onLoad(option) {
+	  console.log(option);
+	 if (option.type === "edit") {
+		 let res = await this.$api.getReceivedDetail({address_id:option.address_id});
+		 console.log(res);
+		 this.postData = res.data;
+		 this.postData.address_id = res.data.id;
+		 this.country_name = res.data.country;
+		 this.stateName = res.data.state;
+		 this.cityName = res.data.city;
+	 }
     if (this.navShow == "left") {
       let res = await this.$api.getCountryAddrList({ is_china: 0 });
       this.regionList = res.data;
@@ -453,6 +480,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .app-container {
+	background: #f3f3f3;
   padding: 40rpx 30rpx;
   padding-bottom: 120rpx;
   .progress-box {
@@ -488,9 +516,10 @@ export default {
     }
     .buy-content {
       display: flex;
-      padding: 40rpx;
+      padding: 20rpx;
       background: #fff;
-      border-radius: 24rpx;
+	  border-bottom-left-radius: 24rpx;
+	  border-bottom-right-radius: 24rpx;
       .left-progress {
         display: flex;
         flex-direction: column;
@@ -594,6 +623,8 @@ export default {
   }
   .default-row {
     margin-top: 16upx;
+	border-radius: 16rpx;
+	overflow: hidden;
     .tit {
       flex: 1;
     }
@@ -616,15 +647,37 @@ export default {
     left: 0;
     right: 0;
     background: #fff;
-    padding-bottom: 40rpx;
-    > button {
-      width: 90%;
-      height: 70rpx;
-      border-radius: 35rpx;
-      line-height: 70rpx;
-      background: #ff7100;
-      color: #fff;
-    }
+    
+	.bottom-btn-wrapp{
+		padding: 20rpx 0rpx;
+		> button {
+		  width: 90%;
+		  height: 70rpx;
+		  border-radius: 35rpx;
+		  line-height: 70rpx;
+		  background: #ff7100;
+		  color: #fff;
+		}
+	}
+    
   }
+}
+
+.app-body-tab {
+	height: 96rpx;
+	line-height: 104rpx;
+	background-color: #FFF0E5;
+	border-top-left-radius: 16rpx;
+	border-top-right-radius: 16rpx;
+	overflow: hidden;
+	.tab-active-left {
+		border-top-right-radius: 20rpx;
+		background-color: #FFFFFF;
+	}
+	.tab-active-right{
+		border-top-left-radius: 20rpx;
+		background-color: #FFFFFF;
+	}
+				
 }
 </style>
