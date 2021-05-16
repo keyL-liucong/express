@@ -60,12 +60,12 @@
                     </view> 
                 </view>
             </view>
-            <view class="piece bg-2" @click="navTo('/pages/tabbar-5/warehouse')">
+            <view class="piece bg-2" @click="navTo('/pages/contraband/index')">
                 <view class="desc-box">
                     <view class="left left-2"></view>
                     <view class="right">
-                        <view>自寄到仓</view>
-                        <view>2小时上门取件</view>
+                        <view>违禁物品</view>
+                        <view>违禁物品集合</view>
                     </view>
                 </view>
             </view>
@@ -169,6 +169,19 @@
 				</view>
 			</button>
 		</view>
+		<view class="follow-wrapp" v-if="followShow == true">
+			<view class="follow-block tui-flex">
+				<view class="tui-left tui-col-2">
+					<tui-icon @click="closeFollow" name="shut" size="18" color="#FFFFFF"></tui-icon>
+				</view>
+				<view class="tui-center tui-col-7">
+					<text class="follow-text">关注赫德速递公众号，包裹动态实时掌握</text>
+				</view>
+				<view class="tui-right tui-col-3" @click="followTo">
+					<text class="follow-btn">立即关注</text>
+				</view>
+			</view>
+		</view>
     </view>
 </template>
 
@@ -180,6 +193,7 @@ export default {
         return {
             bannerList: [],  // 轮播图
             tipsList: [],  // 提示
+			followShow:true
         }; 
     },
     async onLoad() {
@@ -195,6 +209,14 @@ export default {
         navTo(url) {
             this.$href.navigateTo({ url: url });      
 		},
+		closeFollow() {
+			this.followShow = false;
+		},
+		followTo() {
+			let url = "/pages/tabbar-4/webview?src="+"https://www.baidu.com";
+
+			this.$href.navigateTo({url : url});
+		}
     },
 	onShareAppMessage(res) {
 		let token = this.$cache.get('token');
@@ -521,7 +543,35 @@ export default {
 .tui-right{
 	text-align: right;
 }
-
+.follow-wrapp{
+	width: 100%;
+	left: 0rpx;
+	position: fixed;
+	bottom: 10rpx;
+	
+	.follow-block{
+		margin: 20rpx 30rpx;
+		padding: 5rpx 20rpx;
+		justify-content: center;
+		align-items: center;
+		 background-image: linear-gradient(to right, #ff9900, #ff7100);
+		border-radius: 50rpx;
+		overflow: hidden;
+		.follow-text{
+			font-size: 24rpx;
+			color: #FFFFFF;
+		}
+		.follow-btn{
+			background-color: #FFFFFF;
+			padding: 4rpx 12rpx;
+			color: #FF6C00;
+			font-size: 24rpx;
+			border-radius: 50rpx;
+			overflow: hidden;
+		}
+	}
+	
+}
 .app-customer{
 	position: fixed;
 	right: 13rpx;
