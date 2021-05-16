@@ -43,13 +43,8 @@
     <view v-else class="order-item">
       <!-- 右上角按钮信息 -->
       <view class="top-right-box">
-        <!-- 待揽收 -->
-        <view v-if="0" class="get-num">
-          <text class="info-title">取件码</text>
-          <text class="info-text">34567</text>
-        </view>
-        <!-- 待处理 -->
-        <view v-if="0" class="info-cancel">
+        <!-- 待处理-功能暂时不上线 -->
+        <!-- <view v-if="0" class="info-cancel">
           <text class="info-text">已取消</text>
         </view>
         <view v-if="0" class="info-btn he-xiang">
@@ -57,12 +52,12 @@
         </view>
         <view v-if="0" class="info-btn kefu">
           <text class="info-kefu-text">需要客服处理</text>
-        </view>
+        </view> -->
         <!-- 已签收 -->
-        <view v-if="0" class="info-btn qian-shou">
+        <view v-if="item.order_status==5" class="info-btn qian-shou">
           <text class="info-qianshou-text">成功签收</text>
         </view>
-        <view v-if="0" class="info-btn zi-ti">
+        <view v-if="item.order_status==5" class="info-btn zi-ti">
           <text class="info-ziti-text">到达自提点</text>
         </view>
       </view>
@@ -72,9 +67,11 @@
           <text class="item-lab">运单号:</text>
           <text class="item-val">{{item.order_sn}}</text>
         </view>
-        <view class="orderinfo-item">
+        <view v-if="item.logistics_no
+" class="orderinfo-item">
           <text class="item-lab">国内快递单号:</text>
-          <text class="item-val">123214123121</text>
+          <text class="item-val">{{item.logistics_no
+}}</text>
         </view>
         <view class="orderinfo-item">
           <text class="item-lab">寄件人:</text>
@@ -82,7 +79,7 @@
         </view>
       </view>
       <!-- 最新物流轨迹 -->
-      <view class="newest-progress-message">
+      <view v-if="item.order_status==5" class="newest-progress-message">
         <text class="message-btn">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
         <text class="message-text"
@@ -90,7 +87,7 @@
         >
       </view>
       <!-- 包裹详情 -->
-      <view class="package-detail">
+      <view v-if="item.order_status==5" class="package-detail">
         <text class="detail-tite">包裹详情</text>
         <view v-for="(orderitem, orderindex) in item.orderItems" :key="orderitem.order_id" class="detail-item">
           <view class="item-name">
@@ -107,26 +104,20 @@
       <view class="address-info">
         <text class="address-from">{{item.sender_addr}}</text>
         <view class="address-icon">
-          <text class="text">单独寄送</text>
+          <!-- <text class="text">单独寄送</text> -->
         </view>
         <view class="address-to">
           <text class="address-to-text">{{item.addressee_addr}}</text>
-          <text class="address-to-remark">(自提点自提)</text>
+          <!-- <text class="address-to-remark">(自提点自提)</text> -->
         </view>
       </view>
       <view class="bottom-data">
         <view class="data-info-box">
-          <text class="bottom-data-title">下单时间</text>
-          <text class="data-text">2021-05-12</text>
-          <text class="time-text">20:23</text>
+          <text v-if="item.order_status==1" class="bottom-data-title">下单时间</text>
+          <text class="data-text">{{item.created}}</text>
         </view>
-        <text v-if="0" class="change-btn">更改</text>
-        <text class="share-btn">分享给收件人</text>
-      </view>
-      <view class="bottom-data lanshou">
-        <text class="bottom-data-title">预计揽收时间</text>
-        <text class="data-text">2021-05-12</text>
-        <text class="time-text">20:23</text>
+        <text v-if="item.order_status==2" class="change-btn">更改</text>
+        <!-- <text class="share-btn">分享给收件人</text> -->
       </view>
     </view>
     <view v-if="item.order_status==3" class="bottom-wait-pay">
@@ -214,7 +205,7 @@ export default {
     font-weight: bold;
     justify-content: space-between;
     .address-from {
-        width: 240rpx;
+        max-width: 240rpx;
     }
     .address-to {
       .address-to-text {
@@ -228,12 +219,12 @@ export default {
         line-height: 40rpx;
         color: #7b7b7b;
         font-weight: 400;
+        text-align: center;
       }
     }
     .address-icon {
       display: block;
-      flex: 1;
-    //   width: 194rpx;
+      width: 194rpx;
       height: 50rpx;
       background: url(@/static/orderlist-address-icon.png) no-repeat left;
       background-size: 194rpx 20rpx;
@@ -264,9 +255,6 @@ export default {
     .bottom-data-title {
       margin-right: 20rpx;
     }
-    .time-text {
-      margin-left: 18rpx;
-    }
     .change-btn {
       display: flex;
       width: 120rpx;
@@ -293,8 +281,7 @@ export default {
     }
     &.lanshou {
       justify-content: start;
-      .data-text,
-      .time-text {
+      .data-text{
         font-size: 36rpx;
       }
     }
@@ -534,6 +521,7 @@ export default {
         line-height: 40rpx;
         color: #7b7b7b;
         font-weight: 400;
+        text-align: center;
       }
     }
     .address-icon {

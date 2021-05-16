@@ -57,7 +57,7 @@
     <view class="bttom-pay">
       <view class="price-box">
         <text class="price-lab">应付金额:</text>
-        <text class="price-num">¥178</text>
+        <text class="price-num">¥{{toglePrice}}</text>
       </view>
       <text class="pay-btn">立即支付</text>
     </view>
@@ -69,7 +69,7 @@ import empty from "@/components/empty";
 import orderItem from "@/components/order-item/order-item.vue";
 import icon from "@/components/tui-icon/tui-icon.vue";
 import Api from "@/services/index";
-import Json from "@/Json";
+import {get } from '@/utils/cache';
 export default {
   components: {
     uniLoadMore,
@@ -85,7 +85,7 @@ export default {
       tabCurrentIndex: 0,
       tabCurrentStatus: 0,
       getorderListLock: false,
-      orderTotal: 0,
+      orderTotal: 10,
       navList: [
         {
           status: 0,
@@ -143,22 +143,31 @@ export default {
         },
       ],
       orderlist: {},
+      toglePrice: 0,
     };
   },
   onLoad(options) {
-    console.log(options);
+    let token = get("token");
     this.tabCurrentIndex = options.tabid || 0;
-    this.loadData();
+    //别的操作
+    if (token) {
+      this.loadData();
+    } else {
+        uni.redirectTo({
+            url: "/pages/login/index"
+        })
+    }
   },
-  onShow() {},
+  onShow() {
+  },
   onReachBottom() {
-    this.loadData();
+    // this.loadData();
   },
   methods: {
     //获取订单列表
     loadData(source) {
       var _self = this;
-      if (_self.getorderListLock) {
+      if (_self.getorderListLock || _self.orderTotal == _self.orderlist) {
         return;
       }
       _self.getorderListLock = true;
@@ -167,8 +176,7 @@ export default {
       var param = {
         size: 10,
         page: _self.pageNum,
-        user_id: 25,
-        order_status: _self.tabCurrentStatus,
+        order_status: _self.tabCurrentStatus > 0 ? _self.tabCurrentStatus : "",
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
@@ -181,7 +189,6 @@ export default {
         } else {
           _self.$toast("加载失败，请重试");
         }
-        console.log(_self.orderlist.length);
         uni.hideLoading();
         _self.getorderListLock = false;
       });
@@ -342,35 +349,40 @@ page {
   background: #f3f3f3;
 }
 .content {
+  padding-top: 80rpx;
   background: #f3f3f3;
 }
 
 .navbar {
   display: flex;
-  height: 40px;
-  padding: 0 5px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80rpx;
+  padding: 0 10rpx 0 20rpx;
   background: #fff;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
-  position: relative;
   z-index: 10;
   .nav-item {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
-    font-size: 15px;
+    width: 120rpx;
+    font-weight: bold;
+    font-size: 28rpx;
     color: #303133;
     position: relative;
     &.current {
-      color: #fa436a;
+      color: #FF6C00;
       &:after {
         content: "";
         position: absolute;
         left: 50%;
         bottom: 0;
         transform: translateX(-50%);
-        width: 44px;
+        width: 120rpx;
         height: 0;
         border-bottom: 2px solid #fa436a;
       }
@@ -416,7 +428,7 @@ page {
 }
 
 .order-list {
-  padding: 20rpx 30rpx;
+  padding: 20rpx 30rpx 120rpx;
 }
 
 /* load-more */
@@ -587,7 +599,7 @@ page {
     align-items: center;
     justify-content: center;
     border-radius: 50rpx;
-    background-image: linear-gradient(0deg, #ff9b00 0%, #ff6c00 100%);
+    background-image: linear-gradient(45deg, #ff9b00 0%, #ff6c00 100%);
   }
 }
 </style>

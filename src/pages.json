@@ -158,6 +158,18 @@
             "style": {
                 "navigationBarTitleText": "地址簿"
             }
+        },
+        {
+            "path": "pages/invoice/index",
+            "style": {
+                "navigationBarTitleText": "发票申请"
+            }
+        },
+        {
+            "path": "pages/invoice/record",
+            "style": {
+                "navigationBarTitleText": "发票申请"
+            }
         }
 
     ],
