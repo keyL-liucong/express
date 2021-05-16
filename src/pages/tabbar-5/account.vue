@@ -39,7 +39,8 @@
 					<tui-tabs :tabs="tabs" sliderWidth="350" padding="-10" sliderBgColor="#FF6C00" selectedColor="#FF6C00" :currentTab="currentTab" itemWidth="50%" @change="changeTab"></tui-tabs>
 				</view>
 				<view class="middle-list-data">
-					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad">
+					<tuiEmpty source="data" v-if="dataList.length == 0"></tuiEmpty>
+					<scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="handleLoad" v-if="dataList.length > 0">
 						<tui-list-view color="#777" unlined="all">
 						  <tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="30rpx" color="#000000" v-for="(item, index) in dataList" :key="index">
 						    <view class="tui-flex tui-align-between">
@@ -71,9 +72,11 @@
 
 <script>
 	import tuiTabs from "../../components/tui-tabs/tui-tabs";
+	import tuiEmpty from '@/components/tui-empty/tui-empty.vue';
 	export default {
 		components: {
-			tuiTabs
+			tuiTabs,
+			tuiEmpty
 		},
 		data() {
 			return {
@@ -82,9 +85,9 @@
 					scrollTop: 0
 				},
 				tabs: [{
-					name: "支出"
-				}, {
 					name: "收入"
+				}, {
+					name: "支出"
 				}],
 				currentTab:0,
 				dataList:[],

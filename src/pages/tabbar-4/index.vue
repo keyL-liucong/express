@@ -2,6 +2,7 @@
   <view class="app-container">
     <view class="rece-wrap">
       <view class="title">领券专区</view>
+	  <tuiEmpty source="coupon" emptyText="暂无优惠券" v-if="couponList.length == 0"></tuiEmpty>
       <view class="coupon-part-list" v-if="couponList.length > 0">
         <view
           class="coupon-item"
@@ -48,8 +49,11 @@
 </template>
 
 <script>
+import tuiEmpty from '@/components/tui-empty/tui-empty.vue';	
 export default {
-  components: {},
+  components: {
+	  tuiEmpty
+  },
   data() {
     return {
         couponList:[],
