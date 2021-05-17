@@ -46,7 +46,7 @@
 				</tui-list-cell>
 			</tui-list-view>
 		</view>
-		<view class="app-result common" v-if="result == true">
+		<view class="app-result common" v-if="resultShow == true">
 			<tui-list-view color="#777" unlined="all">
 				<tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="25rpx" color="#000000">
 					<view class="tui-item-box">
@@ -223,7 +223,7 @@
 					wide:"",
 					height:""
 				},
-				result:false,
+				resultShow:false,
 				countryEnData:{
 					countryEn:[],
 					currentCountryName:"",
@@ -298,7 +298,7 @@
 						this.weight = kg;
 					}
 					this.currentWeight = this.weight;
-					this.result = true;
+					
 				} else {
 					if(this.volume) {
 						//判断提交的kg是否大于限制
@@ -306,7 +306,7 @@
 							this.volume = kg;
 						}
 						this.currentVolume = this.volume;
-						this.result = true;
+						
 					}
 				}
 				this.$refs['showpopup'].close()
@@ -360,19 +360,25 @@
 				this.currentVolumewhere =  recountry[e.detail.value].maximum_limit;
 				this.postFreght();	
 			},
-			postFreght(){ 
+			async postFreght(){ 
+				let _this = this;
 				if(this.weight > 0 || this.volume > 0){
 					this.postData.weight = this.weight;
 					this.postData.volume = this.volume;
 					this.postData.domestic_id = this.domestic_id;
 					this.postData.objective_id = this.objective_id;
-					let result = this.$api.freightcalculation(this.postData);
-					if(result.data){
-						this.standardPrice = result.data.standard.price;
-						this.standardMsg   = result.data.standard.msg;
-						this.preferentialPrice = result.data.preferential.price;
-						this.preferentialMsg   = result.data.preferential.msg;
-					}
+					
+					await this.$api.freightcalculation(this.postData).then(function(res){
+						let result = res.data;
+						if(result){
+							_this.resultShow = true;
+							_this.standardPrice = result.standard.price;
+							_this.standardMsg   = result.standard.msg;
+							_this.preferentialPrice = result.preferential.price;
+							_this.preferentialMsg   = result.preferential.msg;
+						}
+					});
+					
 				}
 			},
 		},
