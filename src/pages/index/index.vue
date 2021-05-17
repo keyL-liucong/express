@@ -193,23 +193,25 @@ export default {
         return {
             bannerList: [],  // 轮播图
             tipsList: [],  // 提示
-			followShow:true
+			followShow:false
         }; 
     },
     async onLoad() {
         let getBannerRes = await Api.getBanner();
+		console.log()
         this.bannerList = getBannerRes.data;
         let tipsRes = await Api.getAlert();
         this.tipsList = tipsRes.data;
         setTimeout(() => {
             this.animation = true;
         }, 600);
-    },
-	onLoad: function (option) { 
 		if(option.scene){
-			wx.setStorageSync('scene', option.scene); 
+			that.$cache.put(
+			    "scene",
+			    option.scene
+			); 
 		}
-	},
+    },
     methods: {
         navTo(url) {
             this.$href.navigateTo({ url: url });      
