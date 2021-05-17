@@ -369,7 +369,7 @@ export default {
 		this.stateName = "";
 	},
     switchChange(e) {
-      this.postData.is_default = e.detail.value;
+      this.postData.is_default = e.detail.value == true ? 1 : 0;
     },
     //   提交
     async handleSubmit() {

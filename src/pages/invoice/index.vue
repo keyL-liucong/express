@@ -1,9 +1,10 @@
 <template>
-  <view v-if="0" class="wrap">
+  <view class="wrap">
     <view v-if="orderlist.length > 0" class="invoice-list">
       <invoiceitem
-        v-for="(orderItem, orderIndex) in orderlist"
-        :key="orderIndex"
+        v-for="orderItem in orderlist"
+        :key="orderItem.order_sn"
+        :selectordersns="selectOrderIds"
         @select="selectItem"
         :item="orderItem"
       ></invoiceitem>
@@ -12,11 +13,11 @@
       <image
         style="width: 440rpx; height: 440rpx"
         mode="aspectFit"
-        src="@/static/invoice-list-empty-icon.png"
+        src="https://static.51mitui.com/wxMini/static/empty-data.png"
       ></image>
       <text class="empty-text">暂无数据</text>
     </view>
-    <view v-if="orderlist.length > 0" class="torecord-btn">
+    <view class="torecord-btn" @click="toRecord">
       <text class="btn-icon"></text>
       <text class="btn-text">开票记录</text>
     </view>
@@ -42,38 +43,17 @@
       <view class="price-box">
         <text class="price-lab">合计</text>
         <text class="price-icon">¥</text>
-        <text class="price-val">234</text>
+        <text class="price-val">{{ totalPrice }}</text>
       </view>
-      <button class="submit-btn" type="submit">申请发票</button>
+      <button class="submit-btn" type="submit" @click="applyinvoice">
+        申请发票
+      </button>
     </view>
-  </view>
-  <view v-else class="submit-wrap">
-      <view class="fill-in-content">
-          <view class="content-title">
-              <text class="title-text">填写发票信息</text>
-              <text class="title-text2">电子发票</text>
-          </view>
-          <view class="head-type">
-              <view class="type-item">
-                  <icon class="select-type-icon" name="check" color="#fff" size="40rpx" unit="rpx"></icon>
-                  <text class="item-text">个人/事业单位</text> 
-                </view>
-              <view class="type-item">
-                  <icon class="select-type-icon" name="check" color="#fff" size="40rpx" unit="rpx"></icon>
-                  <text class="item-text">单位</text> 
-                </view>
-          </view>
-      </view>
-      <view class="bottom-text">
-          <text class="f"></text><text class="yellow"></text>
-      </view>
-      <button class="submit-fill-btn" type="submit">提交开票</button>
   </view>
 </template>
 
 <script>
 import icon from "@/components/tui-icon/tui-icon.vue";
-// import invoiceItem from "@/components/order-item/order-item.vue";
 import invoiceitem from "@/components/invoice-item/invoice-item.vue";
 export default {
   components: {
@@ -84,16 +64,20 @@ export default {
     return {
       pageNum: 1,
       allSelect: false,
+      totalPrice: 0, //发票总金额
       pageLoad: false,
       orderTotal: 10,
       getorderListLock: false,
       orderlist: [],
+      selectOrderIds: [], //选中订单号
     };
   },
-  onLoad(options) {
+  onLoad(options) {},
+  onShow() {
+    this.pageNum = 1;
     this.getList();
   },
-  onShow() {},
+  computed: {},
   onReachBottom() {},
   methods: {
     getList() {
@@ -105,7 +89,7 @@ export default {
       var param = {
         size: 10,
         page: _self.pageNum,
-        order_status: "",
+        order_status: 5,
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
@@ -115,21 +99,77 @@ export default {
               ? res.data.list
               : _self.orderlist.concat(res.data.list);
           _self.pageNum++;
+          _self.allSelect = _self.isSelectAll();;
         } else {
           _self.$toast("加载失败，请重试");
         }
-        console.log(_self.orderlist.length);
         uni.hideLoading();
         _self.getorderListLock = false;
         _self.pageLoad = true;
       });
     },
     selectItem(item) {
-      console.log(item);
+      let index = this.selectOrderIds.indexOf(item.order_sn);
+      let isSelect = index > -1;
+      if (isSelect) {
+        this.selectOrderIds.splice(index, 1);
+      } else {
+        this.selectOrderIds.push(item.order_sn);
+      }
+      this.allSelect = this.isSelectAll();
+      this.computedPrice(this.selectOrderIds);
     },
-    setAllSelect(){
-        this.allSelect = !this.allSelect;
-    }
+    setAllSelect() {
+      let orderIdArr = [];
+      this.allSelect = !this.allSelect;
+      if (this.allSelect) {
+        this.orderlist.forEach((orderItem) => {
+          if (orderItem.is_invoice == 0) {
+            orderIdArr.push(orderItem.order_sn);
+          }
+        });
+      }
+      this.selectOrderIds = orderIdArr;
+      this.computedPrice(orderIdArr);
+    },
+    computedPrice(orders) {
+      let price = 0;
+      let list = this.orderlist;
+      list.forEach((orderItem) => {
+        let index = orders.indexOf(orderItem.order_sn);
+        if (index > -1) {
+          price += orderItem.total_amount;
+        }
+      });
+      this.totalPrice = price;
+    },
+    isSelectAll() {
+      let num = 0;
+      this.orderlist.forEach((item) => {
+        if (item.is_invoice == 0) {
+          num++;
+        }
+      });
+      return num > 0 && this.selectOrderIds.length >= num;
+    },
+    applyinvoice() {
+      //申请发票点击
+      let ids = "";
+      if (this.selectOrderIds.length <= 0) {
+        this.$toast("请先选择订单～");
+        return;
+      }
+      ids = this.selectOrderIds.join(",");
+      uni.navigateTo({
+        url: `/pages/invoice/fill?price=${this.totalPrice}&ids=${ids}`,
+      });
+    },
+    toRecord() {
+      console.log(345);
+      uni.navigateTo({
+        url: "/pages/invoice/record",
+      });
+    },
   },
 };
 </script>
@@ -215,24 +255,24 @@ body {
     display: flex;
     margin-left: 52rpx;
     align-items: center;
-      color: #FF6D00;
-    .price-lab{
+    color: #ff6d00;
+    .price-lab {
       font-size: 28rpx;
       line-height: 40rpx;
       color: #000;
     }
-    .price-icon{
-        margin: 0 6rpx 0 10rpx;
-font-size: 36rpx;
+    .price-icon {
+      margin: 0 6rpx 0 10rpx;
+      font-size: 36rpx;
       line-height: 50rpx;
     }
-    .price-val{
-font-size: 44rpx;
+    .price-val {
+      font-size: 44rpx;
       line-height: 60rpx;
     }
   }
-  .submit-btn{
-      display: flex;
+  .submit-btn {
+    display: flex;
     width: 240rpx;
     height: 80rpx;
     font-size: 30rpx;
@@ -244,40 +284,4 @@ font-size: 44rpx;
     border-radius: 10rpx;
   }
 }
-.submit-wrap{
-    width: 100%;
-    padding-bottom: 220rpx;
-    .fill-in-content{
-        width: 690rpx;
-        margin: 20rpx auto 0;
-        padding: 30rpx;
-        background: #fff;
-        border-radius: 16rpx;
-        box-sizing: border-box;
-    }
-    .content-title{
-        display: flex;
-        align-items: center;
-        .title-text{
-            font-size: 32rpx;
-            line-height: 44rpx;
-            color: #000;
-            font-weight: bold;
-        }
-    }
-}
 </style>
-  <view class="content-title">
-              <text class="title-text">填写发票信息</text>
-              <text class="title-text2">电子发票</text>
-          </view>
-          <view class="head-type">
-              <view class="type-item">
-                  <icon class="select-type-icon" name="check" color="#fff" size="40rpx" unit="rpx"></icon>
-                  <text class="item-text">个人/事业单位</text> 
-                </view>
-              <view class="type-item">
-                  <icon class="select-type-icon" name="check" color="#fff" size="40rpx" unit="rpx"></icon>
-                  <text class="item-text">单位</text> 
-                </view>
-          </view>

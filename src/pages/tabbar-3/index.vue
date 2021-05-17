@@ -16,7 +16,7 @@
         </view>
         <view
           class="address"
-          @click="navTo('/pages/address/index?currentTab=1')"
+          @click="navTo('/pages/address/index?currentTab=1&from=send')"
         >
           地址簿
         </view>
@@ -36,7 +36,7 @@
         </view>
         <view
           class="address"
-          @click="navTo('/pages/address/index?currentTab=0')"
+          @click="navTo('/pages/address/index?currentTab=0&from=send')"
         >
           地址簿
         </view>
@@ -291,9 +291,13 @@ export default {
     };
   },
   async onShow(){
-    this.sendAddr = await this.getDefaultAddr(1);
-    console.log(this.sendAddr);
-    this.receAddr = await this.getDefaultAddr(2);
+	
+	if (this.sendAddr == null) {
+		this.sendAddr = await this.getDefaultAddr(1);
+	}
+    if (this.receAddr == null) {
+    	this.receAddr = await this.getDefaultAddr(2);
+    }
   },
   async onLoad() {
     let date = new Date();

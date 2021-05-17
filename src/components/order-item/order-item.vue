@@ -4,8 +4,8 @@
       <view class="orderinfos">
         <view class="order-num">
           <text class="num-title">订单号</text>
-          <text class="num-text">1234121123</text>
-          <text class="copy-btn">复制</text>
+          <text class="num-text">{{item.order_sn}}</text>
+          <text class="copy-btn" @click="copyOrderId"></text>
         </view>
         <view class="order-data">
           <text class="data-text">2020-03-23</text>
@@ -36,8 +36,8 @@
           <text class="info-item-val">¥122</text>
         </view>
       </view>
-      <view class="cancel-btn">
-        <text class="btn">取消订单</text>
+      <view class="cancel-btn" @click="cancelOrder">
+        <text class="btn-text">取消订单</text>
       </view>
     </view>
     <view v-else class="order-item">
@@ -65,7 +65,7 @@
       <view class="orderinfos">
         <view class="orderinfo-item">
           <text class="item-lab">运单号:</text>
-          <text class="item-val">{{item.order_sn}}</text>
+          <text class="item-val">{{item.logistics_no}}</text>
         </view>
         <view v-if="item.logistics_no
 " class="orderinfo-item">
@@ -79,27 +79,35 @@
         </view>
       </view>
       <!-- 最新物流轨迹 -->
-      <view v-if="item.order_status==5" class="newest-progress-message">
-        <text class="message-btn">查看物流信息</text>
+      <view v-if="item.order_status==4 && item.order_trajectory" class="newest-progress-message">
+        <text class="message-btn" @click="toexPressDetail">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
         <text class="message-text"
           >{{item.order_trajectory}}</text
         >
       </view>
       <!-- 包裹详情 -->
-      <view v-if="item.order_status==5" class="package-detail">
+      <view v-if="item.order_status==4" class="package-detail">
         <text class="detail-tite">包裹详情</text>
-        <view v-for="(orderitem, orderindex) in item.orderItems" :key="orderitem.order_id" class="detail-item">
-          <view class="item-name">
-            <text class="name-title">包裹1</text>
-            <text class="name-info">{{orderitem.item_name}}</text>
-          </view>
-          <view class="item-num">
-            <text class="num-title">国内快递单号</text>
-            <text class="num-info">{{orderitem.order_id}}</text>
+        <view class="detail-list" :class="{'down': detailAll}">
+          <view v-for="(orderitem) in item.orderItems" :key="orderitem.order_id" class="detail-item">
+            <view class="item-info item-name">
+              <text class="info-title">包裹1</text>
+              <text class="info-val">{{orderitem.item_name}}</text>
+            </view>
+            <view class="item-info item-price">
+              <text class="info-title">价格</text>
+              <text class="info-val">{{orderitem.item_price}}</text>
+            </view>
+            <view class="item-info item-num">
+              <text class="info-title">数量</text>
+              <text class="info-val">{{orderitem.item_num}}</text>
+            </view>
           </view>
         </view>
-        <text class="message-btn">查看全部包裹</text>
+        <view v-if="item.orderItems.length > 2" class="message-btn-wrap">
+          <text class="message-btn" @click="openAllDetail">{{detailOpenBtnText}}</text>
+        </view>
       </view>
       <view class="address-info">
         <text class="address-from">{{item.sender_addr}}</text>
@@ -161,7 +169,10 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      detailAll: false,
+      detailOpenBtnText: "查看全部包裹",
+    };
   },
   mounted() {
     console.log(this.item);
@@ -169,6 +180,41 @@ export default {
   methods: {
     setPay() {
       this.$emit("setitempay", this.item);
+    },
+    openAllDetail(){
+      this.detailAll = !this.detailAll;
+      this.detailOpenBtnText = this.detailAll ? " 收起 " : "查看全部包裹";
+    },
+    toexPressDetail(){
+      uni.navigateTo({
+        url: `/pages/tabbar-2/shipping?order_id=${this.item.order_sn}`
+      })
+    },
+    copyOrderId(){
+      let _self = this;
+      uni.setClipboardData({
+        data: _self.item.logistics_no,
+        success: function () {
+          _self.$toast("复制成功～");
+        },
+        fail: function () {
+          _self.$toast("复制失败，请稍后再试～");
+        },
+      });
+    },
+    cancelOrder(){
+      let _self = this;
+      uni.showLoading({
+        title: "请稍后",
+      });
+      this.$api.delOrder({}).then((res)=>{
+        if(res.status == 1){
+          _self.$emit("cancelorder", _self.item);
+        }else{
+          _self.$toast(res.info);
+        }
+        uni.hideLoading();
+      })
     },
   },
 };
@@ -378,7 +424,8 @@ export default {
     }
     .message-text {
       display: -webkit-box;
-      height: 68rpx;
+      min-height: 34rpx;
+      max-height: 68rpx;
       width: 440rpx;
       margin-top: 10rpx;
       font-size: 24rpx;
@@ -398,15 +445,17 @@ export default {
   .package-detail {
     position: relative;
     margin-top: 20rpx;
-    padding: 18rpx 0 96rpx;
+    padding: 18rpx 0 20rpx;
     border-top: 2rpx dashed #b1afaf;
     border-bottom: 2rpx dashed #b1afaf;
+    .message-btn-wrap{
+      display: flex;
+      margin-top: 24rpx;
+      justify-content: flex-end;
+    }
     .message-btn {
       display: flex;
-      position: absolute;
-      bottom: 18rpx;
-      right: 0;
-      padding: 0 12rpx;
+      width: 170rpx;
       height: 52rpx;
       font-size: 26rpx;
       color: #000;
@@ -423,28 +472,31 @@ export default {
       line-height: 40rpx;
       font-weight: bold;
     }
+    .detail-list{
+      max-height: 100rpx;
+      &.down{
+        max-height: auto;
+      }
+    }
     .detail-item {
       display: flex;
       margin-top: 3rpx;
       align-items: center;
       font-size: 28rpx;
       font-weight: bold;
+      justify-content: space-between;
     }
-    .item-name {
+    .item-info{
       display: flex;
       align-items: center;
     }
-    .name-title,
-    .num-title {
+    .info-title {
       margin-right: 12rpx;
       color: #7b7b7b;
     }
-    .name-info,
-    .num-info {
+    .info-val {
+      font-weight: 400;
       color: #000;
-    }
-    .name-info {
-      width: 200rpx;
     }
   }
 }
@@ -474,6 +526,14 @@ export default {
       margin-right: 14rpx;
       font-size: 28rpx;
       color: #000;
+    }
+    .copy-btn{
+      display: block;
+      width: 18rpx;
+      height: 22rpx;
+      margin-left: 14rpx;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
+      background-size: 100%;
     }
     .order-data {
       display: flex;
@@ -589,7 +649,7 @@ export default {
     display: flex;
     margin-top: 28rpx;
     justify-content: flex-end;
-    .btn {
+    .btn-text {
       display: flex;
       width: 170rpx;
       height: 52rpx;

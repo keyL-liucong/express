@@ -1,11 +1,11 @@
 <template>
   <view class="invoice-item">
-    <text class="item-tag">即将过期</text>
+    <text v-if="item.is_invoice == 1" class="item-tag">已开发票</text>
     <view class="item-top-info">
       <view class="item-top-left">
         <view class="item-select" @click="setItemSelect">
           <icon
-            v-if="itemSelect"
+            v-if="itemSelect && item.is_invoice == 0"
             name="circle-fill"
             size="40"
             unit="rpx"
@@ -13,7 +13,7 @@
             color="#2cb241"
           ></icon>
           <icon
-            v-else
+            v-else-if="item.is_invoice == 0"
             name="circle"
             size="40"
             unit="rpx"
@@ -23,32 +23,32 @@
         <view class="order-num">
           <text class="order-num-lab">订单号：</text>
           <view class="order-num-val">
-            <text class="order-num-text">{{item.order_sn}}</text>
-            <text class="order-num-copy-btn" @click="copyOrderNum">复制</text>
+            <text class="order-num-text">{{ item.order_sn }}</text>
+            <text class="order-num-copy-btn" @click="copyOrderNum"></text>
           </view>
         </view>
       </view>
       <view class="item-top-right">
         <view class="get-price">
           <text class="get-price-icon">¥</text>
-          <text class="get-price-text">50</text>
+          <text class="get-price-text">{{item.total_amount}}</text>
         </view>
         <text class="original-price">¥90</text>
       </view>
     </view>
     <view class="addrss-info">
       <view class="address-from">
-        <text class="from-city">广东深圳</text>
-        <text class="from-person">大表哥</text>
+        <text class="from-city">{{ item.sender_addr }}</text>
+        <text class="from-person">{{ item.sender_name }}</text>
       </view>
       <view class="address-date">
         <text class="date-title">寄件时间</text>
         <text class="date-icon"></text>
-        <text class="date-val">2020-12-30 12:34</text>
+        <text class="date-val">{{ item.created }}</text>
       </view>
       <view class="address-to">
-        <text class="to-city">美国纽约</text>
-        <text class="to-person">小表弟</text>
+        <text class="to-city">{{ item.addressee_addr }}</text>
+        <text class="to-person">{{ item.addressee_name }}</text>
       </view>
     </view>
     <view class="coupon-info">
@@ -73,28 +73,39 @@ export default {
       type: Object,
       default: {},
     },
+    selectordersns: {
+      type: Array,
+      default: [],
+    },
   },
   data() {
     return {
-      itemSelect: false,
     };
+  },
+  computed: {
+    itemSelect() {
+      return this.selectordersns.indexOf(this.item.order_sn) > -1;
+    },
   },
   onLoad(options) {},
   methods: {
-    setItemSelect(){
+    setItemSelect() {
+      if(this.item.is_invoice == 1){//已开过票的禁止点击
+        return;
+      }
       this.$emit("select", this.item);
     },
-    copyOrderNum(){
+    copyOrderNum() {
       let _self = this;
       uni.setClipboardData({
         data: _self.item.order_sn,
         success: function () {
           _self.$toast("复制成功～");
         },
-        fail: function(){
+        fail: function () {
           _self.$toast("复制失败，请稍后再试～");
-        }
-      })
+        },
+      });
     },
   },
 };
@@ -109,7 +120,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   border-radius: 16rpx;
-  .item-tag{
+  .item-tag {
     display: flex;
     position: absolute;
     top: 0;
@@ -134,6 +145,7 @@ export default {
     align-items: center;
     .item-select {
       display: block;
+      width: 40rpx;
       margin-right: 18rpx;
     }
     .order-num {
@@ -157,6 +169,14 @@ export default {
     .order-num-text {
       margin-right: 28rpx;
     }
+    .order-num-copy-btn{
+      display: block;
+      width: 18rpx;
+      height: 22rpx;
+      margin-left: 14rpx;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
+      background-size: 100%;
+    }
   }
   .item-top-right {
     text-align: center;
@@ -175,6 +195,7 @@ export default {
       font-size: 24rpx;
       color: #7b7b7b;
       line-height: 34rpx;
+	  text-decoration: line-through;
     }
   }
 }
