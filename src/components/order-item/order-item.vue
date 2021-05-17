@@ -79,7 +79,7 @@
         </view>
       </view>
       <!-- 最新物流轨迹 -->
-      <view v-if="item.order_status==5" class="newest-progress-message">
+      <view v-if="item.order_status==4" class="newest-progress-message">
         <text class="message-btn">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
         <text class="message-text"
@@ -87,7 +87,7 @@
         >
       </view>
       <!-- 包裹详情 -->
-      <view v-if="item.order_status==5" class="package-detail">
+      <view v-if="item.order_status==4" class="package-detail">
         <text class="detail-tite">包裹详情</text>
         <view class="detail-list" :class="{'down': detailAll}">
           <view v-for="(orderitem) in item.orderItems" :key="orderitem.order_id" class="detail-item">
@@ -105,7 +105,9 @@
             </view>
           </view>
         </view>
-        <text v-if="item.orderItems.length > 2" class="message-btn" @click="openAllDetail">查看全部包裹</text>
+        <view v-if="item.orderItems.length > 2" class="message-btn-wrap">
+          <text class="message-btn" @click="openAllDetail">{{detailOpenBtnText}}</text>
+        </view>
       </view>
       <view class="address-info">
         <text class="address-from">{{item.sender_addr}}</text>
@@ -180,8 +182,8 @@ export default {
       this.$emit("setitempay", this.item);
     },
     openAllDetail(){
-      this.detailAll = true;
-      this.detailOpenBtnText = this.detailAll ? "收起" : "查看全部包裹";
+      this.detailAll = !this.detailAll;
+      this.detailOpenBtnText = this.detailAll ? " 收起 " : "查看全部包裹";
     },
   },
 };
@@ -391,7 +393,8 @@ export default {
     }
     .message-text {
       display: -webkit-box;
-      height: 68rpx;
+      min-height: 34rpx;
+      max-height: 68rpx;
       width: 440rpx;
       margin-top: 10rpx;
       font-size: 24rpx;
@@ -411,15 +414,17 @@ export default {
   .package-detail {
     position: relative;
     margin-top: 20rpx;
-    padding: 18rpx 0 96rpx;
+    padding: 18rpx 0 20rpx;
     border-top: 2rpx dashed #b1afaf;
     border-bottom: 2rpx dashed #b1afaf;
+    .message-btn-wrap{
+      display: flex;
+      margin-top: 24rpx;
+      justify-content: flex-end;
+    }
     .message-btn {
       display: flex;
-      position: absolute;
-      bottom: 18rpx;
-      right: 0;
-      padding: 0 12rpx;
+      width: 170rpx;
       height: 52rpx;
       font-size: 26rpx;
       color: #000;
