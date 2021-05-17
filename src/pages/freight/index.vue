@@ -3,24 +3,17 @@
 		<view class="app-body">
 			<view class="tui-flex">
 				<view class="tui-center tui-flex-1">
-					<picker
-					  :value="value"
-					  mode="multiSelector"
-					  @change="picker"
-					  @columnchange="columnPicker" :range="multiArray" class="pick"
-					>
-					 <text class="from" @click="pickerClick"> {{ addressData.receiverRegionName }}</text>
-					</picker>
-					
+					<picker @change="picker" :value="addressData.reindexEn"  :range="addressData.recountryEn" range-key="city_name">
+						<text class="from" :value="addressData.receiverRegionId"> {{ addressData.receiverRegionName }}</text>
+					</picker> 
 				</view>
 				<view class="tui-center  tui-flex-1">
 					<image class="from-to" src="https://static.51mitui.com/wxMini/static/from_to.png" mode="widthFix"></image>
 				</view>
 				<view class="tui-center tui-flex-1">
-					<picker @change="bindPickerChange" :value="countryEnData.indexEn" :range="countryEnData.countryEn" range-key="name">
-						<text class="to">{{ countryEnData.currentCountryName }}</text>
+					<picker @change="bindPickerChange" :value="countryEnData.indexEn" :range="countryEnData.countryEn" range-key="city_name">
+						<text class="to" :value="countryEnData.currentCountryId">{{ countryEnData.currentCountryName }}</text>
 					</picker>
-					
 				</view>
 			</view>
 		</view>
@@ -68,10 +61,10 @@
 								<view class="row-left">
 									<text class="type">标准服务</text>
 									<text class="money-tag">¥</text>
-									<text class="money-data">0.00</text>
+									<text class="money-data">{{standardPrice}}</text>
 								</view>
 								<view class="row-right">
-									<text class="send-time">预计15-20个工作日到达</text>
+									<text class="send-time">{{standardMsg}}</text>
 								</view>
 							</view>
 						</view>
@@ -87,10 +80,10 @@
 								<view class="row-left">
 									<text class="type">特惠服务</text>
 									<text class="money-tag">¥</text>
-									<text class="money-data">0.00</text>
+									<text class="money-data">{{preferentialPrice}}</text>
 								</view>
 								<view class="row-right">
-									<text class="send-time">预计15-20个工作日到达</text>
+									<text class="send-time">{{preferentialMsg}}</text>
 								</view>
 							</view>
 						</view>
@@ -211,14 +204,20 @@
 		},
 		data() {
 			return {
+				standardPrice:0.00,
+				standardMsg:"预计5-10个工作日到达",
+				preferentialPrice:0.00,
+				preferentialMsg:"预计15-20个工作日到达",
 				showPickerStatus: false,
 				popupShow: false,
 				typeList: [],
 				weight:0,//重量
 				currentWeight:0,
+				currentWeightwhere:0,
 				currentTab:1,
 				volume:0,//体积
 				currentVolume:0,
+				currentVolumewhere:0,
 				lwh:{
 					long:"",
 					wide:"",
@@ -228,15 +227,14 @@
 				countryEnData:{
 					countryEn:[],
 					currentCountryName:"",
+					currentCountryId:"",
 					indexEn:0
 				},
 				addressData: {
-				  receiverDistrictId: "",
+				  recountryEn: "",
 				  receiverRegionName: "",
-				  receiverRegionShow: "",
-				  prov_id:"",
-				  city_id:"",
-				  dist_id:"",
+				  receiverRegionId:"",
+				  reindexEn:0
 				},
 				selectList: [], // 接口返回picker数据,此处就直接使用本地测试数据
 				multiArray: [], // picker数据
@@ -244,85 +242,23 @@
 				citys: [],
 				districts: [],
 				value: [0, 0, 0],
+				objective_id:"",
+				domestic_id:"",
+				postData:{
+					weight:"",
+					volume:"",
+					objective_id:"",
+					domestic_id:""
+				}
 			};
 		},
 		methods: {
-			columnPicker: function (e, p) {
-			  // 第几列 下标从0开始
-			  let column = e.detail.column;
-			  // 第几行 下标从0开始
-			  let value = e.detail.value;
-			  if (column === 0) {
-			    this.provinceChoose(this.provinces[value].id);
-			    this.value = [value, 0, 0];
-			  } else if (column === 1) {
-			    this.cityChoose(this.citys[value].id);
-			    this.value = [this.value[0], value, 0];
-			  }
-			},
 			toArr(object) {
 			  let arr = [];
 			  for (let i in object) {
 			    arr.push(object[i].name);
 			  }
 			  return arr;
-			},
-			picker: function (e) {
-			  let value = e.detail.value;
-			  this.value = value;
-			  // this.addressData.receiverCity = this.citys[value[1]].name;
-			  console.log('object',this.districts[value[2]]);
-			  // this.addressData.receiverDistrict = this.districts[value[2]].name;
-			  this.addressData.receiverDistrictId = this.districts[value[2]].id;
-			  this.addressData.prov_id = this.provinces[value[0]].id;
-			  this.addressData.city_id = this.provinces[value[1]].id;
-			  this.addressData.dist_id = this.provinces[value[2]].id;
-			  this.addressData.receiverRegionName =
-			    this.provinces[value[0]].name +
-			    "" +
-			    this.citys[value[1]].name;
-			},
-			provinceChoose: async function (stateId) {
-			  let citys = await this.$api.getRegion({ parent_id: stateId });
-			  this.citys = citys.data;
-			  let districts = await this.$api.getRegion({
-			    parent_id: this.citys[0].id,
-			  });
-			  this.districts = districts.data;
-			  this.multiArray = [
-			    this.toArr(this.provinces),
-			    this.toArr(this.citys),
-			    this.toArr(this.districts),
-			  ];
-			},
-			cityChoose: async function (cityId) {
-			  
-			  let districts = await this.$api.getRegion({ parent_id: cityId });
-			  this.districts = districts.data;
-			  this.multiArray = [
-			    this.toArr(this.provinces),
-			    this.toArr(this.citys),
-			    this.toArr(this.districts),
-			  ];
-			},
-			pickerClick: async function () {
-			  let provinces = await this.$api.getRegion();
-			  this.provinces = provinces.data;
-			  this.addressData.receiverRegionName = this.provinces[this.value[0]].name
-			  let citysRes = await this.$api.getRegion({
-			    parent_id: this.provinces[this.value[0]].id,
-			  });
-			  this.citys = citysRes.data;
-			  this.addressData.receiverRegionName += this.citys[this.value[0]].name
-			  let districts = await this.$api.getRegion({
-			    parent_id: this.citys[this.value[1]].id,
-			  });
-			  this.districts = districts.data;
-			  this.multiArray = [
-			    this.toArr(this.provinces),
-			    this.toArr(this.citys),
-			    this.toArr(this.districts),
-			  ];
 			},
 			togglePopup() {
 			  this.popupShow = !this.popupShow;
@@ -347,17 +283,28 @@
 				this.$refs['showpopup'].close()
 			},
 			change(e) {
-				console.log('是否打开:' + e.show)
+				if(e.show == false && this.weight >0 || this.volume > 0){
+					this.postFreght();			
+				}
 			},
 			updateNumber(e) {
 				this.weight = e.value
 			},
 			sure() {
+				var kg = this.currentWeightwhere > this.currentVolumewhere ? this.currentWeightwhere : this.currentVolumewhere;
 				if(this.currentTab == 1) {
+					//判断提交的kg是否大于限制
+					if(this.weight > kg){
+						this.weight = kg;
+					}
 					this.currentWeight = this.weight;
 					this.result = true;
 				} else {
 					if(this.volume) {
+						//判断提交的kg是否大于限制
+						if(this.volume > kg){
+							this.volume = kg;
+						}
 						this.currentVolume = this.volume;
 						this.result = true;
 					}
@@ -375,31 +322,64 @@
 				if (this.lwh.long >0 && this.lwh.wide > 0 && this.lwh.height > 0) {
 					let volume = (this.lwh.long * this.lwh.wide * this.lwh.height) / 6000;
 					volume = volume*100;
-					volume = Math.round(volume*100)/100;  
-					this.volume = volume.toFixed(1)
-					console.log(this.volume)
+					volume = Math.round(volume*100)/10000;  
+					var kg = this.currentWeightwhere > this.currentVolumewhere ? this.currentWeightwhere : this.currentVolumewhere;
+					if(this.volume > kg){
+						this.volume = kg;
+					}else{
+						this.volume = volume.toFixed(1)
+					}
 				}
-				console.log(e);
 			},
 			async getCountry() {
-				let EnRes = await this.$api.getCountryAddrList({is_china:2})
+				let EnRes = await this.$api.freightgetaddress({is_china:2})
 				if(EnRes.data) {
-					this.countryEnData.countryEn = EnRes.data;
-					this.countryEnData.currentCountryName = this.countryEnData.countryEn[0].name;
+					this.countryEnData.countryEn = EnRes.data.domestic_city;
+					this.countryEnData.currentCountryName = this.countryEnData.countryEn[0].city_name;
+					this.domestic_id = this.countryEnData.countryEn[0].city_id;
+					this.currentWeightwhere = this.countryEnData.countryEn[0].maximum_limit;
+					this.addressData.recountryEn = EnRes.data.objective_city;
+					this.addressData.receiverRegionName = this.addressData.recountryEn[0].city_name;
+					this.objective_id = this.addressData.recountryEn[0].city_id;
+					this.currentVolumewhere = this.addressData.recountryEn[0].maximum_limit;
 				}
-				
 			},
 			bindPickerChange: function(e) {
 				let country = this.countryEnData.countryEn;
-				this.countryEnData.currentCountryName = country[e.detail.value].name;
+				this.countryEnData.currentCountryName = country[e.detail.value].city_name;
+				this.domestic_id = country[e.detail.value].city_id;
 				this.countryEnData.indexEn = e.detail.value
+				this.currentWeightwhere = country[e.detail.value].maximum_limit;
+				this.postFreght();	
+			},
+			picker: function(e) {
+				let recountry = this.addressData.recountryEn;
+				this.addressData.receiverRegionName = recountry[e.detail.value].city_name;
+				this.objective_id =  recountry[e.detail.value].city_id;
+				this.addressData.reindexEn = e.detail.value
+				this.currentVolumewhere =  recountry[e.detail.value].maximum_limit;
+				this.postFreght();	
+			},
+			postFreght(){ 
+				if(this.weight > 0 || this.volume > 0){
+					this.postData.weight = this.weight;
+					this.postData.volume = this.volume;
+					this.postData.domestic_id = this.domestic_id;
+					this.postData.objective_id = this.objective_id;
+					let result = this.$api.freightcalculation(this.postData);
+					if(result.data){
+						this.standardPrice = result.data.standard.price;
+						this.standardMsg   = result.data.standard.msg;
+						this.preferentialPrice = result.data.preferential.price;
+						this.preferentialMsg   = result.data.preferential.msg;
+					}
+				}
 			},
 		},
 		async created() {
 			this.getCountry()
 		},
 		mounted() {
-		  this.pickerClick();
 		},
 	};
 </script>

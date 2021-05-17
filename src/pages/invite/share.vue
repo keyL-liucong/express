@@ -8,7 +8,7 @@
 				</view>
 				<view class="body-step_1_data tui-center tui-col-4">
 					<text class="title">累计收益</text>
-					<text class="num">0</text>
+					<text class="num">{{ inviteData.withdrawn }}</text>
 				</view>
 				<view class="body-step_1_data tui-center tui-col-4">
 					<text class="title">累计优惠券</text>
@@ -173,7 +173,8 @@
 						_this.inviteData = {
 							code: res.data.member_no,
 							group_total:res.data.group_total,
-							coupon_total:res.data.coupon_total
+							coupon_total:res.data.coupon_total,
+							withdrawn:res.data.withdrawn
 						};
 					}
 				})

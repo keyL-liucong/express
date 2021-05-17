@@ -205,6 +205,11 @@ export default {
             this.animation = true;
         }, 600);
     },
+	onLoad: function (option) { 
+		if(option.scene){
+			this.$api.setSellerParentId(option);
+		}
+	},
     methods: {
         navTo(url) {
             this.$href.navigateTo({ url: url });      
