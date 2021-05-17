@@ -321,15 +321,23 @@
 				}
 				if (this.lwh.long >0 && this.lwh.wide > 0 && this.lwh.height > 0) {
 					let volume = (this.lwh.long * this.lwh.wide * this.lwh.height) / 6000;
+					
 					volume = volume*100;
-					volume = Math.round(volume*100)/10000;  
-					var kg = this.currentWeightwhere > this.currentVolumewhere ? this.currentWeightwhere : this.currentVolumewhere;
-					if(this.volume > kg){
-						this.volume = kg;
+					if(volume < 0.49){
+						volume = 0.5;
+						this.volume = volume;
 					}else{
-						this.volume = volume.toFixed(1)
+						volume = Math.round(volume*100)/10000;
+						var kg = this.currentWeightwhere > this.currentVolumewhere ? this.currentWeightwhere : this.currentVolumewhere;
+						if(this.volume > kg){
+							this.volume = kg;
+						}else{
+							this.volume = volume.toFixed(1)
+						}
 					}
+					
 				}
+				
 			},
 			async getCountry() {
 				let EnRes = await this.$api.freightgetaddress({is_china:2})
