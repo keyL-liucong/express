@@ -4,8 +4,8 @@
       <view class="orderinfos">
         <view class="order-num">
           <text class="num-title">订单号</text>
-          <text class="num-text">1234121123</text>
-          <text class="copy-btn">复制</text>
+          <text class="num-text">{{item.order_sn}}</text>
+          <text class="copy-btn" @click="copyOrderId"></text>
         </view>
         <view class="order-data">
           <text class="data-text">2020-03-23</text>
@@ -36,8 +36,8 @@
           <text class="info-item-val">¥122</text>
         </view>
       </view>
-      <view class="cancel-btn">
-        <text class="btn">取消订单</text>
+      <view class="cancel-btn" @click="cancelOrder">
+        <text class="btn-text">取消订单</text>
       </view>
     </view>
     <view v-else class="order-item">
@@ -65,7 +65,7 @@
       <view class="orderinfos">
         <view class="orderinfo-item">
           <text class="item-lab">运单号:</text>
-          <text class="item-val">{{item.order_sn}}</text>
+          <text class="item-val">{{item.logistics_no}}</text>
         </view>
         <view v-if="item.logistics_no
 " class="orderinfo-item">
@@ -79,8 +79,8 @@
         </view>
       </view>
       <!-- 最新物流轨迹 -->
-      <view v-if="item.order_status==4" class="newest-progress-message">
-        <text class="message-btn">查看物流信息</text>
+      <view v-if="item.order_status==4 && item.order_trajectory" class="newest-progress-message">
+        <text class="message-btn" @click="toexPressDetail">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
         <text class="message-text"
           >{{item.order_trajectory}}</text
@@ -184,6 +184,37 @@ export default {
     openAllDetail(){
       this.detailAll = !this.detailAll;
       this.detailOpenBtnText = this.detailAll ? " 收起 " : "查看全部包裹";
+    },
+    toexPressDetail(){
+      uni.navigateTo({
+        url: `/pages/tabbar-2/shipping?order_id=${this.item.order_sn}`
+      })
+    },
+    copyOrderId(){
+      let _self = this;
+      uni.setClipboardData({
+        data: _self.item.logistics_no,
+        success: function () {
+          _self.$toast("复制成功～");
+        },
+        fail: function () {
+          _self.$toast("复制失败，请稍后再试～");
+        },
+      });
+    },
+    cancelOrder(){
+      let _self = this;
+      uni.showLoading({
+        title: "请稍后",
+      });
+      this.$api.delOrder({}).then((res)=>{
+        if(res.status == 1){
+          _self.$emit("cancelorder", _self.item);
+        }else{
+          _self.$toast(res.info);
+        }
+        uni.hideLoading();
+      })
     },
   },
 };
@@ -496,6 +527,14 @@ export default {
       font-size: 28rpx;
       color: #000;
     }
+    .copy-btn{
+      display: block;
+      width: 18rpx;
+      height: 22rpx;
+      margin-left: 14rpx;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
+      background-size: 100%;
+    }
     .order-data {
       display: flex;
       align-items: center;
@@ -610,7 +649,7 @@ export default {
     display: flex;
     margin-top: 28rpx;
     justify-content: flex-end;
-    .btn {
+    .btn-text {
       display: flex;
       width: 170rpx;
       height: 52rpx;

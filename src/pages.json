@@ -18,6 +18,12 @@
 		        "navigationBarTitleText": "物流详情"
 		    }
 		},
+		{
+		    "path": "pages/tabbar-2/detail",
+		    "style": {
+		        "navigationBarTitleText": "订单详情"
+		    }
+		},
         {
             "path": "pages/tabbar-3/index",
             "style": {

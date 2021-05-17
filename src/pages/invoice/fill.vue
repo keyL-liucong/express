@@ -139,6 +139,11 @@ export default {
       this.$api.aaddInvoice(data).then((res) => {
         if (res.status == 1) {
           _self.$toast("提交成功");
+          setTimeout(()=>{
+            uni.redirectTo({
+              url: '/pages/invoice/index',
+            })
+          },1000)
         } else {
           _self.$toast(res.info + "，请稍后再试～");
         }
