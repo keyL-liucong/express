@@ -1,7 +1,7 @@
 <template>
     <view class="wrap">
         <view v-if="0" class="invoice-list">
-        <invoiceItem class="e"></invoiceItem>
+        <!-- <invoiceItem class="e"></invoiceItem> -->
         </view>
         <view class="empty-box">
              <image style="width:440rpx; height: 440rpx;" mode="aspectFit" src="@/static/invoice-list-empty-icon.png"></image>
@@ -13,7 +13,7 @@
 <script>
 export default {
   components: {
-    invoiceItem,
+    // invoiceItem,
   },
   data() {
     return {};
