@@ -56,7 +56,7 @@
           <img src="https://static.51mitui.com/wxMini/static/center-3.png" alt="" />
           <text class="font-size">违禁品</text>
         </view>
-        <view class="center-box" @click="navTo('/pages/coupon/index')">
+        <view class="center-box" @click="navTo('/pages/invoice/index')">
           <img src="https://static.51mitui.com/wxMini/static/center-4.png" alt="" />
           <text class="font-size">申请发票</text>
         </view>
