@@ -38,5 +38,10 @@ button {
     border-radius: 0;
     background-color: #fff;
 }
+.clamp-1{
+	white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 </style>
