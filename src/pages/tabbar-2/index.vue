@@ -47,6 +47,7 @@
         :item="orderitem"
         :key="orderindex"
         v-on:setitempay="setOrderPay"
+        @cancelorder="cancelOrderItem"
       ></orderItem>
 
       <uni-load-more
@@ -203,22 +204,9 @@ export default {
       this.messageboxShow = false;
     },
     //删除订单
-    deleteOrder(item, index) {
-      var _self = this;
-      uni.showLoading({
-        title: "请稍后",
-      });
-      Api.methods
-        .deleteOrder({ orderId: item.omsOrder.id })
-        .then(function (res) {
-          console.log(res);
-          if (res.data.code === 200) {
-            _self.navList[_self.tabCurrentIndex].orderList.splice(index, 1);
-          } else {
-            _self.$toast("删除失败");
-          }
-          uni.hideLoading();
-        });
+    cancelOrderItem(){
+      this.pageNum = 1;
+      this.loadData();
     },
     //取消订单
     cancelOrder(item) {

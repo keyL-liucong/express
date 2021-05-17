@@ -72,11 +72,12 @@ export default {
       selectOrderIds: [], //选中订单号
     };
   },
-  onLoad(options) {
+  onLoad(options) {},
+  onShow() {
+    this.pageNum = 1;
     this.getList();
   },
-  onShow() {
-  },
+  computed: {},
   onReachBottom() {},
   methods: {
     getList() {
@@ -98,10 +99,10 @@ export default {
               ? res.data.list
               : _self.orderlist.concat(res.data.list);
           _self.pageNum++;
+          _self.allSelect = this.isSelectAll();;
         } else {
           _self.$toast("加载失败，请重试");
         }
-        console.log(_self.orderlist.length);
         uni.hideLoading();
         _self.getorderListLock = false;
         _self.pageLoad = true;
@@ -115,15 +116,17 @@ export default {
       } else {
         this.selectOrderIds.push(item.order_sn);
       }
-      this.allSelect = this.selectOrderIds.length >= this.orderlist.length;
+      this.allSelect = this.isSelectAll();
       this.computedPrice(this.selectOrderIds);
     },
     setAllSelect() {
       let orderIdArr = [];
       this.allSelect = !this.allSelect;
-      if(this.allSelect){
+      if (this.allSelect) {
         this.orderlist.forEach((orderItem) => {
-          orderIdArr.push(orderItem.order_sn);
+          if (orderItem.is_invoice == 0) {
+            orderIdArr.push(orderItem.order_sn);
+          }
         });
       }
       this.selectOrderIds = orderIdArr;
@@ -140,17 +143,26 @@ export default {
       });
       this.totalPrice = price;
     },
+    isSelectAll() {
+      let num = 0;
+      this.orderlist.forEach((item) => {
+        if (item.is_invoice == 0) {
+          num++;
+        }
+      });
+      return num > 0 && this.selectOrderIds.length >= num;
+    },
     applyinvoice() {
       //申请发票点击
       let ids = "";
-      if(this.selectOrderIds.length <= 0){
-        this.$toast("请先选择订单～")
+      if (this.selectOrderIds.length <= 0) {
+        this.$toast("请先选择订单～");
         return;
       }
       ids = this.selectOrderIds.join(",");
       uni.navigateTo({
-        url: `/pages/invoice/fill?price=${this.totalPrice}&ids=${ids}`
-      })
+        url: `/pages/invoice/fill?price=${this.totalPrice}&ids=${ids}`,
+      });
     },
     toRecord() {
       console.log(345);
