@@ -195,6 +195,7 @@ export default {
       font-size: 24rpx;
       color: #7b7b7b;
       line-height: 34rpx;
+	  text-decoration: line-through;
     }
   }
 }
