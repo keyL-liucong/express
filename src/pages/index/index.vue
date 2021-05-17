@@ -193,7 +193,7 @@ export default {
         return {
             bannerList: [],  // 轮播图
             tipsList: [],  // 提示
-			followShow:false
+			followShow:true
         }; 
     },
     async onLoad() {
