@@ -168,6 +168,12 @@
                 "navigationBarTitleText": "发票申请"
             }
         },
+        {
+            "path": "pages/invoice/fill",
+            "style": {
+                "navigationBarTitleText": "发票申请"
+            }
+        },
 		{
 		    "path": "pages/freight/index",
 		    "style": {

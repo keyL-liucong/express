@@ -418,4 +418,20 @@ export default {
             method: 'POST'
         })
     },
+    // 提交发票申请
+    aaddInvoice(data) {
+        return request({
+            url: 'finance/addInvoice',
+            data,
+            method: 'POST'
+        })
+    },
+    // 发票列表
+    getInvoice(data) {
+        return request({
+            url: 'finance/getInvoice',
+            data,
+            method: 'Get'
+        })
+    },
 }

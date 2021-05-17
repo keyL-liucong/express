@@ -1,6 +1,6 @@
 <template>
   <view class="invoice-item">
-    <text class="item-tag">即将过期</text>
+    <!-- <text class="item-tag">即将过期</text> -->
     <view class="item-top-info">
       <view class="item-top-left">
         <view class="item-select" @click="setItemSelect">
@@ -23,7 +23,7 @@
         <view class="order-num">
           <text class="order-num-lab">订单号：</text>
           <view class="order-num-val">
-            <text class="order-num-text">{{item.order_sn}}</text>
+            <text class="order-num-text">{{ item.order_sn }}</text>
             <text class="order-num-copy-btn" @click="copyOrderNum">复制</text>
           </view>
         </view>
@@ -38,17 +38,17 @@
     </view>
     <view class="addrss-info">
       <view class="address-from">
-        <text class="from-city">广东深圳</text>
-        <text class="from-person">大表哥</text>
+        <text class="from-city">{{ item.sender_addr }}</text>
+        <text class="from-person">{{ item.sender_name }}</text>
       </view>
       <view class="address-date">
         <text class="date-title">寄件时间</text>
         <text class="date-icon"></text>
-        <text class="date-val">2020-12-30 12:34</text>
+        <text class="date-val">{{ item.created }}</text>
       </view>
       <view class="address-to">
-        <text class="to-city">美国纽约</text>
-        <text class="to-person">小表弟</text>
+        <text class="to-city">{{ item.addressee_addr }}</text>
+        <text class="to-person">{{ item.addressee_name }}</text>
       </view>
     </view>
     <view class="coupon-info">
@@ -73,28 +73,36 @@ export default {
       type: Object,
       default: {},
     },
+    selectordersns: {
+      type: Array,
+      default: [],
+    },
   },
   data() {
     return {
-      itemSelect: false,
     };
+  },
+  computed: {
+    itemSelect() {
+      return this.selectordersns.indexOf(this.item.order_sn) > -1;
+    },
   },
   onLoad(options) {},
   methods: {
-    setItemSelect(){
+    setItemSelect() {
       this.$emit("select", this.item);
     },
-    copyOrderNum(){
+    copyOrderNum() {
       let _self = this;
       uni.setClipboardData({
         data: _self.item.order_sn,
         success: function () {
           _self.$toast("复制成功～");
         },
-        fail: function(){
+        fail: function () {
           _self.$toast("复制失败，请稍后再试～");
-        }
-      })
+        },
+      });
     },
   },
 };
@@ -109,7 +117,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   border-radius: 16rpx;
-  .item-tag{
+  .item-tag {
     display: flex;
     position: absolute;
     top: 0;
