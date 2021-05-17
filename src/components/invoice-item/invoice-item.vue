@@ -31,7 +31,7 @@
       <view class="item-top-right">
         <view class="get-price">
           <text class="get-price-icon">¥</text>
-          <text class="get-price-text">50</text>
+          <text class="get-price-text">{{item.total_amount}}</text>
         </view>
         <text class="original-price">¥90</text>
       </view>

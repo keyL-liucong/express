@@ -89,17 +89,23 @@
       <!-- 包裹详情 -->
       <view v-if="item.order_status==5" class="package-detail">
         <text class="detail-tite">包裹详情</text>
-        <view v-for="(orderitem, orderindex) in item.orderItems" :key="orderitem.order_id" class="detail-item">
-          <view class="item-name">
-            <text class="name-title">包裹1</text>
-            <text class="name-info">{{orderitem.item_name}}</text>
-          </view>
-          <view class="item-num">
-            <text class="num-title">国内快递单号</text>
-            <text class="num-info">{{orderitem.order_id}}</text>
+        <view class="detail-list" :class="{'down': detailAll}">
+          <view v-for="(orderitem) in item.orderItems" :key="orderitem.order_id" class="detail-item">
+            <view class="item-info item-name">
+              <text class="info-title">包裹1</text>
+              <text class="info-val">{{orderitem.item_name}}</text>
+            </view>
+            <view class="item-info item-price">
+              <text class="info-title">价格</text>
+              <text class="info-val">{{orderitem.item_price}}</text>
+            </view>
+            <view class="item-info item-num">
+              <text class="info-title">数量</text>
+              <text class="info-val">{{orderitem.item_num}}</text>
+            </view>
           </view>
         </view>
-        <text class="message-btn">查看全部包裹</text>
+        <text v-if="item.orderItems.length > 2" class="message-btn" @click="openAllDetail">查看全部包裹</text>
       </view>
       <view class="address-info">
         <text class="address-from">{{item.sender_addr}}</text>
@@ -161,7 +167,10 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      detailAll: false,
+      detailOpenBtnText: "查看全部包裹",
+    };
   },
   mounted() {
     console.log(this.item);
@@ -169,6 +178,10 @@ export default {
   methods: {
     setPay() {
       this.$emit("setitempay", this.item);
+    },
+    openAllDetail(){
+      this.detailAll = true;
+      this.detailOpenBtnText = this.detailAll ? "收起" : "查看全部包裹";
     },
   },
 };
@@ -423,28 +436,31 @@ export default {
       line-height: 40rpx;
       font-weight: bold;
     }
+    .detail-list{
+      max-height: 100rpx;
+      &.down{
+        max-height: auto;
+      }
+    }
     .detail-item {
       display: flex;
       margin-top: 3rpx;
       align-items: center;
       font-size: 28rpx;
       font-weight: bold;
+      justify-content: space-between;
     }
-    .item-name {
+    .item-info{
       display: flex;
       align-items: center;
     }
-    .name-title,
-    .num-title {
+    .info-title {
       margin-right: 12rpx;
       color: #7b7b7b;
     }
-    .name-info,
-    .num-info {
+    .info-val {
+      font-weight: 400;
       color: #000;
-    }
-    .name-info {
-      width: 200rpx;
     }
   }
 }

@@ -135,7 +135,7 @@ export default {
       list.forEach((orderItem) => {
         let index = orders.indexOf(orderItem.order_sn);
         if (index > -1) {
-          price += orderItem.price || 10;
+          price += orderItem.total_amount;
         }
       });
       this.totalPrice = price;
