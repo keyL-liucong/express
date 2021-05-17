@@ -207,7 +207,7 @@ export default {
     },
 	onLoad: function (option) { 
 		if(option.scene){
-			this.$api.setSellerParentId(option);
+			wx.setStorageSync('scene', option.scene); 
 		}
 	},
     methods: {

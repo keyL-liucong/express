@@ -82,7 +82,9 @@ export default {
             }
             
             let openid = this.$cache.get("openId");
+			let scene = wx.getStorageSync('scene');
             let postData = {
+				scene:scene,
                 avatarUrl: userInfo.avatarUrl,
                 gender: userInfo.gender,
                 encryptedData: e.encryptedData,
@@ -163,7 +165,9 @@ export default {
 			uni.showLoading({
 				title:"登录中"
 			})
+			let scene = wx.getStorageSync('scene');
 			let postData = {
+				scene:scene,
 				mobile:this.loginData.mobile,
 				code:this.loginData.code,
 				openid:openId,
