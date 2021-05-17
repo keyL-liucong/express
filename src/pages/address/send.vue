@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     switchChange(e) {
-      this.addressData.is_default = e.detail.value;
+      this.addressData.is_default = e.detail.value == true ? 1 : 2;
     },
     columnPicker: function (e, p) {
       // 第几列 下标从0开始
