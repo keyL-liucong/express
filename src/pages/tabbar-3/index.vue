@@ -8,13 +8,18 @@
           <view class="row gray"> 点击填写寄件地址 </view>
         </view>
         <view class="send-info" v-else>
-          <view class="row"> 
+          <view class="row">
             <text class="name">{{ sendAddr.realname }}</text>
             <text class="mobile">{{ sendAddr.mobile }}</text>
           </view>
-          <view class="row gray"> {{sendAddr.address}} </view>
+          <view class="row gray"> {{ sendAddr.address }} </view>
         </view>
-        <view class="address" @click="navTo('/pages/address/index?currentTab=1')"> 地址簿 </view>
+        <view
+          class="address"
+          @click="navTo('/pages/address/index?currentTab=1')"
+        >
+          地址簿
+        </view>
       </view>
       <view class="row">
         <view class="tag tag-2">收</view>
@@ -23,17 +28,22 @@
           <view class="row gray"> 点击填写收件地址 </view>
         </view>
         <view class="send-info" v-else>
-          <view class="row"> 
+          <view class="row">
             <text>{{ receAddr.realname }}</text>
             <text>{{ receAddr.mobile }}</text>
           </view>
-          <view class="row gray"> {{receAddr.address}} </view>
+          <view class="row gray"> {{ receAddr.address }} </view>
         </view>
-        <view class="address" @click="navTo('/pages/address/index?currentTab=0')"> 地址簿 </view>
+        <view
+          class="address"
+          @click="navTo('/pages/address/index?currentTab=0')"
+        >
+          地址簿
+        </view>
       </view>
     </view>
     <view class="send-info-box">
-      <tui-list-cell :hover="false">
+      <!-- <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">物品信息</view>
           <input
@@ -42,36 +52,43 @@
             placeholder-class="thorui-phcolor"
             v-model="name"
             disabled="true"
+             @click="handlePopup('goods')"
           />
         </view>
-      </tui-list-cell>
+      </tui-list-cell> -->
+      <!-- 预估重量 -->
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">预估重量</view>
           <input
             class="thorui-input"
-            placeholder="请输入包裹的预估重量 KG"
+            placeholder="请输入包裹的预估重量"
             placeholder-class="thorui-phcolor"
-            v-model="name"
+            v-model="weightNum"
             disabled="true"
+             @click="handlePopup('weight')"
           />
-          <icon type="clear" :size="14" v-if="name" @tap="name = ''"></icon>
+          <text>KG</text>
         </view>
       </tui-list-cell>
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
-          <view class="thorui-input-title">预估体积重</view>
+          <view class="thorui-input-title">
+            <text>预估体积重</text>
+            <!-- <view>必填</view> -->
+          </view>
           <input
             class="thorui-input"
-            placeholder="补充体积预估费用更准备 KG"
+            placeholder="补充体积预估费用更准备"
             placeholder-class="thorui-phcolor"
-            v-model="name"
+            v-model="volume"
             disabled="true"
+            @click="handlePopup('volume')"
           />
-          <icon type="clear" :size="14" v-if="name" @tap="name = ''"></icon>
+          <text>KG</text>
         </view>
       </tui-list-cell>
-      <tui-list-cell :hover="false">
+      <!-- <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">增值服务</view>
           <input
@@ -83,7 +100,7 @@
           />
           <icon type="clear" :size="14" v-if="name" @tap="name = ''"></icon>
         </view>
-      </tui-list-cell>
+      </tui-list-cell> -->
       <view class="upload-img">
         <view class="row">
           <text>包裹拍照</text>
@@ -93,8 +110,9 @@
           <tui-upload
             :value="value"
             :serverUrl="serverUrl"
-            @complete="result"
-            @remove="remove"
+            :header="header"
+            @complete="uploadComplete"
+            @remove="uploadRemove"
           ></tui-upload>
         </view>
       </view>
@@ -108,8 +126,8 @@
               class="thorui-radio thorui-align__center thorui-padding"
               style="margin-right: 20rpx"
             >
-              <radio color="#5677fc" :value="1"></radio>
-              <text class="thorui-left__sm"> 上门取件</text>
+              <radio color="#5677fc" :value="0" checked="true"></radio>
+              <text class="thorui-left__sm">上门取件</text>
             </label>
             <label class="thorui-radio thorui-align__center thorui-padding">
               <radio color="#5677fc" :value="1"></radio>
@@ -118,7 +136,7 @@
           </radio-group>
         </view>
       </view>
-      <view class="row">
+      <view class="row" v-if="mail == 0">
         <view class="row-left">上门取件时间</view>
         <view class="row-right" @click="dateShow">
           {{ result }}
@@ -129,9 +147,16 @@
           ></tui-datetime>
         </view>
       </view>
+      <view class="row" v-else>
+        <view class="row-left">快递单号</view>
+        <view class="row-right">
+          <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no">
+          <image src="../../static/scan.png" alt="" @click="handleScan">
+        </view>
+      </view>
     </view>
     <label class="thorui-radio" style="margin-right: 20rpx">
-      <radio color="#5677fc" :value="1"></radio>
+      <radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
       <text class="thorui-left__sm">我已同意并阅读《物流服务协议》</text>
     </label>
     <view class="send-buy-box">
@@ -142,9 +167,78 @@
         </view>
       </view>
       <view class="right">
-        <button>立即下单</button>
+        <button @click="handleCreateOrder">立即下单</button>
       </view>
     </view>
+    <!-- 底部弹框部分 -->
+     <tui-bottom-popup
+            backgroundColor="#fff"
+            @close="popup"
+            :show="popupShow"
+          >
+            <view class="popup-box" v-if="popupType == 'weight'">
+              <view class="title">
+                <text>填写预估重量</text>
+              </view>
+              <view class="line">
+                <view> 预估重量<text>(包含外装的总重量)</text> </view>
+                <view class="line-right">
+                  <!-- <button class="sub" @click="handleSub">-</button> -->
+                  <input type="text" v-model="weight" />
+                  <!-- <button class="add" @click="handleAdd">+</button> -->
+                  <text>kg</text>
+                </view>
+              </view>
+              <view class="rule">
+                <view>计费规则：</view>
+                <view>体积重量(kg) = (长(cm) x 宽(cm) x 高(cm)) ÷ 6000</view>
+                <view>国际物流续重以0.5kg为计费单位，不足时按0.5kg计费</view>
+                <view>例如：体积重量为1.01kg，按1.5kg计费</view>
+              </view>
+              <button class="" @click="handleConfirmWeight">确认</button>
+            </view>
+            <view class="popup-box" v-else-if="popupType === 'goods'">
+              <view class="title">
+                <text>选择物品类型信息</text>
+              </view>
+              <view class="type-1-list">
+                <view class="type-item" v-for="(item, index) in firstList" :key="index" @click="handleSecList(item.declare_id)">{{ item.declare_name }}</view>
+              </view>
+              <button>提交</button>
+            </view>
+            <view v-else>
+              <view class="popup-box">
+              <view class="title">
+                <text>预估体积重</text>
+              </view>
+              <view class="input-line">
+                <view class="input-item">
+                  <input type="number" @blur="handleCheck" v-model="longth" maxlength="3" placeholder="长">
+                  <text>cm</text>
+                </view>
+                <view class="input-item">
+                  <input type="number"  @blur="handleCheck" v-model="width" maxlength="3" placeholder="宽">
+                  <text>cm</text>
+                </view>
+                <view class="input-item">
+                  <input type="number"  @blur="handleCheck" v-model="height" maxlength="3" placeholder="高">
+                  <text>cm</text>
+                </view>
+              </view>
+              <view class="line-text">
+                <text>预估体积总量=</text>
+                <text class="num">{{ volumeWeight }} KG</text>
+              </view>
+              <view class="tips">
+                *长+宽+高不得超过120cm，单边长度不得超过90cm
+              </view>
+              <view class="tips">
+                *预估体积重量=(长x宽x高)/6000
+              </view>
+              <button class="" @click="handleVolume">确认</button>
+            </view>
+            </view>
+          </tui-bottom-popup>
   </view>
 </template>
 
@@ -156,11 +250,50 @@ export default {
   },
   data() {
     return {
-      couponList: [],
+      // postData: {
+      //   sender_id: "", //收件地址id
+      //   addressee_id: "", //寄件地址id
+      //   weight: "",
+      //   volume: "",
+      //   increment_price_total: "", //保价金额（非必填）
+      //   mail: "", //寄件方式 0 上门取件 1 自寄下单
+      //   coupon_id: "", //优惠券id（非必填）
+      //   logistics_no: "", //物流单号 mail=1必填
+      //   total_amount: "", //总金额
+      //   item_picture: "", //商品图片 单张
+      //   order_items: "", //邮寄物品明细
+      //   item_name: "", //商品名称
+      //   item_price: "", //商品价格
+      //   item_num: "", //商品数量
+      //   declare_id: "", //商品二级申报类型id
+      // },
+      longth:'',
+      width:'',
+      height:'',
+      popupShow: false,
+      popupType: 'weight',
+      popupWeightShow:false, // 预估重量弹框
       result: "",
-      sendAddr:null,
-      receAddr:null
+      sendAddr: null,
+      receAddr: null,
+      weight: 0.1, 
+      weightNum:'',
+      volume:'',
+      mail: 0, //寄件方式 0 上门取件 1 自寄下单
+      logistics_no:'',
+      volumeWeight:0,
+      firstList:[],
+      imageList:[],
+      header:{},
+      value:'', // 图片上传
+      serverUrl:'',
+      aggrementChecked:false, // 协议
     };
+  },
+  async onShow(){
+    this.sendAddr = await this.getDefaultAddr(1);
+    console.log(this.sendAddr);
+    this.receAddr = await this.getDefaultAddr(2);
   },
   async onLoad() {
     let date = new Date();
@@ -170,13 +303,96 @@ export default {
     var hour = date.getHours();
     var minute = date.getMinutes();
     this.result = `${year}-${month}-${day} ${hour}:${minute}`;
-    this.sendAddr = await this.getDefaultAddr(1);
-    this.receAddr = await this.getDefaultAddr(2);
+    this.serverUrl = this.$api.getUploadUrl();
+    this.header = {
+		token: this.$cache.get("token")
+	};
     //   this.show();
+    let data = {
+      a: 1,
+    };
+    // this.handleCreateOrder(data);
+    this.getFirstList();
   },
   methods: {
-    navTo(url){
-      this.$href.navigateTo({url});
+    // 协议
+    handleAggrentMent(){
+      this.aggrementChecked = !this.aggrementChecked;
+    },
+    // 扫一扫
+    handleScan(){
+      // 允许从相机和相册扫码
+        let _this = this;
+				 uni.scanCode({
+				     success: function (res) {
+                  _this.logistics_no = res.result
+				     }
+				 });
+    },
+    // 图片上传
+    uploadComplete(e) {
+      this.imageList = e.imgArr;
+    },
+    uploadRemove(e) {
+
+    },
+    // 一级物品申报点击
+    async handleSecList(declare_id){
+      let res = await this.$api.getSecList({page:1,size:100,declare_id});
+      console.log(res);
+      this.firstList = res.data.list;
+    },
+    async getFirstList(){
+      let res = await this.$api.getFirstList({page:1,size:100});
+      this.firstList = res.data.list;
+      console.log(res);
+    },
+    // 检验长宽高输入
+    handleCheck(e) {
+      console.log(e);
+      
+    },
+    // 处理体积
+    handleVolume() {
+      if(this.longth && this.width && this.height){
+        this.volume = this.volumeWeight = parseFloat((this.longth * this.width * this.height) / 6000).toFixed(2);
+        // this.postData.volume = this.longth * this.width * this.height;
+      }
+      setTimeout(() => {
+        this.popupShow = false;
+      },500)
+    },
+    // 创建订单 立即下单
+    async handleCreateOrder() {
+      if(!this.aggrementChecked){
+        this.$toast('请确认已经阅读并同意《物流服务协议》');
+        return false;
+      }
+      let data = {
+        sender_id:this.sendAddr.address_id,
+        addressee_id:this.receAddr.address_id,
+        weight:this.weightNum,
+        mail:this.mail,
+        item_picture:this.imageList,
+
+
+      }
+      let orderPriceRes = this.$api.getOrderPrice(data);
+      console.log(orderPriceRes);
+      let res = await this.$api.createOrder(data);
+      if(res.data){
+
+      }else{
+        this.$toast(res.info);
+      }
+      console.log(res);
+    },
+    handlePopup(type){
+        this.popupType = type;
+        this.popupShow = !this.popupShow;
+    },
+    navTo(url) {
+      this.$href.navigateTo({ url });
     },
     // 获取默认地址
     async getDefaultAddr(type) {
@@ -185,7 +401,9 @@ export default {
       });
       return res.data[0];
     },
-    radioChange() {},
+    radioChange(e) {
+      this.mail = e.detail.value;
+    },
     dateShow: function (e) {
       this.$refs.dateTime.show();
     },
@@ -194,6 +412,19 @@ export default {
       console.log(e);
       this.result = e.result;
     },
+    // 处理重量
+    handleConfirmWeight() {
+      this.weightNum = this.weight;
+      this.popupShow = false;
+    },
+    popup: function () {
+      this.popupShow = !this.popupShow;
+    },
+    // 重量减
+    handleSub(){
+
+    },
+    handleAdd(){}
   },
   async created() {},
   mounted() {},
@@ -235,10 +466,10 @@ export default {
         > .row {
           height: 50rpx;
           line-height: 50rpx;
-          > text{
+          > text {
             margin-right: 20rpx;
           }
-          .mobile{
+          .mobile {
             font-size: 14px;
             color: #ccc;
           }
@@ -267,6 +498,12 @@ export default {
           text-align: right !important;
         }
       }
+      > text{
+        font-size: 28rpx;
+        color: #333;
+        // font-size: ;
+      }
+      
     }
     .upload-img {
       background: #fff;
@@ -289,6 +526,13 @@ export default {
       align-items: center;
       padding: 20rpx;
       height: 66rpx;
+      .row-right{
+        display: flex;
+        image{
+            width: 40rpx;
+            height: 40rpx;
+        }
+      }
     }
   }
   > .thorui-radio {
@@ -329,5 +573,98 @@ export default {
       }
     }
   }
+  .popup-box {
+        padding: 30rpx;
+        .title {
+          text-align: center;
+          font-size: 18px;
+          color: #000000;
+          line-height: 25px;
+        }
+        .input-line{
+          display: flex;
+          justify-content: space-between;
+          padding: 6rpx 16rpx;
+          .input-item{
+            display: flex;
+            align-items: center;
+            background: #F3F3F3;
+            width: 30%;
+            height: 70rpx;
+            padding-right: 10rpx;
+            input{
+              padding: 20rpx;
+            }
+          }
+        }
+        .line-text{
+          font-size: 18px;
+          line-height: 25px;
+          margin: 40rpx 0;
+          text{
+            color: #7B7B7B;
+          }
+          .num{
+            color: #000000;
+            font-size: 22px;
+            line-height: 30px;
+          }
+        }
+        .tips{
+          color: #FF6C00;
+          margin-bottom: 30rpx;
+        }
+        .line {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20rpx;
+          font-size: 16px;
+          text {
+            color: #7b7b7b;
+          }
+          .line-right {
+            display: flex;
+            view {
+              background: #f3f3f3;
+              margin-right: 8rpx;
+              padding: 0 16rpx;
+            }
+            >button{
+              background: #f3f3f3;
+              height: 70rpx;
+              line-height: 70rpx;
+            }
+            input {
+              display: block;
+              width: 60rpx;
+              background: #f3f3f3;
+              padding: 6rpx 16rpx;
+              margin-right: 8rpx;
+            }
+            .sub {
+              border-top-left-radius: 6rpx;
+              border-bottom-left-radius: 6rpx;
+            }
+            .add {
+              border-top-right-radius: 6rpx;
+              border-bottom-right-radius: 6rpx;
+            }
+          }
+        }
+        .rule {
+          margin-top: 30rpx;
+          margin-bottom: 50rpx;
+          view {
+            color: #7b7b7b;
+          }
+        }
+        > button {
+          height: 80rpx;
+          line-height: 80rpx;
+          border-radius: 40rpx;
+          background: #ff9200;
+          color: #fff;
+        }
+      }
 }
 </style>
