@@ -12,7 +12,7 @@
             <text class="name">{{ sendAddr.realname }}</text>
             <text class="mobile">{{ sendAddr.mobile }}</text>
           </view>
-          <view class="row gray"> {{ sendAddr.address }} </view>
+          <view class="row gray clamp-1"> {{ sendAddr.address }} </view>
         </view>
         <view
           class="address"
@@ -466,6 +466,7 @@ export default {
         > .row {
           height: 50rpx;
           line-height: 50rpx;
+          width: 90%;
           > text {
             margin-right: 20rpx;
           }
