@@ -7,11 +7,11 @@
       <view class="addr-list" v-if="addrList.length > 0">
         <radio-group color="#ff7100" :value="1" @change="handleDefault">
           <view class="addr-itme" v-for="(item,index) in addrList" :key="index">
-            <view class="row">
+            <view class="row" @click="sureAddress(item)">
               <text class="name-text">{{ item.realname }}</text>
               <text class="mobile-text">{{ item.mobile }}</text>
             </view>
-            <view class="row">{{ item.address }}</view>
+            <view class="row" @click="sureAddress(item)">{{ item.address }}</view>
             <view class="radio-row">
              <view class="left">
                 <radio :value="item.address_id" color="#ff7100" :checked="item.is_default == 1 ? true : false" ></radio>
@@ -51,15 +51,35 @@ export default {
 				}, {
 					name: "寄件地址簿"
 				}],
-      type:1   // 地址类型 1-寄件，2-收件 
+      type:1   ,// 地址类型 1-寄件，2-收件
+	  from:""
     };
   },
   onLoad(option){
 	  if(option.currentTab) {
 		  this.currentTab = option.currentTab;
 	  }
+	  if(option.from && option.from == 'send') {
+		  this.from = option.from
+	  }
   },
   methods: {
+	sureAddress(e) {
+		if ( this.from &&  this.from == "send") {
+			let pages = getCurrentPages();
+			let nowPage = pages[ pages.length - 1];
+			let prevPage = pages[ pages.length - 2 ];
+			if (this.currentTab == 1) {
+				prevPage.$vm.sendAddr = e; 
+			} else {
+				prevPage.$vm.receAddr = e; 
+			}
+			uni.navigateBack({
+				delta:1
+			})
+		}
+		  console.log(e);
+	},
     navTo(url) {
         this.$href.navigateTo({ url: url });
     },
@@ -87,10 +107,11 @@ export default {
       this.initDate();
     },
     handleEdit(address_id){
+		let from = this.from;
 		if(this.currentTab == 0) {
-			this.$href.navigateTo({url:`/pages/address/receive?address_id=${address_id}&type=edit`});
+			this.$href.navigateTo({url:`/pages/address/receive?address_id=${address_id}&type=edit&from=${from}`});
 		} else {
-			this.$href.navigateTo({url:`/pages/address/send?address_id=${address_id}&type=edit`});
+			this.$href.navigateTo({url:`/pages/address/send?address_id=${address_id}&type=edit&from=${from}`});
 		}
       
     }
