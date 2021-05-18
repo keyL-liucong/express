@@ -89,7 +89,7 @@ export default {
       var param = {
         size: 10,
         page: _self.pageNum,
-        order_status: 5,
+        order_status: 4,
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {

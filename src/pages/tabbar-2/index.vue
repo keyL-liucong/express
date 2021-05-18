@@ -5,7 +5,7 @@
         v-for="(item, index) in navList"
         :key="index"
         class="nav-item"
-        :class="{ current: tabCurrentStatus == item.status }"
+        :class="{ current: tabCurrentStatus === item.status }"
         @click="tabClick(item)"
       >
         {{ item.text }}
@@ -58,9 +58,9 @@
     <view v-if="payOrderId != ''" class="bttom-pay">
       <view class="price-box">
         <text class="price-lab">应付金额:</text>
-        <text class="price-num">¥{{toglePrice}}</text>
+        <text class="price-num">¥{{ toglePrice }}</text>
       </view>
-      <text class="pay-btn">立即支付</text>
+      <text class="pay-btn" @click="toPay">立即支付</text>
     </view>
   </view>
 </template> 
@@ -70,7 +70,7 @@ import empty from "@/components/empty";
 import orderItem from "@/components/order-item/order-item.vue";
 import icon from "@/components/tui-icon/tui-icon.vue";
 import Api from "@/services/index";
-import {get } from '@/utils/cache';
+import { get } from "@/utils/cache";
 export default {
   components: {
     uniLoadMore,
@@ -84,12 +84,12 @@ export default {
       pageNum: 1,
       loadingType: "more",
       tabCurrentIndex: 0,
-      tabCurrentStatus: 0,
+      tabCurrentStatus: "",
       getorderListLock: false,
       orderTotal: 10,
       navList: [
         {
-          status: 0,
+          status: "",
           text: "全部订单",
           loadingType: "more",
           orderList: [],
@@ -98,7 +98,7 @@ export default {
           totalPage: 1,
         },
         {
-          status: 1,
+          status: 6,
           text: "待揽收",
           loadingType: "more",
           orderList: [],
@@ -107,7 +107,7 @@ export default {
           totalPage: 1,
         },
         {
-          status: 2,
+          status: 7,
           text: "待处理",
           loadingType: "more",
           orderList: [],
@@ -116,7 +116,7 @@ export default {
           totalPage: 1,
         },
         {
-          status: 3,
+          status: "0",
           text: "待支付",
           loadingType: "more",
           orderList: [],
@@ -125,7 +125,7 @@ export default {
           totalPage: 1,
         },
         {
-          status: 4,
+          status: 8,
           text: "运输中",
           loadingType: "more",
           orderList: [],
@@ -134,7 +134,7 @@ export default {
           totalPage: 1,
         },
         {
-          status: 5,
+          status: 4,
           text: "已签收",
           loadingType: "more",
           orderList: [],
@@ -155,15 +155,14 @@ export default {
     if (token) {
       this.loadData();
     } else {
-        uni.redirectTo({
-            url: "/pages/login/index"
-        })
+      uni.redirectTo({
+        url: "/pages/login/index",
+      });
     }
   },
-  onShow() {
-  },
+  onShow() {},
   onReachBottom() {
-    // this.loadData();
+    this.loadData();
   },
   methods: {
     //获取订单列表
@@ -173,12 +172,11 @@ export default {
         return;
       }
       _self.getorderListLock = true;
-      // _self.pageNum > 1 && uni.showLoading({ title: "加载中1..." });
       _self.loadingType = "loading";
       var param = {
         size: 10,
         page: _self.pageNum,
-        order_status: _self.tabCurrentStatus > 0 ? _self.tabCurrentStatus : "",
+        order_status: _self.tabCurrentStatus,
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
@@ -198,51 +196,20 @@ export default {
     //顶部tab点击
     tabClick(item) {
       this.tabCurrentStatus = item.status;
-      this.loadData("tabChange");
       this.pageNum = 1;
+      this.loadData("tabChange");
+      this.payOrderId = "";
     },
     messagePopClose(pro) {
       this.messageboxShow = false;
     },
     //删除订单
-    cancelOrderItem(){
+    cancelOrderItem() {
       this.pageNum = 1;
       this.loadData();
     },
-    //取消订单
-    cancelOrder(item) {
-      var _self = this;
-      uni.showLoading({
-        title: "请稍后",
-      });
-      setTimeout(function () {
-        let { stateTip, stateTipColor } = _self.orderStateExp(5);
-        Api.methods
-          .cancelOrder({ orderId: item.omsOrder.id })
-          .then(function (res) {
-            if (res.data.code === 200) {
-              //取消订单后删除待付款中该项
-              let list = _self.navList[1].orderList;
-              let index = list.findIndex(
-                (val) => val.omsOrder.id === item.omsOrder.id
-              );
-              index !== -1 && list.splice(index, 1);
-            } else {
-              uni.hideLoading();
-              _self.$toast("取消失败");
-              return;
-            }
-            let list = _self.navList[0].orderList;
-            let index = list.findIndex(
-              (val) => val.omsOrder.id === item.omsOrder.id
-            );
-            index !== -1 && list.splice(index, 1);
-            uni.hideLoading();
-          });
-      }, 600);
-    },
     setOrderPay(item) {
-      if(this.payOrderId == item.order_sn){
+      if (this.payOrderId == item.order_sn) {
         this.payOrderId = "";
         this.toglePrice = 0;
         return;
@@ -251,22 +218,44 @@ export default {
       this.payOrderId = item.order_sn;
     },
     toPay(orderSn) {
-      // uni.redirectTo({
-      //   url: "/pages/money/pay?orderSn=" + orderSn,
-      // });
-      uni.requestPayment({
-        provider: "wxpay",
-        timeStamp: String(Date.now()),
-        nonceStr: "A1B2C3D4E5",
-        package: "prepay_id=wx20180101abcdefg",
-        signType: "MD5",
-        paySign: "",
-        success: function (res) {
-          console.log("success:" + JSON.stringify(res));
-        },
-        fail: function (err) {
-          console.log("fail:" + JSON.stringify(err));
-        },
+      let _self = this;
+      let wx_openid = this.$cache.get("openId");
+      let proData = {
+        openId: wx_openid,
+        order_sn: _self.payOrderId,
+      };
+      this.$api.orderPay(proData).then((res) => {
+        if (res.status == 1) {
+          uni.requestPayment({
+            provider: "wxpay",
+            orderInfo: "orderInfo",
+            timeStamp: res.data.timeStamp,
+            nonceStr: res.data.nonceStr,
+            package: res.data.package,
+            signType: res.data.signType,
+            paySign: res.data.paySign,
+            success(payRes) {
+              if (payRes.errMsg == "requestPayment:ok") {
+                uni.showToast({
+                  title: "支付成功",
+                  icon: "success",
+                  duration: 2000,
+                });
+                setTimeout(() => {
+                  _self.pageNum = 1;
+                  _self.loadData();
+                }, 2000);
+              }
+            },
+            fail(payErrRes) {
+              console.log(payRes);
+              _self.$toast("支付失败");
+            },
+          });
+        } else {
+          _self.$toast(res.info);
+          return;
+        }
       });
     },
     confirmReceipt(item) {
@@ -358,7 +347,7 @@ page {
   padding: 0 10rpx 0 20rpx;
   background: #fff;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
-  z-index: 10;
+  z-index: 50;
   .nav-item {
     display: flex;
     justify-content: center;
@@ -370,7 +359,7 @@ page {
     color: #303133;
     position: relative;
     &.current {
-      color: #FF6C00;
+      color: #ff6c00;
       &:after {
         content: "";
         position: absolute;
@@ -379,7 +368,7 @@ page {
         transform: translateX(-50%);
         width: 120rpx;
         height: 0;
-        border-bottom: 2px solid #FF6C00;
+        border-bottom: 2px solid #ff6c00;
       }
     }
   }
@@ -571,6 +560,7 @@ page {
   justify-content: space-between;
   box-sizing: border-box;
   border-radius: 16rpx 16rpx 0 0;
+  z-index: 50;
   .price-box {
     display: flex;
     align-items: center;

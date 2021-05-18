@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view v-if="item.order_status==3" class="order-item-waitpay">
+    <view v-if="item.order_status==0" class="order-item-waitpay">
       <view class="to-detail" @click="toDetail"></view>
       <view class="orderinfos">
         <view class="order-num">
@@ -60,10 +60,10 @@
           <text class="info-kefu-text">需要客服处理</text>
         </view> -->
         <!-- 已签收 -->
-        <view v-if="item.order_status==5" class="info-btn qian-shou">
+        <view v-if="item.order_status==4" class="info-btn qian-shou">
           <text class="info-qianshou-text">成功签收</text>
         </view>
-        <view v-if="item.order_status==5" class="info-btn zi-ti">
+        <view v-if="item.order_status==4" class="info-btn zi-ti">
           <text class="info-ziti-text">到达自提点</text>
         </view>
       </view>
@@ -86,7 +86,7 @@
         </view>
       </view>
       <!-- 最新物流轨迹 -->
-      <view v-if="item.order_status==4 && item.order_trajectory" class="newest-progress-message">
+      <view v-if="item.order_status==8 && item.order_trajectory" class="newest-progress-message">
         <text class="message-btn" @click="toexPressDetail">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
         <text class="message-text"
@@ -94,7 +94,7 @@
         >
       </view>
       <!-- 包裹详情 -->
-      <view v-if="item.order_status==4" class="package-detail">
+      <view v-if="item.order_status==8" class="package-detail">
         <text class="detail-tite">包裹详情</text>
         <view class="detail-list" :class="{'down': detailAll}">
           <view v-for="(orderitem) in item.orderItems" :key="orderitem.order_id" class="detail-item">
@@ -128,15 +128,15 @@
       </view>
       <view class="bottom-data">
         <view class="data-info-box">
-          <text v-if="item.order_status==1" class="bottom-data-title">下单时间</text>
+          <text v-if="item.order_status==6" class="bottom-data-title">下单时间</text>
           <text class="data-text">{{item.created}}</text>
         </view>
-        <text v-if="item.order_status==2" class="change-btn">更改</text>
+        <text v-if="item.order_status==7" class="change-btn">更改</text>
         <!-- <text class="share-btn">分享给收件人</text> -->
-         <navigator v-if="item.order_status==5" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
+         <navigator v-if="item.order_status==4" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
       </view>
     </view>
-    <view v-if="item.order_status==3" class="bottom-wait-pay">
+    <view v-if="item.order_status==0" class="bottom-wait-pay">
       <view class="content">
         <view class="lab">
           <icon

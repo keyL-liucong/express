@@ -242,6 +242,7 @@ page {
     color: #000;
     border: 1rpx solid #000;
     border-radius: 30rpx;
+    box-sizing: border-box;
   }
   .share-btn {
     margin-right: 20rpx;

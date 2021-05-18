@@ -195,6 +195,14 @@ export default {
             method: 'POST'
         })
     },
+    // 订单支付
+    orderPay(data) {
+        return request({
+            url: 'Payment/createOrder',
+            data,
+            method: 'POST'
+        })
+    },
     // 获取全部申报信息
     getAllList(data) {
         return request({
