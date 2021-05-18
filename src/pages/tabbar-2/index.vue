@@ -45,6 +45,7 @@
         v-for="(orderitem, orderindex) in orderlist"
         :item="orderitem"
         :key="orderindex"
+        :payorderid="payOrderId"
         v-on:setitempay="setOrderPay"
         @cancelorder="cancelOrderItem"
       ></orderItem>
@@ -54,7 +55,7 @@
         :status="loadingType"
       ></uni-load-more>
     </view>
-    <view v-if="tabCurrentStatus == 3" class="bttom-pay">
+    <view v-if="payOrderId != ''" class="bttom-pay">
       <view class="price-box">
         <text class="price-lab">应付金额:</text>
         <text class="price-num">¥{{toglePrice}}</text>
@@ -144,6 +145,7 @@ export default {
       ],
       orderlist: {},
       toglePrice: 0,
+      payOrderId: "",
     };
   },
   onLoad(options) {
@@ -240,7 +242,13 @@ export default {
       }, 600);
     },
     setOrderPay(item) {
-      console.log(item);
+      if(this.payOrderId == item.order_sn){
+        this.payOrderId = "";
+        this.toglePrice = 0;
+        return;
+      }
+      this.toglePrice = item.total_amount;
+      this.payOrderId = item.order_sn;
     },
     toPay(orderSn) {
       // uni.redirectTo({
@@ -393,10 +401,11 @@ page {
   }
   .close-icon {
     position: absolute;
-    top: 20rpx;
-    right: 36rpx;
+    top: 10rpx;
+    right: 16rpx;
   }
   .message-info {
+    width: 550rpx;
     margin-left: 16rpx;
     color: #000;
     font-weight: 600;

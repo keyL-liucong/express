@@ -42,7 +42,7 @@
         </view>
       </view>
       <view class="cancel-btn" @click="cancelOrder">
-        <text class="btn-text">取消订单</text>
+        <text class="btn-text">删除订单</text>
       </view>
     </view>
     <view v-else class="order-item">
@@ -148,7 +148,7 @@
           ></icon>
           <text class="lab-text">微信支付</text>
         </view>
-        <icon
+        <icon v-if="payorderid == item.order_sn"
           class="btn"
           name="circle-fill"
           size="40"
@@ -156,8 +156,15 @@
           unit="rpx"
           @tap="setPay"
         ></icon>
+        <icon v-else
+          class="btn"
+          name="circle"
+          size="40"
+          unit="rpx"
+          @tap="setPay"
+        ></icon>
       </view>
-      <text class="bottom-wait-pay-text">微信没钱？请联系客服</text>
+      <button class="bottom-wait-pay-text" type="submit" open-type="contact">微信没钱？请联系客服</button>
     </view>
   </view>
 </template>
@@ -175,6 +182,10 @@ export default {
       type: Object,
       default: {},
     },
+    payorderid: { 
+      type: String,
+      default: "",
+    }
   },
   data() {
     return {
@@ -236,6 +247,8 @@ export default {
 .to-detail{
   display: block;
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 10;
@@ -561,11 +574,13 @@ export default {
     }
     .copy-btn{
       display: block;
+      position: relative;
       width: 18rpx;
       height: 22rpx;
       margin-left: 14rpx;
       background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
       background-size: 100%;
+      z-index: 20;
     }
     .order-data {
       display: flex;
@@ -740,6 +755,7 @@ export default {
         color: #000;
         text-align: end;
         box-sizing: border-box;
+        background: transparent;
     }
 }
 </style>
