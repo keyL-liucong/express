@@ -196,7 +196,7 @@ export default {
 			followShow:true
         }; 
     },
-    async onLoad() {
+    async onLoad(option) {
         let getBannerRes = await Api.getBanner();
 		console.log()
         this.bannerList = getBannerRes.data;
@@ -206,11 +206,12 @@ export default {
             this.animation = true;
         }, 600);
 		if(option.scene){
-			that.$cache.put(
+			this.$cache.put(
 			    "scene",
 			    option.scene
 			); 
-		}
+		} 
+		
     },
     methods: {
         navTo(url) {
