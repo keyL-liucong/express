@@ -9,22 +9,22 @@
           <text class="copy-btn" @click="copyOrderId"></text>
         </view>
         <view class="order-data">
-          <text class="data-text">2020-03-23</text>
-          <text class="time-text">17:34</text>
+          <text class="data-title">下单时间</text>
+          <text class="data-text">{{item.created}}</text>
         </view>
       </view>
       <view class="address-info">
         <view class="address-from">
-          <text class="address-from-city">广东深圳</text>
-          <text class="address-from-person">大表哥</text>
+          <text class="address-from-city">{{item.sender_addr}}</text>
+          <text class="address-from-person">{{item.sender_name}}</text>
         </view>
         <view class="address-icon">
-          <text class="text">单独寄送</text>
+          <!-- <text class="text">单独寄送</text> -->
         </view>
         <view class="address-to">
-          <text class="address-to-text">美国纽约</text>
-          <text class="address-to-person">大卫</text>
-          <text class="address-to-remark">(自提点自提)</text>
+          <text class="address-to-text">{{item.addressee_addr}}</text>
+          <text class="address-to-person">{{item.addressee_name}}</text>
+          <!-- <text class="address-to-remark">(自提点自提)</text> -->
         </view>
       </view>
       <view class="package-detail">
@@ -32,9 +32,13 @@
         <text class="icon"></text>
       </view>
       <view class="price-info-list">
-        <view class="info-item">
-          <text class="info-item-lab">基础运费</text>
-          <text class="info-item-val">¥122</text>
+        <view v-for="items in item.orderItems" :key="items.order_id" class="info-item">
+          <text class="info-item-lab">{{items.item_name}}</text>
+          <text class="info-item-val">¥{{items.item_price}}</text>
+        </view>
+        <view v-if="item.coupon_info && item.coupon_info.money > 0" class="info-item">
+          <text class="info-item-lab">使用优惠券</text>
+          <text class="info-item-val">-¥{{item.coupon_info.money}}</text>
         </view>
       </view>
       <view class="cancel-btn" @click="cancelOrder">
@@ -535,15 +539,17 @@ export default {
   box-sizing: border-box;
   margin-bottom: 20rpx;
   .orderinfos {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 40rpx;
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-between;
+    // height: 40rpx;
     .order-num {
       display: flex;
       align-items: center;
     }
     .num-title {
+       display: block;
+       width: 114rpx;
       margin-right: 8rpx;
       font-size: 28rpx;
       color: #7b7b7b;
@@ -563,12 +569,19 @@ export default {
     }
     .order-data {
       display: flex;
+      margin-top: 8rpx;
       align-items: center;
-      font-size: 24rpx;
+    }
+     .data-title {
+       display: block;
+       width: 114rpx;
+      margin-right: 8rpx;
+      font-size: 28rpx;
       color: #7b7b7b;
     }
-    .time-text {
-      margin-left: 20rpx;
+    .data-text {
+      font-size: 28rpx;
+      color: #000;
     }
   }
   .address-info {

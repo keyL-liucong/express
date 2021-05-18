@@ -54,7 +54,7 @@
         :status="loadingType"
       ></uni-load-more>
     </view>
-    <view class="bttom-pay">
+    <view v-if="tabCurrentStatus == 3" class="bttom-pay">
       <view class="price-box">
         <text class="price-lab">应付金额:</text>
         <text class="price-num">¥{{toglePrice}}</text>
@@ -371,7 +371,7 @@ page {
         transform: translateX(-50%);
         width: 120rpx;
         height: 0;
-        border-bottom: 2px solid #fa436a;
+        border-bottom: 2px solid #FF6C00;
       }
     }
   }
