@@ -47,6 +47,7 @@
         <view class="thorui-input-item">
           <view class="thorui-input-title">物品信息</view>
           <input
+            v-if="declareList.length === 0"
             class="thorui-input"
             placeholder="请申报您寄送的物品信息>"
             placeholder-class="thorui-phcolor"
@@ -54,8 +55,21 @@
             disabled="true"
              @click="handlePopup('goods')"
           />
+          <view class="" v-else @click="lookDeclareList">
+            物品共{{total_qty}}件，总价值￥{{total_amount}}
+          </view>
         </view>
       </tui-list-cell>
+      <!-- <view class="goods-info-wrap">
+        <view class="goods-list">
+          <view class="goods-item">
+            qqqq
+          </view>
+          <view class="goods-item">
+            qqqq
+          </view>
+        </view>
+      </view> -->
       <!-- 预估重量 -->
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
@@ -203,10 +217,66 @@
               </view>
              <view class="type-1-list-wrap">
                 <view class="type-1-list">
-                <view class="type-item" v-for="(item, index) in firstList" :key="index" @click="handleSecList(item.declare_id)">{{ item.declare_name }}</view>
+                  <view v-if="firstList.length > 0">
+                    <view class="type-item" v-for="(item, index) in firstList" :key="index" @click="handleSecList(item.declare_id)">{{ item.declare_name }}</view>
+                  </view>
+                  <view v-else>
+                    <view class="type-item" v-for="(item, index) in secList" :key="index" @click="handleItemPrice(item)">{{ item.declare_name }}</view>
+                  </view>
               </view>
              </view>
               <button>提交</button>
+            </view>
+            <!-- 申报物品 -->
+            <view class="popup-box" v-else-if="popupType === 'declare'">
+              <!-- <view class="title">
+                <text>物品申报</text>
+              </view> -->
+             <view class="declare-wrap">
+                <view class="declare-row">
+                 <view class="left">申报单价</view>
+                 <view class="right">
+                   <input type="number"  placeholder="输入申报单价(1-5000)" v-model="order_item.item_price">
+                   <text>人民币</text>
+                 </view>
+              </view>
+              <view class="declare-row">
+                <view class="left">申报数量</view>
+                 <view class="right">
+                   <input type="number"  placeholder="输入申报物品数量" style="width:280rpx" v-model="order_item.item_num">
+                   <text>个</text>
+                 </view>
+              </view>
+             </view>
+              <button @click="declareComfirm">确认</button>
+            </view>
+            <!-- 申报物品列表 -->
+            <view class="popup-box" v-else-if="popupType === 'declareList'">
+              <view class="title">
+                <text>物品申报</text>
+              </view>
+             <scroll-view scroll-y="true" class="declare-list-box">
+               <view class="declare-list-wrap">
+                  <view class="declare-item" v-for="(item,index) in declareList" :key="index">
+                    <view class="row">
+                      <text class="name-text">{{ item.item_name }}</text>
+                    </view>
+                    <view class="row">
+                      <text class="name-text" style="margin-right:20rpx">物品单价：￥{{ item.item_price }}</text>
+                      <text class="name-text">物品数量：￥{{ item.item_num }}</text>
+                    </view>
+                    <view class="radio-row">
+                      <view class="left">
+                      </view>
+                      <view class="right">
+                        <text @click="handleEdit(item.declare_id)">编辑</text>
+                        <text @click="handleDel(item.declare_id)">删除</text>
+                      </view>
+                    </view>
+                  </view>
+              </view>
+             </scroll-view>
+              <button>确认</button>
             </view>
             <view v-else>
               <view class="popup-box">
@@ -273,7 +343,7 @@ export default {
       width: "",
       height: "",
       popupShow: false,
-      popupType: "weight",
+      popupType: "weight", // 默认weight
       popupWeightShow: false, // 预估重量弹框
       result: "",
       sendAddr: null,
@@ -285,6 +355,14 @@ export default {
       logistics_no: "",
       volumeWeight: 0,
       firstList: [],
+      secList: [],
+      order_item: {
+        item_price: "",
+        item_num: "",
+      }, // 申报物品的item
+      declareList: [], // 申报物品列表
+      total_amount: "", // 申报物品总价
+      total_qty: "", // 申报物品数量
       imageList: [],
       header: {},
       value: "", // 图片上传
@@ -343,8 +421,50 @@ export default {
     async handleSecList(declare_id) {
       let res = await this.$api.getSecList({ page: 1, size: 100, declare_id });
       console.log(res);
-      this.firstList = res.data.list;
+      this.secList = res.data.list;
+      this.firstList = [];
     },
+    handleItemPrice(item) {
+      console.log(item);
+      this.order_item = {
+        item_name: item.declare_name,
+        declare_id: item.declare_id,
+      };
+      this.popupType = "declare";
+    },
+    // 申报物品确认
+    declareComfirm() {
+      console.log("申报物品item", this.order_item);
+      this.declareList.push(this.order_item);
+      if (this.declareList.length > 0) {
+        let newArr = this.declareList.map((item) => {
+          return item.item_num * item.item_price;
+        });
+        let newQtyArr = this.declareList.map((item) => {
+          return item.item_num;
+        });
+        this.total_qty = newQtyArr.reduce((prev, next) => {
+          return prev + next;
+        });
+        this.total_amount = newArr.reduce((prev, next) => {
+          return prev + next;
+        });
+      }
+      console.log(this.declareList);
+      this.popupShow = false;
+    },
+    // 申报物品编辑
+    handleEdit(){
+
+    },
+    handleDel() {
+      
+    },
+    // 查看物品申报的列表
+    lookDeclareList() {
+      this.handlePopup('declareList')
+    },
+    // 获取一级物品申报
     async getFirstList() {
       let res = await this.$api.getFirstList({ page: 1, size: 100 });
       this.firstList = res.data.list;
@@ -389,6 +509,9 @@ export default {
       console.log(res);
     },
     handlePopup(type) {
+      if (type === "goods") {
+        this.getFirstList();
+      }
       this.popupType = type;
       this.popupShow = !this.popupShow;
     },
@@ -584,10 +707,13 @@ export default {
     .type-1-list-wrap {
       min-height: 600rpx;
       .type-1-list {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
         margin-top: 40rpx;
+        > view {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          width: 100%;
+        }
         .type-item {
           width: 30%;
           background: #f3f3f3;
@@ -597,6 +723,53 @@ export default {
           text-align: center;
           margin-bottom: 20rpx;
         }
+      }
+    }
+    // 申报物品
+    .declare-wrap {
+      padding: 40rpx 0;
+      .declare-row {
+        display: flex;
+        justify-content: space-between;
+        height: 60rpx;
+        line-height: 60rpx;
+        .right {
+          display: flex;
+          align-items: center;
+          input {
+            text-align: right;
+            margin-right: 8rpx;
+          }
+        }
+      }
+    }
+    // 申报物品列表
+    .declare-list-box{
+      .declare-list-wrap{
+        .declare-item{
+        // padding: 20rpx;
+        padding-left: 20rpx;
+        margin-bottom: 30rpx;
+        background: #fff;
+        border-radius: 16rpx;
+        .row{
+          // height: 70rpx;
+          line-height: 70rpx;
+        }
+        .radio-row{
+          display: flex;
+          justify-content: space-between;
+          height: 80rpx;
+          line-height: 80rpx;
+          border-top: 1px solid #ccc;
+          color: rgb(119, 113, 113);
+         .right{
+           text{
+             margin-right: 20rpx;
+           }
+         }
+        }
+      }
       }
     }
 
