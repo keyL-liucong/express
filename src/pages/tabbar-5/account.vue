@@ -16,7 +16,7 @@
 					<view class="tui-flex tui-align-between mt20 hl60">
 						<view class="tui-left tui-col-5">
 							<text class="money-tag">¥</text>
-							<text class="money-data">0.00</text>
+							<text class="money-data">{{ moneyData.money }}</text>
 						</view>
 						<view class="tui-right tui-col-5">
 							<text class="chongzhi" @click="invest">充值</text>
@@ -24,10 +24,10 @@
 					</view>
 					<view class="tui-flex tui-align-between mt20">
 						<view class="tui-left tui-col-5">
-							<text class="money-alert">含不可提现：0.00</text>
+							<text class="money-alert">含不可提现：{{ moneyData.not_allow_money }}</text>
 						</view>
 						<view class="tui-right tui-col-5">
-							<text class="money-alert">含推荐收益：0.00</text>
+							<text class="money-alert">含推荐收益：{{ moneyData.recommend_money }}</text>
 						</view>
 					</view>
 				</view>
@@ -94,7 +94,8 @@
 				freshing:false,
 				isEnd:false,
 				page:1,
-				showModal:false
+				showModal:false,
+				moneyData:{}
 			};
 		},
 		methods: {
@@ -161,7 +162,11 @@
 		async created() {
 			this.handleLoad();
 		},
-		onLoad() {
+		onLoad(e) {
+			console.log(e.moneyData);
+			if(e.moneyData) {
+				this.moneyData = JSON.parse(e.moneyData)
+			}
 			uni.setNavigationBarTitle({
 			    title: '我的余额'
 			});

@@ -33,7 +33,7 @@
           <text class="get-price-icon">¥</text>
           <text class="get-price-text">{{item.total_amount}}</text>
         </view>
-        <text class="original-price">¥90</text>
+        <text v-if="item.order_total > 0" class="original-price">¥{{item.order_total}}</text>
       </view>
     </view>
     <view class="addrss-info">
@@ -51,11 +51,11 @@
         <text class="to-person">{{ item.addressee_name }}</text>
       </view>
     </view>
-    <view class="coupon-info">
+    <view v-if="item.coupon_info && item.coupon_info.money > 0" class="coupon-info">
       <text class="info-title">抵扣明细</text>
       <view class="info-conetnt">
-        <text class="conetnt-lab">优惠券</text>
-        <text class="conetnt-text">¥32</text>
+        <text class="conetnt-lab">{{item.coupon_name}}</text>
+        <text class="conetnt-text">¥{{item.coupon_info.money}}</text>
       </view>
     </view>
   </view>

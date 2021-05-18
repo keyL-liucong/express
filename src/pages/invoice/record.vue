@@ -15,7 +15,10 @@
           <text class="info-val">{{recordItem.created}}</text>
         </view>
       </view>
-      <text class="loading-text">已无更多发票</text>
+       <uni-load-more
+        :status="loadingType"
+        :content-text="contentText"
+      ></uni-load-more>
     </view>
     <view v-else-if="pageLoad" class="empty-box">
       <image
@@ -29,16 +32,25 @@
 </template>
 
 <script>
+import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 export default {
-  components: {},
+  components: {
+    uniLoadMore,
+  },
   data() {
     return {
+      loadingType: "more",
       isGet: false,
       pageNum: 1,
       recordList: [],
       pageLoad: false,
       loadingText: "请上拉刷新～",
       totalNum: 15,
+      contentText: {
+            contentdown: "上拉显示更多",
+						contentrefresh: "正在加载...",
+						contentnomore: "已无更多发票"
+      },
     };
   },
   onLoad(options) {
@@ -51,18 +63,19 @@ export default {
   methods: {
     getList() {
       let _self = this;
-      if (_self.isGet || (_self.totalNum == _self.recordList.length)) {
+      if (_self.isGet || _self.loadingType == "noMore") {
         return;
       }
       _self.isGet = true;
+      _self.loadingType = "loading";
       this.$api.getInvoice({ page: _self.pageNum }).then((res) => {
         if (res.status == 1) {
           let list = res.data.list;
-          _self.totalNum = res.data.total;
+          let totalNum = res.data.total;
             _self.pageLoad = true;
             _self.pageNum++;
             _self.recordList = _self.pageNum == 1 ? list : _self.recordList.concat(list);
-            _self.loadingText = _self.totalNum == _self.recordList.length ? "已无更多发票" : "请上拉刷新～";
+          _self.loadingType = (_self.recordList.length >= totalNum || list.length == 0) ? "noMore" : "more";
         } else {
           _self.$toast(res.info);
         }
@@ -126,5 +139,11 @@ body {
     line-height: 44rpx;
     color: #FF6C00;
   }
+}
+.uni-load-more{
+  height: 102rpx!important;
+}
+.uni-load-more__text{
+  font-size: 24rpx!important;
 }
 </style>

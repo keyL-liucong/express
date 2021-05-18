@@ -103,7 +103,7 @@ export default {
 			uni.showLoading({
 				title:"登录中"
 			})
-			let scene = wx.getStorageSync('scene');
+			let	scene = this.$cache.get("scene");
 			let postData = {
 				scene:scene,
 				email:this.loginData.mobile,

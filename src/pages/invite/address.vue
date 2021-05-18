@@ -41,7 +41,7 @@
 							</view>
 							<view class="tui-left tui-col-8 tui-middle">
 								<view class="tui-left tui-col-8 tui-middle">
-									<text class="input-data" :class="sureData.currentCountry != '请选择地区' ? 'cur': ''" @click="popupClick(2, 0)">{{ sureData.currentCountry }}</text>
+									<text class="input-data" :class="sureData.currentCountryData != '请选择地区' ? 'cur': ''" @click="popupClick(2, 0)">{{ sureData.currentCountryData }}</text>
 								</view>
 							</view>
 						</view>
@@ -142,7 +142,7 @@
 								<text class="zh">地区</text>
 							</view>
 							<view class="tui-left tui-col-8 tui-middle">
-								<text class="input-data" :class="sureData.currentCountry != '请选择地区' ? 'cur': ''" @click="popupClick(1, 0)">{{ sureData.currentCountry }}</text>
+								<text class="input-data" :class="sureData.currentCountryData != '请选择地区' ? 'cur': ''" @click="popupClick(1, 0)">{{ sureData.currentCountryData }}</text>
 							</view>
 						</view>
 					</tui-list-cell>
@@ -154,10 +154,10 @@
 							<view class="tui-left tui-col-8 tui-middle">
 								<view class="tui-flex">
 									<view class="tui-center tui-col-2 mobile_code">
-										<input placeholder="区号" v-model="postEnData.mobile_code" />
+										<input placeholder="区号" type="number" v-model="postEnData.mobile_code" />
 									</view>
 									<view class="tui-center tui-col-10">
-										<input placeholder="电话号码" v-model="postEnData.mobile" />
+										<input placeholder="电话号码" type="number" v-model="postEnData.mobile" />
 									</view>
 								</view>
 							</view>
@@ -169,7 +169,7 @@
 								<text class="zh">邮编</text>
 							</view>
 							<view class="tui-left tui-col-8 tui-middle">
-								<input placeholder="请输入邮编" v-model="postEnData.zipcode" />
+								<input placeholder="请输入邮编" type="number" v-model="postEnData.zipcode" />
 							</view>
 						</view>
 					</tui-list-cell>
@@ -256,6 +256,7 @@
 </template>
 
 <script>
+	import { domain } from "../../utils/request.js";
 	export default {
 		components: {},
 		data() {
@@ -305,7 +306,7 @@
 				sureData:{
 					is_china:1,
 					countryData:[],
-					currentCountry:"请选择地区",
+					currentCountryData:"请选择地区",
 					currentProv:"请选择",
 					currentProvId:"",
 					currentCity:"请选择",
@@ -326,7 +327,7 @@
 				this.sureData = {
 					is_china: requstCountry.is_china,
 					countryData:requstCountry.countryData,
-					currentCountry:requstCountry.currentCountry,
+					currentCountryData:requstCountry.currentCountry,
 					currentProv:requstCountry.currentProv,
 					currentProvId:requstCountry.currentProvId,
 					currentCity:requstCountry.currentCity,
@@ -360,12 +361,12 @@
 					this.requstCountry.currentCityId = e.id;
 					this.requstCountry.currentCity = e.name;
 				}
+				console.log(this.sureData);
 				this.requstCountry.currentId = e.id;
 				
 			},
 			//currentTab-0:省 ，1：州，2-城市
 			async popupClick(is_china, currentTab) {
-				
 				this.requstCountry.currentTab = currentTab;
 				this.requstCountry.popupTitle = this.popupTitle[currentTab];
 				if(currentTab == 0) {
@@ -441,7 +442,7 @@
 				uni.showLoading({
 					title:"保存中"
 				})
-				await this.$api.addInviteAddr(data).then(function(res) {
+				await this.addInviteAddr(data).then(function(res) {
 					uni.hideLoading();
 					_this.isEnd = true;
 					if(res.status == 1) {
@@ -461,12 +462,12 @@
 				if(e == this.currentTab) {
 					return;
 				}
-				this.postEnData.is_china = e == 2 ? 1 : 0;
+				
 				this.currentTab = e;
 				this.requstCountry = this.sureData = {
 					is_china:1,
 					countryData:[],
-					currentCountry:"请选择地区",
+					currentCountryData:"请选择地区",
 					currentProv:"请选择",
 					currentProvId:"",
 					currentCity:"请选择",
@@ -489,6 +490,7 @@
 					address:"",
 					company_name:"",
 				};
+				this.postEnData.is_china = e == 2 ? 1 : 0;
 			},
 			clear() {
 				this.postEnData = {
@@ -504,6 +506,32 @@
 					address:"",
 					company_name:"",
 				};
+			},
+			addInviteAddr(data) {
+				let _this = this;
+				return new Promise((resolve, reject) => {
+				    uni.showLoading({
+				        title: '加载中...'
+				    });
+				    uni.request({
+				        url: domain() + "address/addReceived", //仅为示例，并非真实接口地址。
+				        data: data,
+				        method: 'POST', // 默认值 GET
+				        header: {
+				            'token': _this.token, //自定义请求头信息
+				            'content-type': 'application/x-www-form-urlencoded'
+				        },
+				        success: (res) => {
+				            resolve(res.data);
+				        },
+				        fail: (err) => {
+				            reject(err);
+				        },
+				        complete: () => {
+				            uni.hideLoading();
+				        }
+				    });
+				})
 			}
 		},
 		onLoad(e) {

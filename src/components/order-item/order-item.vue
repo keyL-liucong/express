@@ -1,6 +1,7 @@
 <template>
   <view>
-    <view v-if="item.order_status==3" class="order-item-waitpay">
+    <view v-if="item.order_status==0" class="order-item-waitpay">
+      <view class="to-detail" @click="toDetail"></view>
       <view class="orderinfos">
         <view class="order-num">
           <text class="num-title">订单号</text>
@@ -8,22 +9,22 @@
           <text class="copy-btn" @click="copyOrderId"></text>
         </view>
         <view class="order-data">
-          <text class="data-text">2020-03-23</text>
-          <text class="time-text">17:34</text>
+          <text class="data-title">下单时间</text>
+          <text class="data-text">{{item.created}}</text>
         </view>
       </view>
       <view class="address-info">
         <view class="address-from">
-          <text class="address-from-city">广东深圳</text>
-          <text class="address-from-person">大表哥</text>
+          <text class="address-from-city">{{item.sender_addr}}</text>
+          <text class="address-from-person">{{item.sender_name}}</text>
         </view>
         <view class="address-icon">
-          <text class="text">单独寄送</text>
+          <!-- <text class="text">单独寄送</text> -->
         </view>
         <view class="address-to">
-          <text class="address-to-text">美国纽约</text>
-          <text class="address-to-person">大卫</text>
-          <text class="address-to-remark">(自提点自提)</text>
+          <text class="address-to-text">{{item.addressee_addr}}</text>
+          <text class="address-to-person">{{item.addressee_name}}</text>
+          <!-- <text class="address-to-remark">(自提点自提)</text> -->
         </view>
       </view>
       <view class="package-detail">
@@ -31,16 +32,21 @@
         <text class="icon"></text>
       </view>
       <view class="price-info-list">
-        <view class="info-item">
-          <text class="info-item-lab">基础运费</text>
-          <text class="info-item-val">¥122</text>
+        <view v-for="items in item.orderItems" :key="items.order_id" class="info-item">
+          <text class="info-item-lab">{{items.item_name}}</text>
+          <text class="info-item-val">¥{{items.item_price}}</text>
+        </view>
+        <view v-if="item.coupon_info && item.coupon_info.money > 0" class="info-item">
+          <text class="info-item-lab">使用优惠券</text>
+          <text class="info-item-val">-¥{{item.coupon_info.money}}</text>
         </view>
       </view>
       <view class="cancel-btn" @click="cancelOrder">
-        <text class="btn-text">取消订单</text>
+        <text class="btn-text">删除订单</text>
       </view>
     </view>
     <view v-else class="order-item">
+      <view class="to-detail" @click="toDetail"></view>
       <!-- 右上角按钮信息 -->
       <view class="top-right-box">
         <!-- 待处理-功能暂时不上线 -->
@@ -54,18 +60,19 @@
           <text class="info-kefu-text">需要客服处理</text>
         </view> -->
         <!-- 已签收 -->
-        <view v-if="item.order_status==5" class="info-btn qian-shou">
+        <view v-if="item.order_status==4" class="info-btn qian-shou">
           <text class="info-qianshou-text">成功签收</text>
         </view>
-        <view v-if="item.order_status==5" class="info-btn zi-ti">
+        <view v-if="item.order_status==4" class="info-btn zi-ti">
           <text class="info-ziti-text">到达自提点</text>
         </view>
       </view>
       <!-- 单号信息 -->
       <view class="orderinfos">
         <view class="orderinfo-item">
-          <text class="item-lab">运单号:</text>
-          <text class="item-val">{{item.logistics_no}}</text>
+          <text class="item-lab">订单号:</text>
+          <text class="item-val">{{item.order_sn}}</text>
+          <text class="copy-btn" @click="copyOrderId"></text>
         </view>
         <view v-if="item.logistics_no
 " class="orderinfo-item">
@@ -79,7 +86,7 @@
         </view>
       </view>
       <!-- 最新物流轨迹 -->
-      <view v-if="item.order_status==4 && item.order_trajectory" class="newest-progress-message">
+      <view v-if="item.order_status==8 && item.order_trajectory" class="newest-progress-message">
         <text class="message-btn" @click="toexPressDetail">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
         <text class="message-text"
@@ -87,7 +94,7 @@
         >
       </view>
       <!-- 包裹详情 -->
-      <view v-if="item.order_status==4" class="package-detail">
+      <view v-if="item.order_status==8" class="package-detail">
         <text class="detail-tite">包裹详情</text>
         <view class="detail-list" :class="{'down': detailAll}">
           <view v-for="(orderitem) in item.orderItems" :key="orderitem.order_id" class="detail-item">
@@ -121,14 +128,15 @@
       </view>
       <view class="bottom-data">
         <view class="data-info-box">
-          <text v-if="item.order_status==1" class="bottom-data-title">下单时间</text>
+          <text v-if="item.order_status==6" class="bottom-data-title">下单时间</text>
           <text class="data-text">{{item.created}}</text>
         </view>
-        <text v-if="item.order_status==2" class="change-btn">更改</text>
+        <!-- <text v-if="item.order_status==7" class="change-btn">更改</text> -->
         <!-- <text class="share-btn">分享给收件人</text> -->
+         <navigator v-if="item.order_status==4" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
       </view>
     </view>
-    <view v-if="item.order_status==3" class="bottom-wait-pay">
+    <view v-if="item.order_status==0" class="bottom-wait-pay">
       <view class="content">
         <view class="lab">
           <icon
@@ -140,7 +148,7 @@
           ></icon>
           <text class="lab-text">微信支付</text>
         </view>
-        <icon
+        <icon v-if="payorderid == item.order_sn"
           class="btn"
           name="circle-fill"
           size="40"
@@ -148,8 +156,15 @@
           unit="rpx"
           @tap="setPay"
         ></icon>
+        <icon v-else
+          class="btn"
+          name="circle"
+          size="40"
+          unit="rpx"
+          @tap="setPay"
+        ></icon>
       </view>
-      <text class="bottom-wait-pay-text">微信没钱？请联系客服</text>
+      <button class="bottom-wait-pay-text" type="submit" open-type="contact">微信没钱？请联系客服</button>
     </view>
   </view>
 </template>
@@ -167,6 +182,10 @@ export default {
       type: Object,
       default: {},
     },
+    payorderid: { 
+      type: String,
+      default: "",
+    }
   },
   data() {
     return {
@@ -175,7 +194,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.item);
   },
   methods: {
     setPay() {
@@ -185,15 +203,20 @@ export default {
       this.detailAll = !this.detailAll;
       this.detailOpenBtnText = this.detailAll ? " 收起 " : "查看全部包裹";
     },
+    toDetail(){
+      uni.navigateTo({
+        url: `/pages/tabbar-2/detail?order_sn=${this.item.order_sn}`
+      })
+    },
     toexPressDetail(){
       uni.navigateTo({
-        url: `/pages/tabbar-2/shipping?order_id=${this.item.order_sn}`
+        url: `/pages/tabbar-2/shipping?order_sn=${this.item.order_sn}`
       })
     },
     copyOrderId(){
       let _self = this;
       uni.setClipboardData({
-        data: _self.item.logistics_no,
+        data: _self.item.order_sn,
         success: function () {
           _self.$toast("复制成功～");
         },
@@ -220,6 +243,15 @@ export default {
 };
 </script>
 <style lang="scss">
+.to-detail{
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
 .order-item {
   position: relative;
   width: 690rpx;
@@ -239,6 +271,16 @@ export default {
     }
     .item-lab {
       color: #7b7b7b;
+    }
+    .copy-btn{
+      display: block;
+      position: relative;
+      width: 18rpx;
+      height: 22rpx;
+      margin-left: 14rpx;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
+      background-size: 100%;
+      z-index: 20;
     }
   }
   .address-info {
@@ -509,15 +551,17 @@ export default {
   box-sizing: border-box;
   margin-bottom: 20rpx;
   .orderinfos {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 40rpx;
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-between;
+    // height: 40rpx;
     .order-num {
       display: flex;
       align-items: center;
     }
     .num-title {
+       display: block;
+       width: 114rpx;
       margin-right: 8rpx;
       font-size: 28rpx;
       color: #7b7b7b;
@@ -529,20 +573,29 @@ export default {
     }
     .copy-btn{
       display: block;
+      position: relative;
       width: 18rpx;
       height: 22rpx;
       margin-left: 14rpx;
       background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
       background-size: 100%;
+      z-index: 20;
     }
     .order-data {
       display: flex;
+      margin-top: 8rpx;
       align-items: center;
-      font-size: 24rpx;
+    }
+     .data-title {
+       display: block;
+       width: 114rpx;
+      margin-right: 8rpx;
+      font-size: 28rpx;
       color: #7b7b7b;
     }
-    .time-text {
-      margin-left: 20rpx;
+    .data-text {
+      font-size: 28rpx;
+      color: #000;
     }
   }
   .address-info {
@@ -647,8 +700,10 @@ export default {
   }
   .cancel-btn {
     display: flex;
+    position: relative;
     margin-top: 28rpx;
     justify-content: flex-end;
+    z-index: 20;
     .btn-text {
       display: flex;
       width: 170rpx;
@@ -699,6 +754,7 @@ export default {
         color: #000;
         text-align: end;
         box-sizing: border-box;
+        background: transparent;
     }
 }
 </style>
