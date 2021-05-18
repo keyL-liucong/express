@@ -295,6 +295,20 @@ export default {
             data
         })
     },
+	// 获取试算国家
+	freightgetaddress() {
+	    return request({
+	        url: 'freight/getaddress'
+	    })
+	},
+	// 试算
+	freightcalculation(data) {
+	    return request({
+	        url: 'freight/calculation',
+			data,
+			method: 'POST'
+	    })
+	},
     //自寄到仓详情
     warehouseDetail(data) {
         return request({
@@ -302,6 +316,12 @@ export default {
             data
         })
     },
+	setSellerParentId(data){
+		return request({
+			url: 'Auth/setParentId',
+			data,
+		})
+	},
     // 发送验证码
     sendSms(data) {
         return request({

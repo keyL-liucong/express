@@ -82,7 +82,9 @@ export default {
             }
             
             let openid = this.$cache.get("openId");
+			let	scene = this.$cache.get("scene");
             let postData = {
+				scene:scene,
                 avatarUrl: userInfo.avatarUrl,
                 gender: userInfo.gender,
                 encryptedData: e.encryptedData,
@@ -159,11 +161,13 @@ export default {
 			}
 			
 			let openId = this.$cache.get("openId");
+			let	scene = this.$cache.get("scene");
 			this.isLogin = true;
 			uni.showLoading({
 				title:"登录中"
 			})
 			let postData = {
+				scene:scene,
 				mobile:this.loginData.mobile,
 				code:this.loginData.code,
 				openid:openId,

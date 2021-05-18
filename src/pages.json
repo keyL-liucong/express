@@ -12,18 +12,18 @@
                 "navigationBarTitleText": "我的订单"
             }
         },
-		{
-		    "path": "pages/tabbar-2/shipping",
-		    "style": {
-		        "navigationBarTitleText": "物流详情"
-		    }
-		},
-		{
-		    "path": "pages/tabbar-2/detail",
-		    "style": {
-		        "navigationBarTitleText": "订单详情"
-		    }
-		},
+        {
+            "path": "pages/tabbar-2/shipping",
+            "style": {
+                "navigationBarTitleText": "物流详情"
+            }
+        },
+        {
+            "path": "pages/tabbar-2/detail",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
         {
             "path": "pages/tabbar-3/index",
             "style": {
@@ -36,12 +36,12 @@
                 "navigationBarTitleText": "福利中心"
             }
         },
-		{
-		    "path": "pages/tabbar-4/webview",
-		    "style": {
-		        "navigationBarTitleText": "福利中心"
-		    }
-		},
+        {
+            "path": "pages/tabbar-4/webview",
+            "style": {
+                "navigationBarTitleText": "福利中心"
+            }
+        },
         {
             "path": "pages/tabbar-5/index",
             "style": {
@@ -54,66 +54,66 @@
                 }
             }
         },
-		{
-		    "path": "pages/tabbar-5/info",
-		    "style": {
-		        "navigationBarTitleText": "个人资料"
-		    }
-		},
-		{
-		    "path": "pages/tabbar-5/warehouse",
-		    "style": {
-		        "navigationBarTitleText": "自寄到仓地址"
-		    }
-		},
-		{
-		    "path": "pages/tabbar-5/warehouse_detail",
-		    "style": {
-		        "navigationBarTitleText": "自寄到仓地址"
-		    }
-		},
-		{
-		    "path": "pages/tabbar-5/account",
-		    "style": {
-		        "navigationBarTitleText": "我的余额"
-		    }
-		},
-		{
-		    "path": "pages/tabbar-5/invest",
-		    "style": {
-		        "navigationBarTitleText": "账户充值"
-		    }
-		},
-		{
-		    "path": "pages/invite/index",
-		    "style": {
-		        "navigationBarTitleText": "我的推荐"
-		    }
-		},
-		{
-		    "path": "pages/invite/share",
-		    "style": {
-		        "navigationBarTitleText": "邀请下单"
-		    }
-		},
-		{
-		    "path": "pages/invite/address",
-		    "style": {
-		        "navigationBarTitleText": "邀请你填写地址"
-		    }
-		},
+        {
+            "path": "pages/tabbar-5/info",
+            "style": {
+                "navigationBarTitleText": "个人资料"
+            }
+        },
+        {
+            "path": "pages/tabbar-5/warehouse",
+            "style": {
+                "navigationBarTitleText": "自寄到仓地址"
+            }
+        },
+        {
+            "path": "pages/tabbar-5/warehouse_detail",
+            "style": {
+                "navigationBarTitleText": "自寄到仓地址"
+            }
+        },
+        {
+            "path": "pages/tabbar-5/account",
+            "style": {
+                "navigationBarTitleText": "我的余额"
+            }
+        },
+        {
+            "path": "pages/tabbar-5/invest",
+            "style": {
+                "navigationBarTitleText": "账户充值"
+            }
+        },
+        {
+            "path": "pages/invite/index",
+            "style": {
+                "navigationBarTitleText": "我的推荐"
+            }
+        },
+        {
+            "path": "pages/invite/share",
+            "style": {
+                "navigationBarTitleText": "邀请下单"
+            }
+        },
+        {
+            "path": "pages/invite/address",
+            "style": {
+                "navigationBarTitleText": "邀请你填写地址"
+            }
+        },
         {
             "path": "pages/login/index",
             "style": {
                 "navigationBarTitleText": "赫德物流"
             }
         },
-		{
-		    "path": "pages/login/email",
-		    "style": {
-		        "navigationBarTitleText": "赫德物流"
-		    }
-		},
+        {
+            "path": "pages/login/email",
+            "style": {
+                "navigationBarTitleText": "赫德物流"
+            }
+        },
         {
             "path": "pages/coupon/index",
             "style": {
@@ -150,12 +150,12 @@
                 "navigationBarTitleText": "寄件"
             }
         },
-		{
-		    "path": "pages/contraband/index",
-		    "style": {
-		        "navigationBarTitleText": "违禁品"
-		    }
-		},
+        {
+            "path": "pages/contraband/index",
+            "style": {
+                "navigationBarTitleText": "违禁品"
+            }
+        },
         {
             "path": "pages/address/index",
             "style": {
@@ -180,12 +180,19 @@
                 "navigationBarTitleText": "发票申请"
             }
         },
-		{
-		    "path": "pages/freight/index",
-		    "style": {
-		        "navigationBarTitleText": "运费试算"
-		    }
-		}
+        {
+            "path": "pages/freight/index",
+            "style": {
+                "navigationBarTitleText": "运费试算"
+            }
+        },
+        {
+            "path": "pages/order/finished",
+            "style": {
+                "navigationBarTitleText": "下单成功"
+            }
+        }
+
 
     ],
     "tabBar": {

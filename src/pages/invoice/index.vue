@@ -13,7 +13,7 @@
       <image
         style="width: 440rpx; height: 440rpx"
         mode="aspectFit"
-        src="@/static/invoice-list-empty-icon.png"
+        src="https://static.51mitui.com/wxMini/static/empty-data.png"
       ></image>
       <text class="empty-text">暂无数据</text>
     </view>
@@ -89,7 +89,7 @@ export default {
       var param = {
         size: 10,
         page: _self.pageNum,
-        order_status: "",
+        order_status: 5,
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
@@ -99,7 +99,7 @@ export default {
               ? res.data.list
               : _self.orderlist.concat(res.data.list);
           _self.pageNum++;
-          _self.allSelect = this.isSelectAll();;
+          _self.allSelect = _self.isSelectAll();;
         } else {
           _self.$toast("加载失败，请重试");
         }

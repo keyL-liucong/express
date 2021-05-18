@@ -193,17 +193,25 @@ export default {
         return {
             bannerList: [],  // 轮播图
             tipsList: [],  // 提示
-			followShow:false
+			followShow:true
         }; 
     },
-    async onLoad() {
+    async onLoad(option) {
         let getBannerRes = await Api.getBanner();
+		console.log()
         this.bannerList = getBannerRes.data;
         let tipsRes = await Api.getAlert();
         this.tipsList = tipsRes.data;
         setTimeout(() => {
             this.animation = true;
         }, 600);
+		if(option.scene){
+			this.$cache.put(
+			    "scene",
+			    option.scene
+			); 
+		} 
+		
     },
     methods: {
         navTo(url) {

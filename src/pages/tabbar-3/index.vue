@@ -12,7 +12,7 @@
             <text class="name">{{ sendAddr.realname }}</text>
             <text class="mobile">{{ sendAddr.mobile }}</text>
           </view>
-          <view class="row gray"> {{ sendAddr.address }} </view>
+          <view class="row gray clamp-1"> {{ sendAddr.address }} </view>
         </view>
         <view
           class="address"
@@ -43,7 +43,7 @@
       </view>
     </view>
     <view class="send-info-box">
-      <!-- <tui-list-cell :hover="false">
+      <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">物品信息</view>
           <input
@@ -55,7 +55,7 @@
              @click="handlePopup('goods')"
           />
         </view>
-      </tui-list-cell> -->
+      </tui-list-cell>
       <!-- 预估重量 -->
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
@@ -201,9 +201,11 @@
               <view class="title">
                 <text>选择物品类型信息</text>
               </view>
-              <view class="type-1-list">
+             <view class="type-1-list-wrap">
+                <view class="type-1-list">
                 <view class="type-item" v-for="(item, index) in firstList" :key="index" @click="handleSecList(item.declare_id)">{{ item.declare_name }}</view>
               </view>
+             </view>
               <button>提交</button>
             </view>
             <view v-else>
@@ -267,36 +269,35 @@ export default {
       //   item_num: "", //商品数量
       //   declare_id: "", //商品二级申报类型id
       // },
-      longth:'',
-      width:'',
-      height:'',
+      longth: "",
+      width: "",
+      height: "",
       popupShow: false,
-      popupType: 'weight',
-      popupWeightShow:false, // 预估重量弹框
+      popupType: "weight",
+      popupWeightShow: false, // 预估重量弹框
       result: "",
       sendAddr: null,
       receAddr: null,
-      weight: 0.1, 
-      weightNum:'',
-      volume:'',
+      weight: 0.1,
+      weightNum: "",
+      volume: "",
       mail: 0, //寄件方式 0 上门取件 1 自寄下单
-      logistics_no:'',
-      volumeWeight:0,
-      firstList:[],
-      imageList:[],
-      header:{},
-      value:'', // 图片上传
-      serverUrl:'',
-      aggrementChecked:false, // 协议
+      logistics_no: "",
+      volumeWeight: 0,
+      firstList: [],
+      imageList: [],
+      header: {},
+      value: "", // 图片上传
+      serverUrl: "",
+      aggrementChecked: false, // 协议
     };
   },
-  async onShow(){
-	
-	if (this.sendAddr == null) {
-		this.sendAddr = await this.getDefaultAddr(1);
-	}
+  async onShow() {
+    if (this.sendAddr == null) {
+      this.sendAddr = await this.getDefaultAddr(1);
+    }
     if (this.receAddr == null) {
-    	this.receAddr = await this.getDefaultAddr(2);
+      this.receAddr = await this.getDefaultAddr(2);
     }
   },
   async onLoad() {
@@ -309,8 +310,8 @@ export default {
     this.result = `${year}-${month}-${day} ${hour}:${minute}`;
     this.serverUrl = this.$api.getUploadUrl();
     this.header = {
-		token: this.$cache.get("token")
-	};
+      token: this.$cache.get("token"),
+    };
     //   this.show();
     let data = {
       a: 1,
@@ -320,80 +321,76 @@ export default {
   },
   methods: {
     // 协议
-    handleAggrentMent(){
+    handleAggrentMent() {
       this.aggrementChecked = !this.aggrementChecked;
     },
     // 扫一扫
-    handleScan(){
+    handleScan() {
       // 允许从相机和相册扫码
-        let _this = this;
-				 uni.scanCode({
-				     success: function (res) {
-                  _this.logistics_no = res.result
-				     }
-				 });
+      let _this = this;
+      uni.scanCode({
+        success: function (res) {
+          _this.logistics_no = res.result;
+        },
+      });
     },
     // 图片上传
     uploadComplete(e) {
       this.imageList = e.imgArr;
     },
-    uploadRemove(e) {
-
-    },
+    uploadRemove(e) {},
     // 一级物品申报点击
-    async handleSecList(declare_id){
-      let res = await this.$api.getSecList({page:1,size:100,declare_id});
+    async handleSecList(declare_id) {
+      let res = await this.$api.getSecList({ page: 1, size: 100, declare_id });
       console.log(res);
       this.firstList = res.data.list;
     },
-    async getFirstList(){
-      let res = await this.$api.getFirstList({page:1,size:100});
+    async getFirstList() {
+      let res = await this.$api.getFirstList({ page: 1, size: 100 });
       this.firstList = res.data.list;
       console.log(res);
     },
     // 检验长宽高输入
     handleCheck(e) {
       console.log(e);
-      
     },
     // 处理体积
     handleVolume() {
-      if(this.longth && this.width && this.height){
-        this.volume = this.volumeWeight = parseFloat((this.longth * this.width * this.height) / 6000).toFixed(2);
+      if (this.longth && this.width && this.height) {
+        this.volume = this.volumeWeight = parseFloat(
+          (this.longth * this.width * this.height) / 6000
+        ).toFixed(2);
         // this.postData.volume = this.longth * this.width * this.height;
       }
       setTimeout(() => {
         this.popupShow = false;
-      },500)
+      }, 500);
     },
     // 创建订单 立即下单
     async handleCreateOrder() {
-      if(!this.aggrementChecked){
-        this.$toast('请确认已经阅读并同意《物流服务协议》');
+      if (!this.aggrementChecked) {
+        this.$toast("请确认已经阅读并同意《物流服务协议》");
         return false;
       }
       let data = {
-        sender_id:this.sendAddr.address_id,
-        addressee_id:this.receAddr.address_id,
-        weight:this.weightNum,
-        mail:this.mail,
-        item_picture:this.imageList,
-
-
-      }
+        sender_id: this.sendAddr.address_id,
+        addressee_id: this.receAddr.address_id,
+        weight: this.weightNum,
+        mail: this.mail,
+        item_picture: this.imageList,
+      };
       let orderPriceRes = this.$api.getOrderPrice(data);
       console.log(orderPriceRes);
       let res = await this.$api.createOrder(data);
-      if(res.data){
-
-      }else{
+      if (res.data) {
+      } else {
         this.$toast(res.info);
       }
       console.log(res);
     },
-    handlePopup(type){
-        this.popupType = type;
-        this.popupShow = !this.popupShow;
+    handlePopup(type) {
+      this.popupType = type;
+      this.popupShow = !this.popupShow;
     },
     navTo(url) {
       this.$href.navigateTo({ url });
@@ -425,10 +422,8 @@ export default {
       this.popupShow = !this.popupShow;
     },
     // 重量减
-    handleSub(){
-
-    },
-    handleAdd(){}
+    handleSub() {},
+    handleAdd() {},
   },
   async created() {},
   mounted() {},
@@ -467,9 +462,11 @@ export default {
       .send-info {
         flex: 1;
         border-right: 1px solid #ccc;
+        width: 70%;
         > .row {
           height: 50rpx;
           line-height: 50rpx;
+          width: 90%;
           > text {
             margin-right: 20rpx;
           }
@@ -502,12 +499,11 @@ export default {
           text-align: right !important;
         }
       }
-      > text{
+      > text {
         font-size: 28rpx;
         color: #333;
         // font-size: ;
       }
-      
     }
     .upload-img {
       background: #fff;
@@ -530,11 +526,11 @@ export default {
       align-items: center;
       padding: 20rpx;
       height: 66rpx;
-      .row-right{
+      .row-right {
         display: flex;
-        image{
-            width: 40rpx;
-            height: 40rpx;
+        image {
+          width: 40rpx;
+          height: 40rpx;
         }
       }
     }
@@ -578,97 +574,116 @@ export default {
     }
   }
   .popup-box {
-        padding: 30rpx;
-        .title {
+    padding: 30rpx;
+    .title {
+      text-align: center;
+      font-size: 18px;
+      color: #000000;
+      line-height: 25px;
+    }
+    .type-1-list-wrap {
+      min-height: 600rpx;
+      .type-1-list {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 40rpx;
+        .type-item {
+          width: 30%;
+          background: #f3f3f3;
+          color: #7b7b7b;
+          height: 60rpx;
+          line-height: 60rpx;
           text-align: center;
-          font-size: 18px;
-          color: #000000;
-          line-height: 25px;
-        }
-        .input-line{
-          display: flex;
-          justify-content: space-between;
-          padding: 6rpx 16rpx;
-          .input-item{
-            display: flex;
-            align-items: center;
-            background: #F3F3F3;
-            width: 30%;
-            height: 70rpx;
-            padding-right: 10rpx;
-            input{
-              padding: 20rpx;
-            }
-          }
-        }
-        .line-text{
-          font-size: 18px;
-          line-height: 25px;
-          margin: 40rpx 0;
-          text{
-            color: #7B7B7B;
-          }
-          .num{
-            color: #000000;
-            font-size: 22px;
-            line-height: 30px;
-          }
-        }
-        .tips{
-          color: #FF6C00;
-          margin-bottom: 30rpx;
-        }
-        .line {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 20rpx;
-          font-size: 16px;
-          text {
-            color: #7b7b7b;
-          }
-          .line-right {
-            display: flex;
-            view {
-              background: #f3f3f3;
-              margin-right: 8rpx;
-              padding: 0 16rpx;
-            }
-            >button{
-              background: #f3f3f3;
-              height: 70rpx;
-              line-height: 70rpx;
-            }
-            input {
-              display: block;
-              width: 60rpx;
-              background: #f3f3f3;
-              padding: 6rpx 16rpx;
-              margin-right: 8rpx;
-            }
-            .sub {
-              border-top-left-radius: 6rpx;
-              border-bottom-left-radius: 6rpx;
-            }
-            .add {
-              border-top-right-radius: 6rpx;
-              border-bottom-right-radius: 6rpx;
-            }
-          }
-        }
-        .rule {
-          margin-top: 30rpx;
-          margin-bottom: 50rpx;
-          view {
-            color: #7b7b7b;
-          }
-        }
-        > button {
-          height: 80rpx;
-          line-height: 80rpx;
-          border-radius: 40rpx;
-          background: #ff9200;
-          color: #fff;
+          margin-bottom: 20rpx;
         }
       }
+    }
+
+    .input-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 6rpx 16rpx;
+      .input-item {
+        display: flex;
+        align-items: center;
+        background: #f3f3f3;
+        width: 30%;
+        height: 70rpx;
+        padding-right: 10rpx;
+        input {
+          padding: 20rpx;
+        }
+      }
+    }
+    .line-text {
+      font-size: 18px;
+      line-height: 25px;
+      margin: 40rpx 0;
+      text {
+        color: #7b7b7b;
+      }
+      .num {
+        color: #000000;
+        font-size: 22px;
+        line-height: 30px;
+      }
+    }
+    .tips {
+      color: #ff6c00;
+      margin-bottom: 30rpx;
+    }
+    .line {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20rpx;
+      font-size: 16px;
+      text {
+        color: #7b7b7b;
+      }
+      .line-right {
+        display: flex;
+        view {
+          background: #f3f3f3;
+          margin-right: 8rpx;
+          padding: 0 16rpx;
+        }
+        > button {
+          background: #f3f3f3;
+          height: 70rpx;
+          line-height: 70rpx;
+        }
+        input {
+          display: block;
+          width: 60rpx;
+          background: #f3f3f3;
+          padding: 6rpx 16rpx;
+          margin-right: 8rpx;
+        }
+        .sub {
+          border-top-left-radius: 6rpx;
+          border-bottom-left-radius: 6rpx;
+        }
+        .add {
+          border-top-right-radius: 6rpx;
+          border-bottom-right-radius: 6rpx;
+        }
+      }
+    }
+    .rule {
+      margin-top: 30rpx;
+      margin-bottom: 50rpx;
+      view {
+        color: #7b7b7b;
+      }
+    }
+    > button {
+      height: 80rpx;
+      line-height: 80rpx;
+      border-radius: 40rpx;
+      background: #ff9200;
+      color: #fff;
+    }
+  }
 }
 </style>

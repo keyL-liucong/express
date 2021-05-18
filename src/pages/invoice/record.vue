@@ -21,7 +21,7 @@
       <image
         style="width: 440rpx; height: 440rpx"
         mode="aspectFit"
-        src="@/static/invoice-list-empty-icon.png"
+        src="https://static.51mitui.com/wxMini/static/empty-data.png"
       ></image>
       <text class="empty-text">暂无数据</text>
     </view>
