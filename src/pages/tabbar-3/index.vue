@@ -175,9 +175,10 @@
     </label>
     <view class="send-buy-box">
       <view class="left">
-        <view class="top"> 预估运费<text>￥ 0 </text>起 </view>
+        <view class="top"> 预估运费<text>￥ {{ standard_price }} </text>起 </view>
         <view class="bottom">
-          最终运费以到仓称重确认为准 |<text>运费明细</text>
+          最终运费以到仓称重确认为准
+          <!-- <text>运费明细</text> -->
         </view>
       </view>
       <view class="right">
@@ -269,14 +270,14 @@
                       <view class="left">
                       </view>
                       <view class="right">
-                        <text @click="handleEdit(item.declare_id)">编辑</text>
-                        <text @click="handleDel(item.declare_id)">删除</text>
+                        <text @click="handleEdit(item)">编辑</text>
+                        <text @click="handleDel(item)">删除</text>
                       </view>
                     </view>
                   </view>
               </view>
              </scroll-view>
-              <button>确认</button>
+              <button @click="declareListComfirm">确认</button>
             </view>
             <view v-else>
               <view class="popup-box">
@@ -322,23 +323,6 @@ export default {
   },
   data() {
     return {
-      // postData: {
-      //   sender_id: "", //收件地址id
-      //   addressee_id: "", //寄件地址id
-      //   weight: "",
-      //   volume: "",
-      //   increment_price_total: "", //保价金额（非必填）
-      //   mail: "", //寄件方式 0 上门取件 1 自寄下单
-      //   coupon_id: "", //优惠券id（非必填）
-      //   logistics_no: "", //物流单号 mail=1必填
-      //   total_amount: "", //总金额
-      //   item_picture: "", //商品图片 单张
-      //   order_items: "", //邮寄物品明细
-      //   item_name: "", //商品名称
-      //   item_price: "", //商品价格
-      //   item_num: "", //商品数量
-      //   declare_id: "", //商品二级申报类型id
-      // },
       longth: "",
       width: "",
       height: "",
@@ -363,12 +347,28 @@ export default {
       declareList: [], // 申报物品列表
       total_amount: "", // 申报物品总价
       total_qty: "", // 申报物品数量
+      standard_price:'', // 预估金额
       imageList: [],
       header: {},
       value: "", // 图片上传
       serverUrl: "",
       aggrementChecked: false, // 协议
     };
+  },
+  watch:{
+    // 预估金额
+    weightNum(newVal, oldVal){
+      if(newVal){
+        let data = {
+          sender_id: this.sendAddr.address_id,
+          addressee_id: this.receAddr.address_id,
+          weight: this.weightNum,
+        }
+        let res = this.$api.getOrderPrice(data);
+        this.standard_price = res.data.standard_price;
+        
+      }
+    }
   },
   async onShow() {
     if (this.sendAddr == null) {
@@ -390,12 +390,6 @@ export default {
     this.header = {
       token: this.$cache.get("token"),
     };
-    //   this.show();
-    let data = {
-      a: 1,
-    };
-    // this.handleCreateOrder(data);
-    this.getFirstList();
   },
   methods: {
     // 协议
@@ -427,42 +421,49 @@ export default {
     handleItemPrice(item) {
       console.log(item);
       this.order_item = {
-        item_name: item.declare_name,
+        item_name: item.declare_name || item.item_name,
         declare_id: item.declare_id,
       };
       this.popupType = "declare";
     },
     // 申报物品确认
     declareComfirm() {
-      console.log("申报物品item", this.order_item);
-      this.declareList.push(this.order_item);
-      if (this.declareList.length > 0) {
-        let newArr = this.declareList.map((item) => {
-          return item.item_num * item.item_price;
-        });
-        let newQtyArr = this.declareList.map((item) => {
-          return item.item_num;
-        });
-        this.total_qty = newQtyArr.reduce((prev, next) => {
-          return prev + next;
-        });
-        this.total_amount = newArr.reduce((prev, next) => {
-          return prev + next;
-        });
+      if (this.order_item.item_num && this.order_item.item_price) {
+        console.log("申报物品item", this.order_item);
+        this.declareList.push(this.order_item);
+        if (this.declareList.length > 0) {
+          let newArr = this.declareList.map((item) => {
+            return item.item_num * item.item_price;
+          });
+          let newQtyArr = this.declareList.map((item) => {
+            return item.item_num;
+          });
+          this.total_qty = newQtyArr.reduce((prev, next) => {
+            return parseInt(prev) + parseInt(next);
+          });
+          this.total_amount = newArr.reduce((prev, next) => {
+            return parseInt(prev) + parseInt(next);
+          });
+        }
+        console.log(this.declareList);
+        this.popupShow = false;
+      } else {
+        this.$toast("请完善申报信息");
+        return;
       }
-      console.log(this.declareList);
-      this.popupShow = false;
     },
     // 申报物品编辑
-    handleEdit(){
-
+    handleEdit(item) {
+      this.handleItemPrice(item);
     },
-    handleDel() {
-      
+    handleDel(item) {},
+    // 申报物品确认
+    declareListComfirm() {
+      this.popupShow = false;
     },
     // 查看物品申报的列表
     lookDeclareList() {
-      this.handlePopup('declareList')
+      this.handlePopup("declareList");
     },
     // 获取一级物品申报
     async getFirstList() {
@@ -498,13 +499,18 @@ export default {
         weight: this.weightNum,
         mail: this.mail,
         item_picture: this.imageList,
+        order_items:JSON.stringify(this.declareList),
+        total_amount:this.total_amount,
+        scene:this.$cache.get("scene") || ''
       };
-      let orderPriceRes = this.$api.getOrderPrice(data);
-      console.log(orderPriceRes);
+      
       let res = await this.$api.createOrder(data);
-      if (res.data) {
+      
+      if (res.info == 'success') {
+        this.$toast('下单成功');
+        this.$href.navigateTo({url:'/pages/order/finished'});
       } else {
-        this.$toast(res.info);
+        
       }
       console.log(res);
     },
@@ -744,32 +750,32 @@ export default {
       }
     }
     // 申报物品列表
-    .declare-list-box{
-      .declare-list-wrap{
-        .declare-item{
-        // padding: 20rpx;
-        padding-left: 20rpx;
-        margin-bottom: 30rpx;
-        background: #fff;
-        border-radius: 16rpx;
-        .row{
-          // height: 70rpx;
-          line-height: 70rpx;
+    .declare-list-box {
+      .declare-list-wrap {
+        .declare-item {
+          // padding: 20rpx;
+          padding-left: 20rpx;
+          margin-bottom: 30rpx;
+          background: #fff;
+          border-radius: 16rpx;
+          .row {
+            // height: 70rpx;
+            line-height: 70rpx;
+          }
+          .radio-row {
+            display: flex;
+            justify-content: space-between;
+            height: 80rpx;
+            line-height: 80rpx;
+            border-top: 1px solid #ccc;
+            color: rgb(119, 113, 113);
+            .right {
+              text {
+                margin-right: 20rpx;
+              }
+            }
+          }
         }
-        .radio-row{
-          display: flex;
-          justify-content: space-between;
-          height: 80rpx;
-          line-height: 80rpx;
-          border-top: 1px solid #ccc;
-          color: rgb(119, 113, 113);
-         .right{
-           text{
-             margin-right: 20rpx;
-           }
-         }
-        }
-      }
       }
     }
 
