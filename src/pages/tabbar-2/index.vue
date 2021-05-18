@@ -15,7 +15,7 @@
       <icon
         class="close-icon"
         name="shut"
-        :size="20"
+        :size="40"
         unit="rpx"
         color="#000000"
         index="1"
@@ -31,8 +31,7 @@
       <view class="message-info">
         <text class="message-title">重要提示</text>
         <text class="message-text"
-          >支付完成前可更改提货自提/派送到门，单独寄送/
-          合箱寄送，支付后不可更改</text
+          >支付完成前可更改提货自提/派送到门，单独寄送/合箱寄送，支付后不可更改</text
         >
       </view>
     </view>
