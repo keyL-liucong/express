@@ -1,6 +1,7 @@
 <template>
   <view>
     <view v-if="item.order_status==3" class="order-item-waitpay">
+      <view class="to-detail" @click="toDetail"></view>
       <view class="orderinfos">
         <view class="order-num">
           <text class="num-title">订单号</text>
@@ -41,6 +42,7 @@
       </view>
     </view>
     <view v-else class="order-item">
+      <view class="to-detail" @click="toDetail"></view>
       <!-- 右上角按钮信息 -->
       <view class="top-right-box">
         <!-- 待处理-功能暂时不上线 -->
@@ -64,8 +66,9 @@
       <!-- 单号信息 -->
       <view class="orderinfos">
         <view class="orderinfo-item">
-          <text class="item-lab">运单号:</text>
-          <text class="item-val">{{item.logistics_no}}</text>
+          <text class="item-lab">订单号:</text>
+          <text class="item-val">{{item.order_sn}}</text>
+          <text class="copy-btn" @click="copyOrderId"></text>
         </view>
         <view v-if="item.logistics_no
 " class="orderinfo-item">
@@ -126,6 +129,7 @@
         </view>
         <text v-if="item.order_status==2" class="change-btn">更改</text>
         <!-- <text class="share-btn">分享给收件人</text> -->
+         <navigator v-if="item.order_status==5" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
       </view>
     </view>
     <view v-if="item.order_status==3" class="bottom-wait-pay">
@@ -185,15 +189,20 @@ export default {
       this.detailAll = !this.detailAll;
       this.detailOpenBtnText = this.detailAll ? " 收起 " : "查看全部包裹";
     },
+    toDetail(){
+      uni.navigateTo({
+        url: `/pages/tabbar-2/detail?order_sn=${this.item.order_sn}`
+      })
+    },
     toexPressDetail(){
       uni.navigateTo({
-        url: `/pages/tabbar-2/shipping?order_id=${this.item.order_sn}`
+        url: `/pages/tabbar-2/shipping?order_sn=${this.item.order_sn}`
       })
     },
     copyOrderId(){
       let _self = this;
       uni.setClipboardData({
-        data: _self.item.logistics_no,
+        data: _self.item.order_sn,
         success: function () {
           _self.$toast("复制成功～");
         },
@@ -220,6 +229,13 @@ export default {
 };
 </script>
 <style lang="scss">
+.to-detail{
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
 .order-item {
   position: relative;
   width: 690rpx;
@@ -239,6 +255,16 @@ export default {
     }
     .item-lab {
       color: #7b7b7b;
+    }
+    .copy-btn{
+      display: block;
+      position: relative;
+      width: 18rpx;
+      height: 22rpx;
+      margin-left: 14rpx;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAWCAMAAAD6gTxzAAAAV1BMVEUAAAAAAAApKSmgoKAAAADX19cVFRUSEhIVFRUAAAChoaEnJycWFhYAAAAAAAAYGBgAAAD////X19cnJyc3Nzfv7+/W1tYzMzP7+/vJycnx8fHw8PCdnZ3UBMN2AAAAEXRSTlMADu/9A/7o4tZm/vDtYB7caBirf2oAAAB1SURBVBjTzdFJDoAgDEBRW1HBGarF6f7nFMQoxAv4l2/RpG02VvRUdiJztTmbuyKX4IlYPzEGMlov23y1Nj2A8LQcU8gSouw87TaeV3map3geBTIvmb8Qf6itebUpKYkNpSQAekzJBRivHWiok+O4hCqjl6gTQaMYlIhbCf8AAAAASUVORK5CYII=) no-repeat center;
+      background-size: 100%;
+      z-index: 20;
     }
   }
   .address-info {
@@ -647,8 +673,10 @@ export default {
   }
   .cancel-btn {
     display: flex;
+    position: relative;
     margin-top: 28rpx;
     justify-content: flex-end;
+    z-index: 20;
     .btn-text {
       display: flex;
       width: 170rpx;

@@ -180,7 +180,7 @@ export default {
         })
     },
     // 获取订单详情
-    getOrderInfo() {
+    getOrderInfo(data) {
         return request({
             url: 'order/getInfo',
             data,
@@ -229,7 +229,7 @@ export default {
     },
     // 删除订单 order_sn：订单id
     // user_id: 会员id
-    delOrder() {
+    delOrder(data) {
         return request({
             url: 'order/delete',
             data,
