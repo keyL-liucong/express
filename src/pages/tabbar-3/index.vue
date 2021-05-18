@@ -175,7 +175,7 @@
     </label>
     <view class="send-buy-box">
       <view class="left">
-        <view class="top"> 预估运费<text>￥ {{ standard_price }} </text>起 </view>
+        <view class="top"> 预估运费<text>￥ {{ standard_price || 0 }} </text>起 </view>
         <view class="bottom">
           最终运费以到仓称重确认为准
           <!-- <text>运费明细</text> -->
@@ -347,7 +347,7 @@ export default {
       declareList: [], // 申报物品列表
       total_amount: "", // 申报物品总价
       total_qty: "", // 申报物品数量
-      standard_price:'', // 预估金额
+      standard_price: "", // 预估金额
       imageList: [],
       header: {},
       value: "", // 图片上传
@@ -355,20 +355,27 @@ export default {
       aggrementChecked: false, // 协议
     };
   },
-  watch:{
+  watch: {
     // 预估金额
-    weightNum(newVal, oldVal){
-      if(newVal){
-        let data = {
-          sender_id: this.sendAddr.address_id,
-          addressee_id: this.receAddr.address_id,
-          weight: this.weightNum,
+    async weightNum(newVal, oldVal) {
+      // if (newVal) {
+        if (
+          this.sendAddr.address_id &&
+          this.receAddr.address_id &&
+          this.weightNum
+        ) {
+          let data = {
+            sender_id: this.sendAddr.address_id,
+            addressee_id: this.receAddr.address_id,
+            weight: this.weightNum,
+          };
+          let res = await this.$api.getOrderPrice(data);
+          console.log(res.data.standard_price);
+          this.standard_price = res.data.standard_price;
+          console.log(this.standard_price);
         }
-        let res = this.$api.getOrderPrice(data);
-        this.standard_price = res.data.standard_price;
-        
-      }
-    }
+      // }
+    },
   },
   async onShow() {
     if (this.sendAddr == null) {
@@ -499,18 +506,17 @@ export default {
         weight: this.weightNum,
         mail: this.mail,
         item_picture: this.imageList,
-        order_items:JSON.stringify(this.declareList),
-        total_amount:this.total_amount,
-        scene:this.$cache.get("scene") || ''
+        order_items: JSON.stringify(this.declareList),
+        total_amount: this.total_amount,
+        scene: this.$cache.get("scene") || "",
       };
-      
+
       let res = await this.$api.createOrder(data);
-      
-      if (res.info == 'success') {
-        this.$toast('下单成功');
-        this.$href.navigateTo({url:'/pages/order/finished'});
+
+      if (res.info == "success") {
+        this.$toast("下单成功");
+        this.$href.navigateTo({ url: "/pages/order/finished" });
       } else {
-        
       }
       console.log(res);
     },
