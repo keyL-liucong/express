@@ -68,7 +68,6 @@ import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import empty from "@/components/empty";
 import orderItem from "@/components/order-item/order-item.vue";
 import icon from "@/components/tui-icon/tui-icon.vue";
-import Api from "@/services/index";
 import { get } from "@/utils/cache";
 export default {
   components: {

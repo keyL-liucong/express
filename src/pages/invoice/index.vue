@@ -8,6 +8,9 @@
         @select="selectItem"
         :item="orderItem"
       ></invoiceitem>
+      <uni-load-more
+        :status="loadingType"
+      ></uni-load-more>
     </view>
     <view v-else-if="pageLoad" class="empty-box">
       <image
@@ -21,7 +24,7 @@
       <text class="btn-icon"></text>
       <text class="btn-text">开票记录</text>
     </view>
-    <view v-if="orderlist.length > 0" class="page-bottom">
+    <view v-if="orderlist.length > 0 && canInvoiceNum > 0" class="page-bottom">
       <view class="select-box" @click="setAllSelect">
         <icon
           v-if="allSelect"
@@ -55,10 +58,12 @@
 <script>
 import icon from "@/components/tui-icon/tui-icon.vue";
 import invoiceitem from "@/components/invoice-item/invoice-item.vue";
+import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 export default {
   components: {
     invoiceitem,
     icon,
+    uniLoadMore
   },
   data() {
     return {
@@ -70,6 +75,8 @@ export default {
       getorderListLock: false,
       orderlist: [],
       selectOrderIds: [], //选中订单号
+      loadingType: "more",
+      canInvoiceNum: "",//当前列表可申请开发票的订单数量
     };
   },
   onLoad(options) {},
@@ -82,10 +89,11 @@ export default {
   methods: {
     getList() {
       var _self = this;
-      if (_self.getorderListLock || _self.orderTotal == _self.orderlist) {
+      if (_self.getorderListLock ||  _self.loadingType == "noMore") {
         return;
       }
       _self.getorderListLock = true;
+      _self.loadingType = "loading";
       var param = {
         size: 10,
         page: _self.pageNum,
@@ -93,12 +101,13 @@ export default {
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
-          _self.orderTotal = res.data.total;
+          let orderTotal = res.data.total;
           _self.orderlist =
             _self.pageNum == 1
               ? res.data.list
               : _self.orderlist.concat(res.data.list);
           _self.pageNum++;
+          _self.loadingType = (_self.orderlist.length >= orderTotal || res.data.list.length == 0) ?  "noMore" : "more";
           _self.allSelect = _self.isSelectAll();;
         } else {
           _self.$toast("加载失败，请重试");
@@ -150,6 +159,7 @@ export default {
           num++;
         }
       });
+      this.canInvoiceNum = num;
       return num > 0 && this.selectOrderIds.length >= num;
     },
     applyinvoice() {
