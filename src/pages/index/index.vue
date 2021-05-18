@@ -211,7 +211,6 @@ export default {
 			    option.scene
 			); 
 		} 
-		
     },
     methods: {
         navTo(url) {
