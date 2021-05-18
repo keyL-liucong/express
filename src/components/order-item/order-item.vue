@@ -131,7 +131,7 @@
           <text v-if="item.order_status==6" class="bottom-data-title">下单时间</text>
           <text class="data-text">{{item.created}}</text>
         </view>
-        <text v-if="item.order_status==7" class="change-btn">更改</text>
+        <!-- <text v-if="item.order_status==7" class="change-btn">更改</text> -->
         <!-- <text class="share-btn">分享给收件人</text> -->
          <navigator v-if="item.order_status==4" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
       </view>
