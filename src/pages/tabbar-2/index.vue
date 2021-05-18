@@ -5,7 +5,7 @@
         v-for="(item, index) in navList"
         :key="index"
         class="nav-item"
-        :class="{ current: tabCurrentStatus === item.status }"
+        :class="{ current: tabCurrentStatus == item.status }"
         @click="tabClick(item)"
       >
         {{ item.text }}
@@ -51,7 +51,6 @@
       ></orderItem>
 
       <uni-load-more
-        v-if="orderlist.length < orderTotal"
         :status="loadingType"
       ></uni-load-more>
     </view>
@@ -83,13 +82,12 @@ export default {
       messageboxShow: true,
       pageNum: 1,
       loadingType: "more",
-      tabCurrentIndex: 0,
-      tabCurrentStatus: "",
+      tabCurrentStatus: -1,
       getorderListLock: false,
       orderTotal: 10,
       navList: [
         {
-          status: "",
+          status: -1,
           text: "全部订单",
           loadingType: "more",
           orderList: [],
@@ -116,7 +114,7 @@ export default {
           totalPage: 1,
         },
         {
-          status: "0",
+          status: 0,
           text: "待支付",
           loadingType: "more",
           orderList: [],
@@ -150,7 +148,6 @@ export default {
   },
   onLoad(options) {
     let token = get("token");
-    this.tabCurrentIndex = options.tabid || 0;
     //别的操作
     if (token) {
       this.loadData();
@@ -168,7 +165,7 @@ export default {
     //获取订单列表
     loadData(source) {
       var _self = this;
-      if (_self.getorderListLock || _self.orderTotal == _self.orderlist) {
+      if (_self.getorderListLock || _self.loadingType == "noMore") {
         return;
       }
       _self.getorderListLock = true;
@@ -180,12 +177,14 @@ export default {
       };
       this.$api.getAllOrderList(param).then(function (res) {
         if (res.status === 1) {
-          _self.orderTotal = res.data.total;
+          let orderTotal = res.data.total;
           _self.orderlist =
             _self.pageNum == 1
               ? res.data.list
               : _self.orderlist.concat(res.data.list);
+
           _self.pageNum++;
+          _self.loadingType = (_self.orderlist.length >= orderTotal || res.data.list.length == 0) ?  "noMore" : "more";
         } else {
           _self.$toast("加载失败，请重试");
         }
@@ -197,8 +196,10 @@ export default {
     tabClick(item) {
       this.tabCurrentStatus = item.status;
       this.pageNum = 1;
-      this.loadData("tabChange");
       this.payOrderId = "";
+      this.orderlist = [];
+      this.loadingType = "more";
+      this.loadData("tabChange");
     },
     messagePopClose(pro) {
       this.messageboxShow = false;
@@ -206,6 +207,9 @@ export default {
     //删除订单
     cancelOrderItem() {
       this.pageNum = 1;
+      this.payOrderId = "";
+      this.loadingType = "more";
+      this.orderlist = [];
       this.loadData();
     },
     setOrderPay(item) {

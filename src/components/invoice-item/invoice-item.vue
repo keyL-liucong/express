@@ -33,7 +33,7 @@
           <text class="get-price-icon">¥</text>
           <text class="get-price-text">{{item.total_amount}}</text>
         </view>
-        <text v-if="item.order_total > 0" class="original-price">¥{{order_total}}</text>
+        <text v-if="item.order_total > 0" class="original-price">¥{{item.order_total}}</text>
       </view>
     </view>
     <view class="addrss-info">
