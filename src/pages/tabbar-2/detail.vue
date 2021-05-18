@@ -104,7 +104,7 @@ export default {
 		uni.request({
 		    url: domain() + "order/getInfo", //仅为示例，并非真实接口地址。
 		    data: params,
-		    method: "POST"
+		    method: "POST",
 		    header: {
 		        'token': _this.token, //自定义请求头信息
 		        'content-type': 'application/x-www-form-urlencoded'
