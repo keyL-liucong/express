@@ -226,21 +226,26 @@ export default {
 		}
     },
 	onShareAppMessage(res) {
-		let token = this.$cache.get('token');
-		return {
-			title:"邀请你填写收件地址",
-			path:"pages/invite/address?token="+token
+		if(res.from == "button") {
+			let token = this.$cache.get('token');
+			return {
+				title:"邀请你填写收件地址",
+				path:"pages/invite/address?token="+token
+			}
 		}
 	}
 };
 </script>
 
 <style lang="scss">
+	page{
+		background-color: #f3f3f3;
+	}
 .app-container {
 	.space{
 		height: 1rem;
 	}
-	height: 100vh;
+	height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -582,7 +587,7 @@ export default {
 .app-customer{
 	position: fixed;
 	right: 13rpx;
-	bottom: 154rpx;
+	bottom: 130rpx;
 	.app-customer_btn::after{
 	 border: 0px;
 	}
