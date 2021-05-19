@@ -356,6 +356,7 @@ export default {
       value: "", // 图片上传
       serverUrl: "",
       aggrementChecked: false, // 协议
+	  order_insured_price:0,//保价费率 保价金额乘以保价费率 如果低于10元 默认10
     };
   },
   watch: {
@@ -541,6 +542,7 @@ export default {
       let res = await this.$api.getDefaultAddr({
         type, // 1默认寄件地址 2默认收件地址
       });
+	  this.order_insured_price =  res.data[0]['order_insured_price'];
       return res.data[0];
     },
     radioChange(e) {
