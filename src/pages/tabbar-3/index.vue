@@ -680,7 +680,8 @@ export default {
 
       if (res.info == "success") {
         this.$toast("下单成功");
-        this.$href.navigateTo({ url: "/pages/order/finished" });
+		let url = "/pages/order/finished?order_sn="+res.data.order_sn
+        this.$href.navigateTo({ url: url });
       } else {
         this.$toast(res.info);
       }

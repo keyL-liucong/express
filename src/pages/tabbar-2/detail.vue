@@ -1,7 +1,7 @@
 <template>
   <view class="wrap">
     <view class="top-num-info">
-      <text class="info-lab">运单号:</text>
+      <text class="info-lab">订单号:</text>
       <text class="info-val">{{ orderInfo.order_sn }}</text>
       <text class="copy-btn" @click="copyId"></text>
     </view>
@@ -110,7 +110,7 @@ export default {
 		        'content-type': 'application/x-www-form-urlencoded'
 		    },
 		    success: (res) => {
-				_this.orderInfo = res.data;
+				_this.orderInfo = res.data.data;
 				uni.hideLoading();
 		    },
 		    fail: (err) => {
@@ -146,7 +146,7 @@ page {
 .wrap {
   width: 690rpx;
   margin: 20rpx auto;
-  padding: 30rpx;
+  padding: 20rpx;
   background: #fff;
   border-radius: 16rpx;
   box-sizing: border-box;
