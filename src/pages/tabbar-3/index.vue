@@ -175,11 +175,9 @@
     </label>
     <view class="send-buy-box">
       <view class="left">
-        <view class="top"> 预估运费<text>￥ {{ standard_price || 0 }} </text>起 </view>
-        <view class="bottom">
-          最终运费以到仓称重确认为准
-          <!-- <text>运费明细</text> -->
-        </view>
+        <view class="top"> 预估运费<text>￥ {{ price || 0 }} </text>起 </view>
+        <view class="bottom">最终运费以到仓称重确认为准</view>
+		 <view class="bottom">{{ time}}</view>
       </view>
       <view class="right">
         <button @click="handleCreateOrder">立即下单</button>
@@ -347,7 +345,12 @@ export default {
       declareList: [], // 申报物品列表
       total_amount: "", // 申报物品总价
       total_qty: "", // 申报物品数量
+	  price:"",
+	  time:"",
       standard_price: "", // 预估金额
+	  standard_price_time:"",
+	  preferential_price: "", // 预估金额
+	  preferential_price_time:"",
       imageList: [],
       header: {},
       value: "", // 图片上传
@@ -370,9 +373,12 @@ export default {
             weight: this.weightNum,
           };
           let res = await this.$api.getOrderPrice(data);
-          console.log(res.data.standard_price);
           this.standard_price = res.data.standard_price;
-          console.log(this.standard_price);
+		  this.standard_price_time = res.data.standard_price_time;
+		  this.price = res.data.standard_price;
+		  this.time = res.data.standard_price_time;
+		  this.preferential_price = res.data.preferential_price;// 预估金额
+		  this.preferential_price_time = res.data.preferential_price_time;
         }
       // }
     },
@@ -538,6 +544,14 @@ export default {
       return res.data[0];
     },
     radioChange(e) {
+		if(e.detail.value == 0){
+			this.price = this.standard_price;
+			this.time = this.standard_price_time;
+		}
+		if(e.detail.value == 1){
+			this.price = this.preferential_price;
+			this.time = this.preferential_price_time;
+		}
       this.mail = e.detail.value;
     },
     dateShow: function (e) {
