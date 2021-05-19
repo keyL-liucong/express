@@ -60,16 +60,6 @@
           </view>
         </view>
       </tui-list-cell>
-      <!-- <view class="goods-info-wrap">
-        <view class="goods-list">
-          <view class="goods-item">
-            qqqq
-          </view>
-          <view class="goods-item">
-            qqqq
-          </view>
-        </view>
-      </view> -->
       <!-- 预估重量 -->
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
@@ -82,7 +72,7 @@
             disabled="true"
              @click="handlePopup('weight')"
           />
-          <text>KG</text>
+          <text style="padding: 5rpx 1rpx;">KG</text>
         </view>
       </tui-list-cell>
       <tui-list-cell :hover="false">
@@ -93,7 +83,7 @@
           </view>
           <input
             class="thorui-input"
-            placeholder="补充体积预估费用更准备"
+            placeholder="补充体积预估费用更准确"
             placeholder-class="thorui-phcolor"
             v-model="volume"
             disabled="true"
@@ -407,29 +397,50 @@ export default {
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
-      // if (newVal) {
-      if (
-        this.sendAddr.address_id &&
-        this.receAddr.address_id &&
-        this.weightNum
-      ) {
-        let data = {
-          sender_id: this.sendAddr.address_id,
-          addressee_id: this.receAddr.address_id,
-          weight: this.weightNum,
-        };
-        let res = await this.$api.getOrderPrice(data);
-        this.standard_price =
-          res.data.standard_price + this.submitStatementValue;
-        this.standard_price_time = res.data.standard_price_time;
-        this.price = res.data.standard_price + this.submitStatementValue;
-        this.time = res.data.standard_price_time;
-        this.preferential_price =
-          res.data.preferential_price + this.submitStatementValue; // 预估金额
-        this.preferential_price_time = res.data.preferential_price_time;
-      }
+        if (
+          this.sendAddr.address_id &&
+          this.receAddr.address_id &&
+          this.weightNum
+        ) {
+          let data = {
+            sender_id: this.sendAddr.address_id,
+            addressee_id: this.receAddr.address_id,
+            weight: this.weightNum,
+			volume:this.volume,
+          }; 
+          let res = await this.$api.getOrderPrice(data);
+          this.standard_price = res.data.standard_price+this.submitStatementValue;
+          this.standard_price_time = res.data.standard_price_time;
+          this.price = res.data.standard_price+this.submitStatementValue;
+          this.time = res.data.standard_price_time;
+          this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
+          this.preferential_price_time = res.data.preferential_price_time;
+        }
       // }
     },
+	// 预估金额
+	async volume(newVal, oldVal) {
+	    if (
+	      this.sendAddr.address_id &&
+	      this.receAddr.address_id &&
+	      this.volume
+	    ) {
+	      let data = {
+	        sender_id: this.sendAddr.address_id,
+	        addressee_id: this.receAddr.address_id,
+	        weight: this.weightNum ? this.weightNum : this.volume,
+			volume:this.volume,
+	      }; 
+	      let res = await this.$api.getOrderPrice(data);
+	      this.standard_price = res.data.standard_price+this.submitStatementValue;
+	      this.standard_price_time = res.data.standard_price_time;
+	      this.price = res.data.standard_price+this.submitStatementValue;
+	      this.time = res.data.standard_price_time;
+	      this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
+	      this.preferential_price_time = res.data.preferential_price_time;
+	    }
+	  // }
+	}
   },
   async onShow() {
     if (this.sendAddr == null) {
@@ -469,18 +480,20 @@ export default {
     },
     // 图片上传
     uploadComplete(e) {
-      this.imageList = e.imgArr;
+		if(this.imageList.length > 3){
+			this.$toast("上传图片超出三张");
+		}else{
+			this.imageList = e.imgArr;
+		}
     },
     uploadRemove(e) {},
     // 一级物品申报点击
     async handleSecList(declare_id) {
       let res = await this.$api.getSecList({ page: 1, size: 100, declare_id });
-      console.log(res);
       this.secList = res.data.list;
       this.firstList = [];
     },
     handleItemPrice(item, index) {
-      console.log('index',index);
       this.order_item = {
         item_name: item.declare_name || item.item_name,
         declare_id: item.declare_id,
@@ -604,7 +617,6 @@ export default {
     async getFirstList() {
       let res = await this.$api.getFirstList({ page: 1, size: 100 });
       this.firstList = res.data.list;
-      console.log(res);
     },
     // 检验长宽高输入
     handleCheck(e) {
@@ -618,9 +630,7 @@ export default {
       }
     },
     // 处理体积
-    async handleVolume() {
-      let _self = this;
-      let _this = this;
+    handleVolume() {
       if (this.longth && this.width && this.height) {
         this.volume = this.volumeWeight = parseFloat(
           (this.longth * this.width * this.height) / 6000
@@ -629,34 +639,9 @@ export default {
 		if(this.volume < 0.5){
 			this.volume = 0.5;
 		}
-		if (
-		  this.sendAddr.address_id &&
-		  this.receAddr.address_id &&
-		  this.volume
-		) {
-			if(!this.weightNum){
-				this.weightNum = this.volume;
-			}
-		  let data = {
-		    sender_id: this.sendAddr.address_id,
-		    addressee_id: this.receAddr.address_id,
-		    volume: this.volume,
-			weight: this.weightNum,
-		  };
-		  this.$api.getOrderPrice(data).then(function(res){
-			  console.log(res);
-			  _this.standard_price = res.data.standard_price+_this.submitStatementValue;
-			  _this.standard_price_time = res.data.standard_price_time;
-			  _this.price = res.data.standard_price+_this.submitStatementValue;
-			  _this.time = res.data.standard_price_time;
-			  _this.preferential_price = res.data.preferential_price+_this.submitStatementValue;// 预估金额
-			  _this.preferential_price_time = res.data.preferential_price_time;
-		  });
-		 
-		}
       }
       setTimeout(() => {
-        _self.popupShow = false;
+        this.popupShow = false;
       }, 500);
     },
     // 创建订单 立即下单
@@ -688,7 +673,6 @@ export default {
       } else {
         this.$toast(res.info);
       }
-      console.log(res);
     },
     handlePopup(type) {
       if (type === "goods") {
@@ -727,7 +711,6 @@ export default {
     },
     change: function (e) {
       //选择的结果
-      console.log(e);
       this.result = e.result;
     },
     // 处理重量
@@ -829,6 +812,7 @@ export default {
         font-size: 28rpx;
         color: #333;
         // font-size: ;
+		padding: 3rpx 1rpx;
       }
     }
     .upload-img {
