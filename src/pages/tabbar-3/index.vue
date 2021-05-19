@@ -516,6 +516,7 @@ export default {
         order_items: JSON.stringify(this.declareList),
         total_amount: this.total_amount,
         scene: this.$cache.get("scene") || "",
+		pick_up_time:this.result || "",
       };
 
       let res = await this.$api.createOrder(data);
