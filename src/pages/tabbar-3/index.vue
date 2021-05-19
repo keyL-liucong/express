@@ -616,14 +616,17 @@ export default {
 		    volume: this.volume,
 			weight: this.weightNum,
 		  };
-		  // let res =  this.$api.getOrderPrice(data);
-		  // console.log(res);
-		  // this.standard_price = res.data.standard_price+this.submitStatementValue;
-		  // this.standard_price_time = res.data.standard_price_time;
-		  // this.price = res.data.standard_price+this.submitStatementValue;
-		  // this.time = res.data.standard_price_time;
-		  // this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
-		  // this.preferential_price_time = res.data.preferential_price_time;
+		  _this = this;
+		  this.$api.getOrderPrice(data).then(function(res){
+			  console.log(res);
+			  _this.standard_price = res.data.standard_price+_this.submitStatementValue;
+			  _this.standard_price_time = res.data.standard_price_time;
+			  _this.price = res.data.standard_price+_this.submitStatementValue;
+			  _this.time = res.data.standard_price_time;
+			  _this.preferential_price = res.data.preferential_price+_this.submitStatementValue;// 预估金额
+			  _this.preferential_price_time = res.data.preferential_price_time;
+		  });
+		 
 		}
       }
       setTimeout(() => {
