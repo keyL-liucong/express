@@ -38,7 +38,7 @@
 
     <view class="order-list">
       <!-- 空白页 -->
-      <empty v-if="orderlist == 0"></empty>
+      <empty v-if="orderlist.length == 0 && loadingType == 'noMore'"></empty>
 
       <!-- 订单列表 -->
       <orderItem
@@ -196,8 +196,8 @@ export default {
       this.tabCurrentStatus = item.status;
       this.pageNum = 1;
       this.payOrderId = "";
-      this.orderlist = [];
       this.loadingType = "more";
+      this.orderlist = [];
       this.loadData("tabChange");
     },
     messagePopClose(pro) {

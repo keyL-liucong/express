@@ -617,6 +617,7 @@ export default {
     // 处理体积
     async handleVolume() {
       let _self = this;
+      let _this = this;
       if (this.longth && this.width && this.height) {
         this.volume = this.volumeWeight = parseFloat(
           (this.longth * this.width * this.height) / 6000
@@ -639,7 +640,6 @@ export default {
 		    volume: this.volume,
 			weight: this.weightNum,
 		  };
-		  _this = this;
 		  this.$api.getOrderPrice(data).then(function(res){
 			  console.log(res);
 			  _this.standard_price = res.data.standard_price+_this.submitStatementValue;
