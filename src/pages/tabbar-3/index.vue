@@ -56,7 +56,7 @@
              @click="handlePopup('goods')"
           />
           <view class="" v-else @click="lookDeclareList">
-            物品共{{total_qty}}件，总价值￥{{total_amount}}
+            物品共{{total_qty}}件，总价值￥{{total_amounts}}
           </view>
         </view>
       </tui-list-cell>
@@ -164,7 +164,7 @@
       <view class="row" v-else>
         <view class="row-left">快递单号</view>
         <view class="row-right">
-          <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no">
+          <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no" ref="logistics_no">
           <image src="../../static/scan.png" alt="" @click="handleScan">
         </view>
       </view>
@@ -344,6 +344,7 @@ export default {
       }, // 申报物品的item
       declareList: [], // 申报物品列表
       total_amount: "", // 申报物品总价
+	  total_amounts:"",
       total_qty: "", // 申报物品数量
 	  price:"",
 	  time:"",
@@ -357,6 +358,7 @@ export default {
       serverUrl: "",
       aggrementChecked: false, // 协议
 	  order_insured_price:0,//保价费率 保价金额乘以保价费率 如果低于10元 默认10
+	  insured_price:0,
     };
   },
   watch: {
@@ -455,7 +457,7 @@ export default {
           this.total_qty = newQtyArr.reduce((prev, next) => {
             return parseInt(prev) + parseInt(next);
           });
-          this.total_amount = newArr.reduce((prev, next) => {
+          this.total_amounts = newArr.reduce((prev, next) => {
             return parseInt(prev) + parseInt(next);
           });
         }
@@ -514,17 +516,18 @@ export default {
         mail: this.mail,
         item_picture: this.imageList,
         order_items: JSON.stringify(this.declareList),
-        total_amount: this.total_amount,
+        total_amount: this.price+this.insured_price,
         scene: this.$cache.get("scene") || "",
 		pick_up_time:this.result || "",
+		logistics_no:this.logistics_no,
       };
 
       let res = await this.$api.createOrder(data);
-
       if (res.info == "success") {
         this.$toast("下单成功");
         this.$href.navigateTo({ url: "/pages/order/finished" });
       } else {
+		  this.$toast(res.info);
       }
       console.log(res);
     },
