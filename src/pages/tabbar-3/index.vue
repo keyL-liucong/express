@@ -398,14 +398,11 @@ export default {
 	  price:"",
 	  time:"",
       standard_price: "", // 预估金额
-<<<<<<< HEAD
       fillStatementValue: "",
       submitStatementValue: "",
-=======
 	  standard_price_time:"",
 	  preferential_price: "", // 预估金额
 	  preferential_price_time:"",
->>>>>>> 993659304cfcdcc0b1d7e03e1f061102c521561d
       imageList: [],
       header: {},
       value: "", // 图片上传
@@ -418,23 +415,6 @@ export default {
     // 预估金额
     async weightNum(newVal, oldVal) {
       // if (newVal) {
-<<<<<<< HEAD
-      if (
-        this.sendAddr.address_id &&
-        this.receAddr.address_id &&
-        this.weightNum
-      ) {
-        let data = {
-          sender_id: this.sendAddr.address_id,
-          addressee_id: this.receAddr.address_id,
-          weight: this.weightNum,
-        };
-        let res = await this.$api.getOrderPrice(data);
-        console.log(res.data.standard_price);
-        this.standard_price = res.data.standard_price;
-        console.log(this.standard_price);
-      }
-=======
         if (
           this.sendAddr.address_id &&
           this.receAddr.address_id &&
@@ -453,7 +433,6 @@ export default {
 		  this.preferential_price = res.data.preferential_price;// 预估金额
 		  this.preferential_price_time = res.data.preferential_price_time;
         }
->>>>>>> 993659304cfcdcc0b1d7e03e1f061102c521561d
       // }
     },
   },
@@ -599,11 +578,8 @@ export default {
         order_items: JSON.stringify(this.declareList),
         total_amount: this.total_amount,
         scene: this.$cache.get("scene") || "",
-<<<<<<< HEAD
         increment_price_total: this.submitStatementValue,
-=======
-		pick_up_time:this.result || "",
->>>>>>> 993659304cfcdcc0b1d7e03e1f061102c521561d
+        pick_up_time:this.result || "",
       };
 
       let res = await this.$api.createOrder(data);
