@@ -300,7 +300,7 @@
              <scroll-view scroll-y="true" class="support-list-box">
                   <view class="statement-value">
                     <text class="statement-value-lab">声明价值</text>
-                    <input type="text" v-model="fillStatementValue" placeholder="¥ ：1-50000的整数">
+                    <input type="text" v-model="fillStatementValue" placeholder="¥ ：1-50000的整数" @blur="onRodeChange()">
                   </view>
                   <view class="use-price">
                     <text class="price-lab">费用:</text>
@@ -496,6 +496,27 @@ export default {
       };
       this.popupType = "declare";
     },
+	onRodeChange(){
+		if(!this.total_amounts){
+			  this.$toast("请先申报物品");
+			  setTimeout(() =>{
+				  this.handlePopup('goods');
+			  },1000);
+		}else{
+		  if(this.fillStatementValue > this.total_amounts){
+				  this.fillStatementValue = this.total_amounts;
+		  }
+		  if(this.fillStatementValue > this.order_insured_total && this.order_insured_total){
+				  this.fillStatementValue = this.order_insured_total;
+		  }
+		 
+		  
+		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
+		  if(this.submitStatementValue < 10){
+				  this.submitStatementValue = 10;
+		  }
+		}
+	},
     // 申报物品确认
     declareComfirm() {
       if (this.order_item.item_num && this.order_item.item_price) {
