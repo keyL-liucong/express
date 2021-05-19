@@ -88,7 +88,7 @@
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
           <view class="thorui-input-title">
-            <text>预估体积重</text>
+            <text>预估体积重量</text>
             <!-- <view>必填</view> -->
           </view>
           <input
@@ -100,6 +100,21 @@
             @click="handlePopup('volume')"
           />
           <text>KG</text>
+        </view>
+      </tui-list-cell>
+      <tui-list-cell :hover="false">
+        <view class="thorui-input-item">
+          <view class="thorui-input-title">
+            <text>增值服务</text>
+          </view>
+          <input
+            class="thorui-input"
+            placeholder="保价服务等>"
+            placeholder-class="thorui-phcolor"
+            v-model="submitStatementValue"
+            disabled="true"
+            @click="handlePopup('support')"
+          />
         </view>
       </tui-list-cell>
       <!-- <tui-list-cell :hover="false">
@@ -164,7 +179,7 @@
       <view class="row" v-else>
         <view class="row-left">快递单号</view>
         <view class="row-right">
-          <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no" ref="logistics_no">
+          <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no">
           <image src="../../static/scan.png" alt="" @click="handleScan">
         </view>
       </view>
@@ -277,6 +292,39 @@
              </scroll-view>
               <button @click="declareListComfirm">确认</button>
             </view>
+            <!-- 申报物品列表 -->
+            <view class="popup-box" v-else-if="popupType === 'support'">
+              <view class="title">
+                <text>保价服务</text>
+              </view>
+             <scroll-view scroll-y="true" class="support-list-box">
+                  <view class="statement-value">
+                    <text class="statement-value-lab">声明价值</text>
+                    <input type="text" v-model="fillStatementValue" placeholder="¥ ：1-50000的整数">
+                  </view>
+                  <view class="use-price">
+                    <text class="price-lab">费用:</text>
+                    <text class="price-val">¥150</text>
+                    <text class="price-icon">元</text>
+                  </view>
+                  <text class="explain-title"></text>
+                  <view class="explain-list">
+                    <text class="explain-item">
+                      1.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                    </text>
+                    <text class="explain-item">
+                      2.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                    </text>
+                    <text class="explain-item">
+                      3.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                    </text>
+                  </view>
+             </scroll-view>
+             <view class="support-box-btn-box">
+                <button type="submit" class="cancel" @click="cancelSupport">取消</button>
+                <button type="submit" class="submit" @click="submitSupport">确认保价</button>
+              </view>
+            </view>
             <view v-else>
               <view class="popup-box">
               <view class="title">
@@ -329,7 +377,9 @@ export default {
       popupWeightShow: false, // 预估重量弹框
       result: "",
       sendAddr: null,
-      receAddr: null,
+      receAddr:null,
+      // sendAddr: {address_id:""},
+      // receAddr: {address_id:""},
       weight: 0.1,
       weightNum: "",
       volume: "",
@@ -349,6 +399,8 @@ export default {
 	  price:"",
 	  time:"",
       standard_price: "", // 预估金额
+      fillStatementValue: "",
+      submitStatementValue: "",
 	  standard_price_time:"",
 	  preferential_price: "", // 预估金额
 	  preferential_price_time:"",
@@ -477,6 +529,16 @@ export default {
     declareListComfirm() {
       this.popupShow = false;
     },
+    // 保价确认
+    submitSupport() {
+      this.popupShow = false;
+      this.submitStatementValue = this.fillStatementValue;
+    },
+    // 保价取消
+    cancelSupport() {
+      this.popupShow = false;
+      this.fillStatementValue = "";
+    },
     // 查看物品申报的列表
     lookDeclareList() {
       this.handlePopup("declareList");
@@ -510,19 +572,21 @@ export default {
         return false;
       }
       let data = {
-        sender_id: this.sendAddr.address_id,
-        addressee_id: this.receAddr.address_id,
+        sender_id: this.sendAddr.address_id || "",
+        addressee_id: this.receAddr.address_id || "",
         weight: this.weightNum,
         mail: this.mail,
         item_picture: this.imageList,
         order_items: JSON.stringify(this.declareList),
-        total_amount: this.price+this.insured_price,
+        total_amount: this.price+this.submitStatementValue,
         scene: this.$cache.get("scene") || "",
-		pick_up_time:this.result || "",
+        increment_price_total: this.submitStatementValue,
+        pick_up_time:this.result || "",
 		logistics_no:this.logistics_no,
       };
 
       let res = await this.$api.createOrder(data);
+
       if (res.info == "success") {
         this.$toast("下单成功");
         this.$href.navigateTo({ url: "/pages/order/finished" });
@@ -889,6 +953,84 @@ export default {
       background: #ff9200;
       color: #fff;
     }
+  }
+}
+.support-list-box {
+  margin-top: 52rpx;
+  .statement-value {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .statement-value-lab {
+      font-size: 36rpx;
+      line-height: 50rpx;
+      color: #000;
+      font-weight: bold;
+    }
+    input {
+      display: block;
+      width: 496rpx;
+      height: 70rpx;
+      background: #f3f3f3;
+      font-size: 32rpx;
+      text-align: center;
+    }
+  }
+  .use-price {
+    display: flex;
+    margin-top: 30rpx;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 32rpx;
+    line-height: 44rpx;
+    color: #000;
+    font-weight: bold;
+    .price-val {
+      color: #ff0000;
+    }
+  }
+  .explain-title {
+    margin-top: 30rpx;
+    font-size: 32rpx;
+    line-height: 44rpx;
+    color: #000;
+    font-weight: bold;
+  }
+  .explain-list {
+    width: 100%;
+    margin-top: 10rpx;
+    .explain-item {
+      display: block;
+      margin-bottom: 8rpx;
+      font-size: 24rpx;
+      line-height: 34rpx;
+    }
+  }
+}
+.support-box-btn-box {
+  display: flex;
+  margin-top: 50rpx;
+  align-items: center;
+  justify-content: center;
+  button {
+    display: flex;
+    width: 300rpx;
+    height: 80rpx;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 36rpx;
+    font-weight: bold;
+    border-radius: 44rpx;
+  }
+  .cancel {
+    color: #7b7b7b;
+    border: 2rpx solid #7b7b7b;
+  }
+  .submit {
+    margin-left: 36rpx;
+    color: #fff;
+    background-image: linear-gradient(45deg, #ff9b00 0%, #ff6c00 100%);
   }
 }
 </style>
