@@ -287,7 +287,7 @@
              <scroll-view scroll-y="true" class="support-list-box">
                   <view class="statement-value">
                     <text class="statement-value-lab">声明价值</text>
-                    <input type="text" v-model="fillStatementValue" placeholder="¥ ：1-50000的整数">
+                    <input type="text" v-model="fillStatementValue" placeholder="¥ ：1-50000的整数" @blur="onRodeChange()">
                   </view>
                   <view class="use-price">
                     <text class="price-lab">费用:</text>
@@ -398,13 +398,14 @@ export default {
       serverUrl: "",
       aggrementChecked: false, // 协议
 	  order_insured_price:0,//保价费率 保价金额乘以保价费率 如果低于10元 默认10
+	  order_insured_total:0,//保价最高限制
 	  insured_price:0,
     };
   },
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
-      // if (newVal) {
+      // if (newVal) { 
         if (
           this.sendAddr.address_id &&
           this.receAddr.address_id &&
@@ -416,11 +417,11 @@ export default {
             weight: this.weightNum,
           };
           let res = await this.$api.getOrderPrice(data);
-          this.standard_price = res.data.standard_price;
+          this.standard_price = res.data.standard_price+this.submitStatementValue;
           this.standard_price_time = res.data.standard_price_time;
-          this.price = res.data.standard_price;
+          this.price = res.data.standard_price+this.submitStatementValue;
           this.time = res.data.standard_price_time;
-          this.preferential_price = res.data.preferential_price;// 预估金额
+          this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
           this.preferential_price_time = res.data.preferential_price_time;
         }
       // }
@@ -482,6 +483,27 @@ export default {
       };
       this.popupType = "declare";
     },
+	onRodeChange(){
+		if(!this.total_amounts){
+			  this.$toast("请先申报物品");
+			  setTimeout(() =>{
+				  this.handlePopup('goods');
+			  },1000);
+		}else{
+		  if(this.fillStatementValue > this.total_amounts){
+				  this.fillStatementValue = this.total_amounts;
+		  }
+		  if(this.fillStatementValue > this.order_insured_total && this.order_insured_total){
+				  this.fillStatementValue = this.order_insured_total;
+		  }
+		 
+		  
+		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
+		  if(this.submitStatementValue < 10){
+				  this.submitStatementValue = 10;
+		  }
+		}
+	},
     // 申报物品确认
     declareComfirm() {
       if (this.order_item.item_num && this.order_item.item_price) {
@@ -520,18 +542,30 @@ export default {
     // 保价确认
     submitSupport() {
       this.popupShow = false;
-	  if(this.fillStatementValue > this.total_amounts){
-		  this.fillStatementValue = this.total_amounts;
+	  if(!this.total_amounts){
+		  this.$toast("请先申报物品");
+		  setTimeout(() =>{
+		      this.handlePopup('goods');
+		  },1000);
+	  }else{
+		  if(this.fillStatementValue > this.total_amounts){
+		  		  this.fillStatementValue = this.total_amounts;
+		  }
+		  if(this.fillStatementValue > this.order_insured_total && this.order_insured_total){
+		  		  this.fillStatementValue = this.order_insured_total;
+		  }
+		 
+		  
+		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
+		  if(this.submitStatementValue < 10){
+		  		  this.submitStatementValue = 10;
+		  }
+		  	 
+		  this.submitStatementValue_msg = "保费￥"+this.submitStatementValue;
+		  this.standard_price = parseInt(this.standard_price) + this.submitStatementValue;
+		  this.preferential_price = parseInt(this.preferential_price) + this.submitStatementValue;
+		  this.price =  parseInt(this.price)+ this.submitStatementValue;
 	  }
-	  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
-	  if(this.submitStatementValue < 10){
-		  this.submitStatementValue = 10;
-	  }
-	 
-	  this.submitStatementValue_msg = "保费￥"+this.submitStatementValue;
-	  this.standard_price += this.submitStatementValue;
-	  this.preferential_price += this.submitStatementValue;
-	  this.price += this.submitStatementValue;
     },
     // 保价取消
     cancelSupport() {
@@ -550,7 +584,14 @@ export default {
     },
     // 检验长宽高输入
     handleCheck(e) {
-      console.log(e);
+      if (this.longth && this.width && this.height) {
+        this.volumeWeight = this.volumeWeight = parseFloat(
+          (this.longth * this.width * this.height) / 6000
+        ).toFixed(2);
+		if(this.volume < 0.5){
+			this.volumeWeight = 0.5;
+		}
+      }
     },
     // 处理体积
     handleVolume() {
@@ -559,6 +600,32 @@ export default {
           (this.longth * this.width * this.height) / 6000
         ).toFixed(2);
         // this.postData.volume = this.longth * this.width * this.height;
+		if(this.volume < 0.5){
+			this.volume = 0.5;
+		}
+		if (
+		  this.sendAddr.address_id &&
+		  this.receAddr.address_id &&
+		  this.volume
+		) {
+			if(!this.weightNum){
+				this.weightNum = this.volume;
+			}
+		  let data = {
+		    sender_id: this.sendAddr.address_id,
+		    addressee_id: this.receAddr.address_id,
+		    volume: this.volume,
+			weight: this.weightNum,
+		  };
+		  // let res =  this.$api.getOrderPrice(data);
+		  // console.log(res);
+		  // this.standard_price = res.data.standard_price+this.submitStatementValue;
+		  // this.standard_price_time = res.data.standard_price_time;
+		  // this.price = res.data.standard_price+this.submitStatementValue;
+		  // this.time = res.data.standard_price_time;
+		  // this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
+		  // this.preferential_price_time = res.data.preferential_price_time;
+		}
       }
       setTimeout(() => {
         this.popupShow = false;
@@ -611,6 +678,7 @@ export default {
         type, // 1默认寄件地址 2默认收件地址
       });
 	  this.order_insured_price =  res.data[0]['order_insured_price'];
+	  this.order_insured_total =  res.data[0]['order_insured_total'];
       return res.data[0];
     },
     radioChange(e) {
