@@ -109,7 +109,7 @@
           </view>
           <input
             class="thorui-input"
-            placeholder="贵重物品建议购买保价>"
+            placeholder="保价等>"
             placeholder-class="thorui-phcolor"
             v-model="submitStatementValue_msg"
             disabled="true"
@@ -117,19 +117,6 @@
           />
         </view>
       </tui-list-cell>
-      <!-- <tui-list-cell :hover="false">
-        <view class="thorui-input-item">
-          <view class="thorui-input-title">增值服务</view>
-          <input
-            class="thorui-input"
-            placeholder="贵重物品建议购买保价>"
-            placeholder-class="thorui-phcolor"
-            v-model="name"
-            disabled="true"
-          />
-          <icon type="clear" :size="14" v-if="name" @tap="name = ''"></icon>
-        </view>
-      </tui-list-cell> -->
       <view class="upload-img">
         <view class="row">
           <text>包裹拍照</text>
@@ -430,11 +417,11 @@ export default {
           };
           let res = await this.$api.getOrderPrice(data);
           this.standard_price = res.data.standard_price;
-		  this.standard_price_time = res.data.standard_price_time;
-		  this.price = res.data.standard_price;
-		  this.time = res.data.standard_price_time;
-		  this.preferential_price = res.data.preferential_price;// 预估金额
-		  this.preferential_price_time = res.data.preferential_price_time;
+          this.standard_price_time = res.data.standard_price_time;
+          this.price = res.data.standard_price;
+          this.time = res.data.standard_price_time;
+          this.preferential_price = res.data.preferential_price;// 预估金额
+          this.preferential_price_time = res.data.preferential_price_time;
         }
       // }
     }
@@ -647,7 +634,16 @@ export default {
     },
     // 处理重量
     handleConfirmWeight() {
-      this.weightNum = this.weight;
+      let _self = this;
+      if(this.weight > this.receAddr.order_total_kg){
+        setTimeout(()=>{
+          _self.$toast(`最大重量是${this.receAddr.order_total_kg}KG`);
+        },500)
+        this.weightNum = this.receAddr.order_total_kg;
+        this.weight = this.receAddr.order_total_kg;
+      }else{
+        this.weightNum = this.weight;
+      }
       this.popupShow = false;
     },
     popup: function () {
