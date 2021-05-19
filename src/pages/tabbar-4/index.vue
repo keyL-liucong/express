@@ -39,8 +39,8 @@
 		</view>
 		<view class="app-more_data">
 			<view class="tui-flex mt20" v-for="(item, index) in welfare" :key="index">
-				<view class="tui-col-12">
-					<image class="welfare-image" :src="item.pic_url" mode="scaleToFill" @click="toWeb(item.link)"></image>
+				<view class="app-more_data-imgbox tui-col-12">
+					<image class="welfare-image" :src="item.pic_url" mode="widthFix" @click="toWeb(item.link)"></image>
 				</view>
 			</view>
 		</view>
@@ -85,7 +85,7 @@ export default {
 .app-container {
     background: #f3f3f3;
     min-height: 100vh;
-    padding: 20rpx 26rpx 0;
+    padding: 20rpx 20rpx 0;
   .rece-wrap {
       background: #fff;
       padding: 30rpx;
@@ -165,9 +165,12 @@ export default {
 	  }
 	  .app-more_data{
 		  width: 100%;
-		  height: 180rpx;
 		  border-radius: 8rpx;
-		  overflow: hidden;
+      .app-more_data-imgbox{
+        height: 150rpx;
+        border-radius: 16rpx;
+        overflow: hidden;
+      }
 	  }
 	  .welfare-image{
 		  height: 180rpx;
