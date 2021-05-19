@@ -505,7 +505,7 @@ export default {
 		  
 		  this.submitStatementValue =  parseFloat((this.fillStatementValue*this.order_insured_price)/100).toFixed(2);
 		  if(this.submitStatementValue < 10){
-			  this.submitStatementValue = 10;
+			  this.submitStatementValue = this.submitStatementValue >0 ? 10 : 0;
 		  }
 		}
 	},
@@ -570,22 +570,25 @@ export default {
 		      this.handlePopup('goods');
 		  },1000);
 	  }else{
+      let standard_price = this.standard_price;
+      let preferential_price = this.preferential_price;
+      let price = this.price;
 		  if(this.fillStatementValue > this.total_amounts){
 		  		  this.fillStatementValue = this.total_amounts;
 		  }
-		  if(this.fillStatementValue > this.order_insured_total && this.order_insured_total){
+		  if(this.order_insured_total && this.fillStatementValue > this.order_insured_total){
 		  		  this.fillStatementValue = this.order_insured_total;
 		  }
 		 
 		  
 		  this.submitStatementValue = parseFloat((this.fillStatementValue*this.order_insured_price)/100).toFixed(2);
 		  if(this.submitStatementValue < 10){
-		  		  this.submitStatementValue = 10;
+		  		  this.submitStatementValue = this.submitStatementValue > 0 ? 10 : 0;
 		  }
 		  this.submitStatementValue_msg = "保费￥"+ parseInt(this.submitStatementValue);
-		  this.standard_price = parseInt(this.standard_price) + parseInt(this.submitStatementValue);
-		  this.preferential_price = parseInt(this.preferential_price) + parseInt(this.submitStatementValue);
-		  this.price =  parseInt(this.price)+ parseInt(this.submitStatementValue);
+		  this.standard_price = parseInt(standard_price) + parseInt(this.submitStatementValue);
+		  this.preferential_price = parseInt(preferential_price) + parseInt(this.submitStatementValue);
+		  this.price =  parseInt(price)+ parseInt(this.submitStatementValue);
 	  }
     },
     // 保价取消
