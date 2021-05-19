@@ -270,14 +270,17 @@
                       <view class="left">
                       </view>
                       <view class="right">
-                        <text @click="handleEdit(item)">编辑</text>
-                        <text @click="handleDel(item)">删除</text>
+                        <text @click="handleEdit(item, index)">编辑</text>
+                        <text @click="handleDel(item, index)">删除</text>
                       </view>
                     </view>
                   </view>
               </view>
              </scroll-view>
-              <button @click="declareListComfirm">确认</button>
+             <view class="declare-btn-box">
+              <button class="add" @click="handlePopup('goods')">继续添加</button>
+              <button class="submit" @click="declareListComfirm">确认</button>
+             </view>
             </view>
             <!-- 申报物品列表 -->
             <view class="popup-box" v-else-if="popupType === 'support'">
@@ -374,6 +377,7 @@ export default {
       firstList: [],
       secList: [],
       order_item: {
+        declare_id: "",
         item_price: "",
         item_num: "",
       }, // 申报物品的item
@@ -475,11 +479,12 @@ export default {
       this.secList = res.data.list;
       this.firstList = [];
     },
-    handleItemPrice(item) {
-      console.log(item);
+    handleItemPrice(item, index) {
+      console.log('index',index);
       this.order_item = {
         item_name: item.declare_name || item.item_name,
         declare_id: item.declare_id,
+        index: index,
       };
       this.popupType = "declare";
     },
@@ -510,8 +515,11 @@ export default {
     // 申报物品确认
     declareComfirm() {
       if (this.order_item.item_num && this.order_item.item_price) {
-        console.log("申报物品item", this.order_item);
-        this.declareList.push(this.order_item);
+        if(this.order_item.index > -1){
+          this.declareList[this.order_item.index] = this.order_item;
+        }else{
+          this.declareList.push(this.order_item);
+        }
         if (this.declareList.length > 0) {
           let newArr = this.declareList.map((item) => {
             return item.item_num * item.item_price;
@@ -526,7 +534,6 @@ export default {
             return parseInt(prev) + parseInt(next);
           });
         }
-        console.log(this.declareList);
         this.popupShow = false;
       } else {
         this.$toast("请完善申报信息");
@@ -534,10 +541,25 @@ export default {
       }
     },
     // 申报物品编辑
-    handleEdit(item) {
-      this.handleItemPrice(item);
+    handleEdit(item, index) {
+      this.handleItemPrice(item, index);
     },
-    handleDel(item) {},
+    handleDel(item, index) {
+      this.declareList.splice(index,1);
+          let newArr = this.declareList.map((item) => {
+            return item.item_num * item.item_price;
+          });
+          let newQtyArr = this.declareList.map((item) => {
+            return item.item_num;
+          });
+          this.total_qty = newQtyArr.reduce((prev, next) => {
+            return parseInt(prev) + parseInt(next);
+          });
+          this.total_amounts = newArr.reduce((prev, next) => {
+            return parseInt(prev) + parseInt(next);
+          });
+
+    },
     // 申报物品确认
     declareListComfirm() {
       this.popupShow = false;
@@ -673,10 +695,12 @@ export default {
     },
     handlePopup(type) {
       if (type === "goods") {
+        this.popupShow = true;
         this.getFirstList();
+      }else{
+        this.popupShow = !this.popupShow; 
       }
       this.popupType = type;
-      this.popupShow = !this.popupShow;
     },
     navTo(url) {
       this.$href.navigateTo({ url });
@@ -1110,6 +1134,31 @@ export default {
     border-radius: 44rpx;
   }
   .cancel {
+    color: #7b7b7b;
+    border: 2rpx solid #7b7b7b;
+  }
+  .submit {
+    margin-left: 36rpx;
+    color: #fff;
+    background-image: linear-gradient(45deg, #ff9b00 0%, #ff6c00 100%);
+  }
+}
+.declare-btn-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    button {
+    display: flex;
+    width: 300rpx;
+    height: 80rpx;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 36rpx;
+    font-weight: bold;
+    border-radius: 44rpx;
+  }
+  .add {
     color: #7b7b7b;
     border: 2rpx solid #7b7b7b;
   }
