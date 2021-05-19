@@ -364,9 +364,7 @@ export default {
       popupWeightShow: false, // 预估重量弹框
       result: "",
       sendAddr: null,
-      receAddr:null,
-      // sendAddr: {address_id:""},
-      // receAddr: {address_id:""},
+      receAddr: null,
       weight: 0.1,
       weightNum: "",
       volume: "",
@@ -381,51 +379,53 @@ export default {
       }, // 申报物品的item
       declareList: [], // 申报物品列表
       total_amount: "", // 申报物品总价
-	  total_amounts:"",
+      total_amounts: "",
       total_qty: "", // 申报物品数量
-	  price:"",
-	  time:"",
+      price: "",
+      time: "",
       standard_price: "", // 预估金额
-      fillStatementValue: "",//保价总金额
+      fillStatementValue: "", //保价总金额
       submitStatementValue: "", //保价手续费
-	  submitStatementValue_msg:"",
-	  standard_price_time:"",
-	  preferential_price: "", // 预估金额
-	  preferential_price_time:"",
+      submitStatementValue_msg: "",
+      standard_price_time: "",
+      preferential_price: "", // 预估金额
+      preferential_price_time: "",
       imageList: [],
       header: {},
       value: "", // 图片上传
       serverUrl: "",
       aggrementChecked: false, // 协议
-	  order_insured_price:0,//保价费率 保价金额乘以保价费率 如果低于10元 默认10
-	  order_insured_total:0,//保价最高限制
-	  insured_price:0,
+      order_insured_price: 0, //保价费率 保价金额乘以保价费率 如果低于10元 默认10
+      order_insured_total: 0, //保价最高限制
+      insured_price: 0,
     };
   },
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
-      // if (newVal) { 
-        if (
-          this.sendAddr.address_id &&
-          this.receAddr.address_id &&
-          this.weightNum
-        ) {
-          let data = {
-            sender_id: this.sendAddr.address_id,
-            addressee_id: this.receAddr.address_id,
-            weight: this.weightNum,
-          };
-          let res = await this.$api.getOrderPrice(data);
-          this.standard_price = res.data.standard_price+this.submitStatementValue;
-          this.standard_price_time = res.data.standard_price_time;
-          this.price = res.data.standard_price+this.submitStatementValue;
-          this.time = res.data.standard_price_time;
-          this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
-          this.preferential_price_time = res.data.preferential_price_time;
-        }
+      // if (newVal) {
+      if (
+        this.sendAddr.address_id &&
+        this.receAddr.address_id &&
+        this.weightNum
+      ) {
+        let data = {
+          sender_id: this.sendAddr.address_id,
+          addressee_id: this.receAddr.address_id,
+          weight: this.weightNum,
+        };
+        let res = await this.$api.getOrderPrice(data);
+        this.standard_price =
+          res.data.standard_price + this.submitStatementValue;
+        this.standard_price_time = res.data.standard_price_time;
+        this.price = res.data.standard_price + this.submitStatementValue;
+        this.time = res.data.standard_price_time;
+        this.preferential_price =
+          res.data.preferential_price + this.submitStatementValue; // 预估金额
+        this.preferential_price_time = res.data.preferential_price_time;
+      }
       // }
-    }
+    },
   },
   async onShow() {
     if (this.sendAddr == null) {
@@ -483,27 +483,30 @@ export default {
       };
       this.popupType = "declare";
     },
-	onRodeChange(){
-		if(!this.total_amounts){
-			  this.$toast("请先申报物品");
-			  setTimeout(() =>{
-				  this.handlePopup('goods');
-			  },1000);
-		}else{
-		  if(this.fillStatementValue > this.total_amounts){
-				  this.fillStatementValue = this.total_amounts;
-		  }
-		  if(this.fillStatementValue > this.order_insured_total && this.order_insured_total){
-				  this.fillStatementValue = this.order_insured_total;
-		  }
-		 
-		  
-		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
-		  if(this.submitStatementValue < 10){
-				  this.submitStatementValue = 10;
-		  }
-		}
-	},
+    onRodeChange() {
+      if (!this.total_amounts) {
+        this.$toast("请先申报物品");
+        setTimeout(() => {
+          this.handlePopup("goods");
+        }, 1000);
+      } else {
+        if (this.fillStatementValue > this.total_amounts) {
+          this.fillStatementValue = this.total_amounts;
+        }
+        if (
+          this.fillStatementValue > this.order_insured_total &&
+          this.order_insured_total
+        ) {
+          this.fillStatementValue = this.order_insured_total;
+        }
+
+        this.submitStatementValue =
+          (this.fillStatementValue * this.order_insured_price) / 100;
+        if (this.submitStatementValue < 10) {
+          this.submitStatementValue = 10;
+        }
+      }
+    },
     // 申报物品确认
     declareComfirm() {
       if (this.order_item.item_num && this.order_item.item_price) {
@@ -542,30 +545,35 @@ export default {
     // 保价确认
     submitSupport() {
       this.popupShow = false;
-	  if(!this.total_amounts){
-		  this.$toast("请先申报物品");
-		  setTimeout(() =>{
-		      this.handlePopup('goods');
-		  },1000);
-	  }else{
-		  if(this.fillStatementValue > this.total_amounts){
-		  		  this.fillStatementValue = this.total_amounts;
-		  }
-		  if(this.fillStatementValue > this.order_insured_total && this.order_insured_total){
-		  		  this.fillStatementValue = this.order_insured_total;
-		  }
-		 
-		  
-		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
-		  if(this.submitStatementValue < 10){
-		  		  this.submitStatementValue = 10;
-		  }
-		  	 
-		  this.submitStatementValue_msg = "保费￥"+this.submitStatementValue;
-		  this.standard_price = parseInt(this.standard_price) + this.submitStatementValue;
-		  this.preferential_price = parseInt(this.preferential_price) + this.submitStatementValue;
-		  this.price =  parseInt(this.price)+ this.submitStatementValue;
-	  }
+      if (!this.total_amounts) {
+        this.$toast("请先申报物品");
+        setTimeout(() => {
+          this.handlePopup("goods");
+        }, 1000);
+      } else {
+        if (this.fillStatementValue > this.total_amounts) {
+          this.fillStatementValue = this.total_amounts;
+        }
+        if (
+          this.fillStatementValue > this.order_insured_total &&
+          this.order_insured_total
+        ) {
+          this.fillStatementValue = this.order_insured_total;
+        }
+
+        this.submitStatementValue =
+          (this.fillStatementValue * this.order_insured_price) / 100;
+        if (this.submitStatementValue < 10) {
+          this.submitStatementValue = 10;
+        }
+
+        this.submitStatementValue_msg = "保费￥" + this.submitStatementValue;
+        this.standard_price =
+          parseInt(this.standard_price) + this.submitStatementValue;
+        this.preferential_price =
+          parseInt(this.preferential_price) + this.submitStatementValue;
+        this.price = parseInt(this.price) + this.submitStatementValue;
+      }
     },
     // 保价取消
     cancelSupport() {
@@ -588,47 +596,48 @@ export default {
         this.volumeWeight = this.volumeWeight = parseFloat(
           (this.longth * this.width * this.height) / 6000
         ).toFixed(2);
-		if(this.volume < 0.5){
-			this.volumeWeight = 0.5;
-		}
+        if (this.volume < 0.5) {
+          this.volumeWeight = 0.5;
+        }
       }
     },
     // 处理体积
-    handleVolume() {
+    async handleVolume() {
+      let _self = this;
       if (this.longth && this.width && this.height) {
         this.volume = this.volumeWeight = parseFloat(
           (this.longth * this.width * this.height) / 6000
         ).toFixed(2);
         // this.postData.volume = this.longth * this.width * this.height;
-		if(this.volume < 0.5){
-			this.volume = 0.5;
-		}
-		if (
-		  this.sendAddr.address_id &&
-		  this.receAddr.address_id &&
-		  this.volume
-		) {
-			if(!this.weightNum){
-				this.weightNum = this.volume;
-			}
-		  let data = {
-		    sender_id: this.sendAddr.address_id,
-		    addressee_id: this.receAddr.address_id,
-		    volume: this.volume,
-			weight: this.weightNum,
-		  };
-		  // let res =  this.$api.getOrderPrice(data);
-		  // console.log(res);
-		  // this.standard_price = res.data.standard_price+this.submitStatementValue;
-		  // this.standard_price_time = res.data.standard_price_time;
-		  // this.price = res.data.standard_price+this.submitStatementValue;
-		  // this.time = res.data.standard_price_time;
-		  // this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
-		  // this.preferential_price_time = res.data.preferential_price_time;
-		}
+        if (this.volume < 0.5) {
+          this.volume = 0.5;
+        }
+        if (
+          this.sendAddr.address_id &&
+          this.receAddr.address_id &&
+          this.volume
+        ) {
+          if (!this.weightNum) {
+            this.weightNum = this.volume;
+          }
+          let data = {
+            sender_id: this.sendAddr.address_id,
+            addressee_id: this.receAddr.address_id,
+            volume: this.volume,
+            weight: this.weightNum,
+          };
+          let res =  await this.$api.getOrderPrice(data);
+          console.log(res);
+          this.standard_price = res.data.standard_price+this.submitStatementValue;
+          this.standard_price_time = res.data.standard_price_time;
+          this.price = res.data.standard_price+this.submitStatementValue;
+          this.time = res.data.standard_price_time;
+          this.preferential_price = res.data.preferential_price+this.submitStatementValue;// 预估金额
+          this.preferential_price_time = res.data.preferential_price_time;
+        }
       }
       setTimeout(() => {
-        this.popupShow = false;
+        _self.popupShow = false;
       }, 500);
     },
     // 创建订单 立即下单
@@ -644,12 +653,12 @@ export default {
         mail: this.mail,
         item_picture: this.imageList,
         order_items: JSON.stringify(this.declareList),
-        total_amount: this.price+this.submitStatementValue,
+        total_amount: this.price + this.submitStatementValue,
         scene: this.$cache.get("scene") || "",
         increment_price_total: this.fillStatementValue,
-        pick_up_time:this.result || "",
-		logistics_no:this.logistics_no,
-		increment_price: this.submitStatementValue,
+        pick_up_time: this.result || "",
+        logistics_no: this.logistics_no,
+        increment_price: this.submitStatementValue,
       };
 
       let res = await this.$api.createOrder(data);
@@ -658,7 +667,7 @@ export default {
         this.$toast("下单成功");
         this.$href.navigateTo({ url: "/pages/order/finished" });
       } else {
-		  this.$toast(res.info);
+        this.$toast(res.info);
       }
       console.log(res);
     },
@@ -677,19 +686,19 @@ export default {
       let res = await this.$api.getDefaultAddr({
         type, // 1默认寄件地址 2默认收件地址
       });
-	  this.order_insured_price =  res.data[0]['order_insured_price'];
-	  this.order_insured_total =  res.data[0]['order_insured_total'];
+      this.order_insured_price = res.data[0]["order_insured_price"];
+      this.order_insured_total = res.data[0]["order_insured_total"];
       return res.data[0];
     },
     radioChange(e) {
-		if(e.detail.value == 0){
-			this.price = this.standard_price;
-			this.time = this.standard_price_time;
-		}
-		if(e.detail.value == 1){
-			this.price = this.preferential_price;
-			this.time = this.preferential_price_time;
-		}
+      if (e.detail.value == 0) {
+        this.price = this.standard_price;
+        this.time = this.standard_price_time;
+      }
+      if (e.detail.value == 1) {
+        this.price = this.preferential_price;
+        this.time = this.preferential_price_time;
+      }
       this.mail = e.detail.value;
     },
     dateShow: function (e) {
@@ -703,13 +712,13 @@ export default {
     // 处理重量
     handleConfirmWeight() {
       let _self = this;
-      if(this.weight > this.receAddr.order_total_kg){
-        setTimeout(()=>{
+      if (this.weight > this.receAddr.order_total_kg) {
+        setTimeout(() => {
           _self.$toast(`最大重量是${this.receAddr.order_total_kg}KG`);
-        },500)
+        }, 500);
         this.weightNum = this.receAddr.order_total_kg;
         this.weight = this.receAddr.order_total_kg;
-      }else{
+      } else {
         this.weightNum = this.weight;
       }
       this.popupShow = false;
