@@ -597,7 +597,14 @@ export default {
     },
     // 检验长宽高输入
     handleCheck(e) {
-      console.log(e);
+      if (this.longth && this.width && this.height) {
+        this.volumeWeight = this.volumeWeight = parseFloat(
+          (this.longth * this.width * this.height) / 6000
+        ).toFixed(2);
+		if(this.volume < 0.5){
+			this.volumeWeight = 0.5;
+		}
+      }
     },
     // 处理体积
     handleVolume() {
