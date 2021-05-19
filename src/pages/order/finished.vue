@@ -74,8 +74,8 @@
       </view>
     </view>
     <view class="bottom-btn-box">
-      <button class="left">通知收件人</button>
-      <button class="right">查看订单</button>
+      <!-- <button class="left">通知收件人</button> -->
+      <button class="right" @click="toOrderList">查看订单</button>
     </view>
   </view>
 </template>
@@ -100,6 +100,11 @@ export default {
     navTo(url) {
       this.$href.navigateTo({ url: url });
     },
+    toOrderList(){
+      uni.switchTab({
+        url: "/pages/tabbar-2/index",
+      })
+    }
   },
   onShareAppMessage(res) {},
 };
