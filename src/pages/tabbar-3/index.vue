@@ -132,11 +132,11 @@
               class="thorui-radio thorui-align__center thorui-padding"
               style="margin-right: 20rpx"
             >
-              <radio color="#5677fc" :value="0" checked="true"></radio>
+              <radio color="#5677fc" :value="0" checked="true" style="transform:scale(0.8)"></radio>
               <text class="thorui-left__sm">上门取件</text>
             </label>
             <label class="thorui-radio thorui-align__center thorui-padding">
-              <radio color="#5677fc" :value="1"></radio>
+              <radio color="#5677fc" :value="1"  style="transform:scale(0.8)"></radio>
               <text class="thorui-left__sm">自寄下单</text>
             </label>
           </radio-group>
@@ -168,8 +168,8 @@
     <view class="send-buy-box">
       <view class="left">
         <view class="top"> 预估运费<text>￥ {{ price || 0 }} </text>起 </view>
-        <view class="bottom">最终运费以到仓称重确认为准</view>
-		 <view class="bottom">{{ time}}</view>
+        <view class="bottom alert">最终运费以到仓称重确认为准</view>
+		<view class="bottom">{{ time}}</view>
       </view>
       <view class="right">
         <button @click="handleCreateOrder">立即下单</button>
@@ -359,7 +359,7 @@ export default {
       sendAddr: null,
       receAddr: null,
       weight: 0.1,
-      weightNum: 0,
+      weightNum: "",
       volume: "",
       mail: 0, //寄件方式 0 上门取件 1 自寄下单
       logistics_no: "",
@@ -408,6 +408,7 @@ export default {
             weight: this.weightNum,
 			volume:this.volume,
           }; 
+		  console.log(data);
           let res = await this.$api.getOrderPrice(data);
           this.standard_price = res.data.standard_price+this.submitStatementValue;
           this.standard_price_time = res.data.standard_price_time;
@@ -611,6 +612,7 @@ export default {
     },
     // 查看物品申报的列表
     lookDeclareList() {
+		
       this.handlePopup("declareList");
     },
     // 获取一级物品申报
@@ -646,6 +648,15 @@ export default {
     },
     // 创建订单 立即下单
     async handleCreateOrder() {
+		if(this.sendAddr == null) {
+			this.$toast("请先填写寄件人信息");
+			return;
+		}
+		
+		if(this.receAddr == null) {
+			this.$toast("请先填写收件人信息");
+			return;
+		}
       if (!this.aggrementChecked) {
         this.$toast("请确认已经阅读并同意《物流服务协议》");
         return false;
@@ -675,6 +686,15 @@ export default {
       }
     },
     handlePopup(type) {
+	  if(this.sendAddr == null) {
+	  	this.$toast("请先填写寄件人信息");
+	  	return;
+	  }
+	  
+	  if(this.receAddr == null) {
+	  	this.$toast("请先填写收件人信息");
+	  	return;
+	  }
       if (type === "goods") {
         this.popupShow = true;
         this.getFirstList();
@@ -691,9 +711,13 @@ export default {
       let res = await this.$api.getDefaultAddr({
         type, // 1默认寄件地址 2默认收件地址
       });
-      this.order_insured_price = res.data[0]["order_insured_price"];
-      this.order_insured_total = res.data[0]["order_insured_total"];
-      return res.data[0];
+	  
+	  if (res.data && res.data.length > 0) {
+		  this.order_insured_price = res.data[0]["order_insured_price"];
+		  this.order_insured_total = res.data[0]["order_insured_total"];
+		  return res.data[0];
+	  }
+     
     },
     radioChange(e) {
       if (e.detail.value == 0) {
@@ -742,7 +766,7 @@ export default {
 .app-container {
   background: #f3f3f3;
   padding: 20rpx;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
   .send-part-box {
     padding: 0 20rpx;
     background: #fff;
@@ -774,8 +798,8 @@ export default {
         width: 70%;
         > .row {
           height: 50rpx;
-          line-height: 50rpx;
-          width: 90%;
+          line-height: 40rpx;
+          width: 100%;
           > text {
             margin-right: 20rpx;
           }
@@ -786,6 +810,7 @@ export default {
         }
         .gray {
           color: #ccc;
+		  font-size: 26rpx;
         }
       }
       .address {
@@ -798,6 +823,7 @@ export default {
   }
   .send-info-box {
     border-radius: 16rpx;
+	overflow: hidden;
     .thorui-input-item {
       display: flex;
       justify-content: space-between;
@@ -818,6 +844,8 @@ export default {
     .upload-img {
       background: #fff;
       padding: 30rpx;
+	  border-radius: 16rpx;
+	  overflow: hidden;
       margin-bottom: 20rpx;
       .row {
         margin-bottom: 20rpx;
@@ -826,6 +854,8 @@ export default {
   }
   .send-type-box {
     background: #fff;
+	border-radius: 16rpx;
+	overflow: hidden;
     margin-bottom: 20rpx;
     .line {
       border-bottom: 1px solid rgba(204, 204, 204, 0.3);
@@ -846,6 +876,13 @@ export default {
     }
   }
   > .thorui-radio {
+	  radio{
+		  transform:scale(0.7)
+	  }
+	  text{
+		  font-size: 26rpx;
+		  color: #7B7B7B;
+	  }
   }
   .send-buy-box {
     position: fixed;
@@ -872,6 +909,9 @@ export default {
           margin-left: 10rpx;
         }
       }
+	  .alert{
+		  color: #7B7B7B;
+	  }
     }
     .right {
       button {
