@@ -434,7 +434,7 @@ export default {
 		  this.preferential_price_time = res.data.preferential_price_time;
         }
       // }
-    },
+    }
   },
   async onShow() {
     if (this.sendAddr == null) {
