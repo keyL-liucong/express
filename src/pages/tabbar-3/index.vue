@@ -190,11 +190,9 @@
     </label>
     <view class="send-buy-box">
       <view class="left">
-        <view class="top"> 预估运费<text>￥ {{ standard_price || 0 }} </text>起 </view>
-        <view class="bottom">
-          最终运费以到仓称重确认为准
-          <!-- <text>运费明细</text> -->
-        </view>
+        <view class="top"> 预估运费<text>￥ {{ price || 0 }} </text>起 </view>
+        <view class="bottom">最终运费以到仓称重确认为准</view>
+		 <view class="bottom">{{ time}}</view>
       </view>
       <view class="right">
         <button @click="handleCreateOrder">立即下单</button>
@@ -397,20 +395,30 @@ export default {
       declareList: [], // 申报物品列表
       total_amount: "", // 申报物品总价
       total_qty: "", // 申报物品数量
+	  price:"",
+	  time:"",
       standard_price: "", // 预估金额
+<<<<<<< HEAD
       fillStatementValue: "",
       submitStatementValue: "",
+=======
+	  standard_price_time:"",
+	  preferential_price: "", // 预估金额
+	  preferential_price_time:"",
+>>>>>>> 993659304cfcdcc0b1d7e03e1f061102c521561d
       imageList: [],
       header: {},
       value: "", // 图片上传
       serverUrl: "",
       aggrementChecked: false, // 协议
+	  order_insured_price:0,//保价费率 保价金额乘以保价费率 如果低于10元 默认10
     };
   },
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
       // if (newVal) {
+<<<<<<< HEAD
       if (
         this.sendAddr.address_id &&
         this.receAddr.address_id &&
@@ -426,6 +434,26 @@ export default {
         this.standard_price = res.data.standard_price;
         console.log(this.standard_price);
       }
+=======
+        if (
+          this.sendAddr.address_id &&
+          this.receAddr.address_id &&
+          this.weightNum
+        ) {
+          let data = {
+            sender_id: this.sendAddr.address_id,
+            addressee_id: this.receAddr.address_id,
+            weight: this.weightNum,
+          };
+          let res = await this.$api.getOrderPrice(data);
+          this.standard_price = res.data.standard_price;
+		  this.standard_price_time = res.data.standard_price_time;
+		  this.price = res.data.standard_price;
+		  this.time = res.data.standard_price_time;
+		  this.preferential_price = res.data.preferential_price;// 预估金额
+		  this.preferential_price_time = res.data.preferential_price_time;
+        }
+>>>>>>> 993659304cfcdcc0b1d7e03e1f061102c521561d
       // }
     },
   },
@@ -571,7 +599,11 @@ export default {
         order_items: JSON.stringify(this.declareList),
         total_amount: this.total_amount,
         scene: this.$cache.get("scene") || "",
+<<<<<<< HEAD
         increment_price_total: this.submitStatementValue,
+=======
+		pick_up_time:this.result || "",
+>>>>>>> 993659304cfcdcc0b1d7e03e1f061102c521561d
       };
 
       let res = await this.$api.createOrder(data);
@@ -598,9 +630,18 @@ export default {
       let res = await this.$api.getDefaultAddr({
         type, // 1默认寄件地址 2默认收件地址
       });
+	  this.order_insured_price =  res.data[0]['order_insured_price'];
       return res.data[0];
     },
     radioChange(e) {
+		if(e.detail.value == 0){
+			this.price = this.standard_price;
+			this.time = this.standard_price_time;
+		}
+		if(e.detail.value == 1){
+			this.price = this.preferential_price;
+			this.time = this.preferential_price_time;
+		}
       this.mail = e.detail.value;
     },
     dateShow: function (e) {

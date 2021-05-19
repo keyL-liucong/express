@@ -29,7 +29,7 @@
           请勿向快递员支付费用</view
         >
       </view>
-      <view class="code-wrap">
+     <!-- <view class="code-wrap">
         <text>快递员取件码</text>
         <view class="num-list">
           <view class="num-item">1</view>
@@ -38,10 +38,10 @@
           <view class="num-item">9</view>
           <view class="num-item">9</view>
         </view>
-      </view>
+      </view> -->
     </view>
-    <view class="order-info-wrap">
-      <view class="order-info-box">
+    <!-- <view class="order-info-wrap"> -->
+      <!-- <view class="order-info-box">
         <view class="order-row">
           <view class="left">
             <text class="gray">订单号：</text>
@@ -63,16 +63,16 @@
             <view class="top">广东深圳</view>
             <view class="bottom gray">大表哥</view>
           </view>
-        </view>
+        </view> -->
         <!-- 详情 -->
-        <view class="order-detail-box">
+       <!-- <view class="order-detail-box">
           <view class="order-detail">
             <text>包裹详情</text>
             <img src="../../static/down-arrow.png" alt="" />
           </view>
         </view>
       </view>
-    </view>
+    </view> -->
     <view class="bottom-btn-box">
       <!-- <button class="left">通知收件人</button> -->
       <button class="right" @click="toOrderList">查看订单</button>
