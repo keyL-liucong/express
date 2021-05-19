@@ -109,7 +109,7 @@
           </view>
           <input
             class="thorui-input"
-            placeholder="保价等>"
+            placeholder="贵重物品建议购买保价服务>"
             placeholder-class="thorui-phcolor"
             v-model="submitStatementValue_msg"
             disabled="true"
@@ -368,7 +368,7 @@ export default {
       // sendAddr: {address_id:""},
       // receAddr: {address_id:""},
       weight: 0.1,
-      weightNum: "",
+      weightNum: 0,
       volume: "",
       mail: 0, //寄件方式 0 上门取件 1 自寄下单
       logistics_no: "",
@@ -383,14 +383,14 @@ export default {
       total_amount: "", // 申报物品总价
 	  total_amounts:"",
       total_qty: "", // 申报物品数量
-	  price:"",
+	  price:0,
 	  time:"",
-      standard_price: "", // 预估金额
+      standard_price: 0, // 预估金额
       fillStatementValue: "",//保价总金额
-      submitStatementValue: "", //保价手续费
+      submitStatementValue: 0, //保价手续费
 	  submitStatementValue_msg:"",
 	  standard_price_time:"",
-	  preferential_price: "", // 预估金额
+	  preferential_price: 0, // 预估金额
 	  preferential_price_time:"",
       imageList: [],
       header: {},
@@ -498,9 +498,9 @@ export default {
 		  }
 		 
 		  
-		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
+		  this.submitStatementValue =  parseFloat((this.fillStatementValue*this.order_insured_price)/100).toFixed(2);
 		  if(this.submitStatementValue < 10){
-				  this.submitStatementValue = 10;
+			  this.submitStatementValue = 10;
 		  }
 		}
 	},
@@ -556,15 +556,14 @@ export default {
 		  }
 		 
 		  
-		  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
+		  this.submitStatementValue = parseFloat((this.fillStatementValue*this.order_insured_price)/100).toFixed(2);
 		  if(this.submitStatementValue < 10){
 		  		  this.submitStatementValue = 10;
 		  }
-		  	 
-		  this.submitStatementValue_msg = "保费￥"+this.submitStatementValue;
-		  this.standard_price = parseInt(this.standard_price) + this.submitStatementValue;
-		  this.preferential_price = parseInt(this.preferential_price) + this.submitStatementValue;
-		  this.price =  parseInt(this.price)+ this.submitStatementValue;
+		  this.submitStatementValue_msg = "保费￥"+ parseInt(this.submitStatementValue);
+		  this.standard_price = parseInt(this.standard_price) + parseInt(this.submitStatementValue);
+		  this.preferential_price = parseInt(this.preferential_price) + parseInt(this.submitStatementValue);
+		  this.price =  parseInt(this.price)+ parseInt(this.submitStatementValue);
 	  }
     },
     // 保价取消
