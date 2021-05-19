@@ -109,9 +109,9 @@
           </view>
           <input
             class="thorui-input"
-            placeholder="保价服务等>"
+            placeholder="贵重物品建议购买保价>"
             placeholder-class="thorui-phcolor"
-            v-model="submitStatementValue"
+            v-model="submitStatementValue_msg"
             disabled="true"
             @click="handlePopup('support')"
           />
@@ -304,7 +304,7 @@
                   </view>
                   <view class="use-price">
                     <text class="price-lab">费用:</text>
-                    <text class="price-val">¥150</text>
+                    <text class="price-val">¥{{submitStatementValue || 0}}</text>
                     <text class="price-icon">元</text>
                   </view>
                   <text class="explain-title"></text>
@@ -399,8 +399,9 @@ export default {
 	  price:"",
 	  time:"",
       standard_price: "", // 预估金额
-      fillStatementValue: "",
-      submitStatementValue: "",
+      fillStatementValue: "",//保价总金额
+      submitStatementValue: "", //保价手续费
+	  submitStatementValue_msg:"",
 	  standard_price_time:"",
 	  preferential_price: "", // 预估金额
 	  preferential_price_time:"",
@@ -532,7 +533,18 @@ export default {
     // 保价确认
     submitSupport() {
       this.popupShow = false;
-      this.submitStatementValue = this.fillStatementValue;
+	  if(this.fillStatementValue > this.total_amounts){
+		  this.fillStatementValue = this.total_amounts;
+	  }
+	  this.submitStatementValue = (this.fillStatementValue*this.order_insured_price)/100;
+	  if(this.submitStatementValue < 10){
+		  this.submitStatementValue = 10;
+	  }
+	 
+	  this.submitStatementValue_msg = "保费￥"+this.submitStatementValue;
+	  this.standard_price += this.submitStatementValue;
+	  this.preferential_price += this.submitStatementValue;
+	  this.price += this.submitStatementValue;
     },
     // 保价取消
     cancelSupport() {
@@ -580,9 +592,10 @@ export default {
         order_items: JSON.stringify(this.declareList),
         total_amount: this.price+this.submitStatementValue,
         scene: this.$cache.get("scene") || "",
-        increment_price_total: this.submitStatementValue,
+        increment_price_total: this.fillStatementValue,
         pick_up_time:this.result || "",
 		logistics_no:this.logistics_no,
+		increment_price: this.submitStatementValue,
       };
 
       let res = await this.$api.createOrder(data);
