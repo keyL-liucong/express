@@ -41,7 +41,7 @@
           <text class="info-item-val">-¥{{item.coupon_info.money}}</text>
         </view>
       </view>
-      <view class="cancel-btn" @click="cancelOrder">
+      <view class="cancel-btn" @click="cancelOrder(item.order_sn)">
         <text class="btn-text">删除订单</text>
       </view>
     </view>
@@ -225,12 +225,12 @@ export default {
         },
       });
     },
-    cancelOrder(){
+    cancelOrder(e){
       let _self = this;
       uni.showLoading({
         title: "请稍后",
       });
-      this.$api.delOrder({}).then((res)=>{
+      this.$api.delOrder({"order_sn":e}).then((res)=>{
         if(res.status == 1){
           _self.$emit("cancelorder", _self.item);
         }else{
