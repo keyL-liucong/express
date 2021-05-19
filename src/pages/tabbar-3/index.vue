@@ -32,7 +32,7 @@
             <text>{{ receAddr.realname }}</text>
             <text>{{ receAddr.mobile }}</text>
           </view>
-          <view class="row gray"> {{ receAddr.address }} </view>
+          <view class="row gray clamp-1"> {{ receAddr.address }} </view>
         </view>
         <view
           class="address"
@@ -798,7 +798,7 @@ export default {
         border-right: 1px solid #ccc;
         width: 70%;
         > .row {
-          height: 50rpx;
+          height: 45rpx;
           line-height: 40rpx;
           width: 100%;
           > text {

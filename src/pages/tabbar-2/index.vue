@@ -293,7 +293,7 @@ page {
     align-items: center;
     height: 100%;
     width: 120rpx;
-    font-weight: bold;
+    // font-weight: bold;
     font-size: 28rpx;
     color: #303133;
     position: relative;
