@@ -28,16 +28,16 @@
         </view>
       </view>
       <view class="info-show-box">
-        <view class="left-box box" @click="navTo('/pages/tabbar-5/account')">
-          <view class="num">{{ money }}</view>
+        <view class="left-box box" @click="toAccount()">
+          <view class="num">{{ moneyData.money }}</view>
           <view class="desc font-sizes">余额</view>
         </view>
         <view class="center-box box" @click="navTo('/pages/invite/index')">
-          <view class="num">{{ income  }}</view>
+          <view class="num">{{ moneyData.income  }}</view>
           <view class="desc font-sizes">累计收益</view>
         </view>
         <navigator class="right-box box" @click="navTo('/pages/coupon/index')">
-          <view class="num">{{ couponTotal }}</view>
+          <view class="num">{{ moneyData.couponTotal }}</view>
           <view class="desc font-sizes">优惠劵</view>
         </navigator>
       </view>
@@ -110,7 +110,14 @@ export default {
       income: '0.00',
       couponTotal: 0,
       memberInfo: null,
-      isLogin:false
+      isLogin:false,
+	  moneyData:{
+		  money:"0.00",
+		  income:"0.00",
+		  couponTotal:0,
+		  not_allow_money:"0.00",
+		  recommend_money:"0.00"
+	  }
     };
   },
   methods: {
@@ -129,14 +136,13 @@ export default {
       if (this.$cache.get("token")) {
         let res = await this.$api.getMemberInfo();
         this.memberInfo = res.data.userInfo;
-        this.money = res.data.money;
-        this.income = res.data.income;
-        this.couponTotal = res.data.couponTotal;
-      }else{
-        this.memberInfo = null;
-        this.money = '0.00';
-        this.income = '0.00';
-        this.couponTotal = 0;
+		this.moneyData = {
+			money:res.data.money,
+			income:res.data.income,
+			not_allow_money:res.data.not_allow_money,
+			recommend_money:res.data.recommend_money,
+			couponTotal:res.data.couponTotal
+		}
       }
     },
     handleLogin(){
@@ -146,6 +152,11 @@ export default {
 		console.log(url);
         this.$href.navigateTo({ url: url });
     },
+	
+	toAccount() {
+		let url = "/pages/tabbar-5/account?moneyData="+JSON.stringify(this.moneyData);
+		this.$href.navigateTo({ url: url });
+	},
     // 退出登录
     handleExit(){
       const _this = this;

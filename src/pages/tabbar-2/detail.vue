@@ -40,7 +40,7 @@
       <text class="city-from-icon"></text>
       <text class="city-to">{{ orderInfo.addressee_addr }}</text>
     </view>
-    <view class="btn-box">
+    <view class="btn-box"  v-if="orderInfo.order_status == 8">
       <button class="btn-item share-btn" open-type="share">分享给收件人</button>
       <navigator
         class="btn-item"
@@ -53,18 +53,35 @@
 </template>
 
 <script>
+import { domain } from "../../utils/request.js";
 export default {
   data() {
     return {
       orderId: "",
       orderInfo: {},
+	  token:""
     };
   },
   onLoad(options) {
     this.orderId = options.order_sn;
-    this.getDetail();
+	if(options.from == "share") {
+		this.token = options.token;
+		this.getShareOrder();
+	} else {
+		this.getDetail();
+	}
   },
-  onShow() {},
+  onShow() {
+  },
+  onShareAppMessage(res) {
+  	if(res.from == "button") {
+  		let token = this.$cache.get('token');
+  		return {
+  			title:"请查看你的速递信息",
+  			path:"pages/tabbar-2/detail?order_sn="+this.orderId+"&from=share&token="+token
+  		}
+  	}
+  },
   methods: {
     getDetail() {
       let _self = this;
@@ -76,6 +93,34 @@ export default {
         }
       });
     },
+	getShareOrder() {
+		let _this = this;
+		uni.showLoading({
+		    title: '加载中...'
+		});
+		let params = {
+			order_sn: _this.orderId
+		}
+		uni.request({
+		    url: domain() + "order/getInfo", //仅为示例，并非真实接口地址。
+		    data: params,
+		    method: "POST",
+		    header: {
+		        'token': _this.token, //自定义请求头信息
+		        'content-type': 'application/x-www-form-urlencoded'
+		    },
+		    success: (res) => {
+				_this.orderInfo = res.data;
+				uni.hideLoading();
+		    },
+		    fail: (err) => {
+				uni.hideLoading();
+		    },
+		    complete: () => {
+		        uni.hideLoading();
+		    }
+		});
+	},
     copyId() {
       let _self = this;
       uni.setClipboardData({

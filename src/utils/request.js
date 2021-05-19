@@ -24,6 +24,11 @@ export const request = (params) => {
             },
             fail: (err) => {
                 reject(err);
+                uni.showToast({
+                    title: '网络繁忙，请重试',
+                    duration: 2000,
+                    icon: 'none'
+                });
                 console.log('请求失败', err);
             },
             complete: () => {

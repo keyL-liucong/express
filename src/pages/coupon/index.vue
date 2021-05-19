@@ -21,77 +21,19 @@
                     <view class="coupon-btn no-use-btn" v-else-if="item.status === 1"> 已使用 </view>
                 </view>
             </view>
-            <!-- <view class="coupon-item use-item">
-                <view class="coupon-top">
-                    <view class="money-num">
-                        <text>￥</text><text class="num">100</text>
-                    </view>
-                    <view class="coupon-desc">
-                        <view>满200可使用</view>
-                        <view>仅限国际线路使用</view>
-                    </view>
-                </view>
-                <view class="coupon-bottom">
-                    <view class="coupon-time"> 有效期：2021-06-13前 </view>
-                    <view class="coupon-btn use-btn"> 立即使用 </view>
-                </view>
-            </view>
-            <view class="coupon-item no-use-item">
-                <view class="coupon-top">
-                    <view class="money-num">
-                        <text>￥</text><text class="num">100</text>
-                    </view>
-                    <view class="coupon-desc">
-                        <view>满200可使用</view>
-                        <view>仅限国际线路使用</view>
-                    </view>
-                </view>
-                <view class="coupon-bottom">
-                    <view class="coupon-time"> 有效期：2021-06-13前 </view>
-                    <view class="coupon-btn no-use-btn"> 立即使用 </view>
-                </view>
-            </view>
-            <view class="coupon-item use-item">
-                <view class="coupon-top">
-                    <view class="money-num">
-                        <text>￥</text><text class="num">100</text>
-                    </view>
-                    <view class="coupon-desc">
-                        <view>满200可使用</view>
-                        <view>仅限国际线路使用</view>
-                    </view>
-                </view>
-                <view class="coupon-bottom">
-                    <view class="coupon-time"> 有效期：2021-06-13前 </view>
-                    <view class="coupon-btn use-btn"> 立即使用 </view>
-                </view>
-            </view>
-            <view class="coupon-item no-use-item">
-                <view class="coupon-top">
-                    <view class="money-num">
-                        <text>￥</text><text class="num">100</text>
-                    </view>
-                    <view class="coupon-desc">
-                        <view>满200可使用</view>
-                        <view>仅限国际线路使用</view>
-                    </view>
-                </view>
-                <view class="coupon-bottom">
-                    <view class="coupon-time"> 有效期：2021-06-13前 </view>
-                    <view class="coupon-btn no-use-btn"> 立即使用 </view>
-                </view>
-            </view> -->
         </view>
-        <view v-else class="no-data">
-            <img src="../../static/no-data.png" alt="">
-            <text>暂无优惠券~</text>
+        <view  class="no-data">
+			<tuiEmpty source="coupon" emptyText="暂无优惠券"></tuiEmpty>
         </view>
     </view>
 </template>
 
 <script>
+import tuiEmpty from '@/components/tui-empty/tui-empty.vue';
 export default {
-    components: {},
+    components: {
+		tuiEmpty
+	},
     data() {
         return {
             couponList:[]
