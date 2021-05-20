@@ -53,6 +53,10 @@ export default {
 				uni.navigateBack({
 					delta:1
 				})
+			} else {
+				uni.navigateTo({
+					url:"../send/index?from=coupon&coupon="+JSON.stringify(item)
+				})
 			}
 		}
     },
