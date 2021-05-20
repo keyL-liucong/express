@@ -162,10 +162,8 @@
       </view>
       <view class="row" v-if="mail == 0">
         <view class="row-left">上门取件时间</view>
-        <view class="row-right">
-		  <picker mode="date" :value="result" @change="change">
-		        <view class="uni-input">{{ result }}</view>
-		   </picker>
+        <view class="row-right" @click="dateShow">
+		   {{ result }}
         </view>
       </view>
       <view class="row" v-else>
@@ -178,7 +176,7 @@
     </view>
     <label class="thorui-radio" style="margin-right: 20rpx">
       <radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
-      <text class="thorui-left__sm">我已同意并阅读《物流服务协议》</text>
+      <text class="thorui-left__sm" @click="handleAggrentMent">我已同意并阅读《物流服务协议》</text>
     </label>
     <view class="send-buy-box">
       <view class="left">
@@ -353,12 +351,20 @@
             </view>
             </view>
           </tui-bottom-popup>
+		  <tui-datetime
+		    :type="1"
+		    ref="dateTime"
+		    @confirm="change"
+			:startYear="startYear"
+			:endYear="endYear"
+		  ></tui-datetime>
   </view>
 </template>
 
 <script>
 import tuiDatetime from "../../components/tui-datetime/tui-datetime";
 import tuiUpload from "@/components/tui-upload/tui-upload";
+  
 export default {
   components: {
     tuiDatetime,
@@ -409,7 +415,9 @@ export default {
       order_insured_price: 0, //保价费率 保价金额乘以保价费率 如果低于10元 默认10
       order_insured_total: 0, //保价最高限制
       insured_price: 0,
-	  coupon:{}
+	  coupon:{},
+	  startYear:"2021",
+	  endYear:"2021"
     };
   },
   watch: {
@@ -480,6 +488,8 @@ export default {
     var minute = date.getMinutes();
     this.result = `${year}-${month}-${day} ${hour}:${minute}`;
     this.serverUrl = this.$api.getUploadUrl();
+	this.startYear = year;
+	this.endYear = year;
     this.header = {
       token: this.$cache.get("token"),
     };
@@ -681,6 +691,14 @@ export default {
 			this.$toast("请先填写收件人信息");
 			return;
 		}
+		if(this.declareList.length == 0) {
+			this.$toast("请申报您寄送的物品信息");
+			return;
+		}
+		if(this.weightNum == "") {
+			this.$toast("请输入包裹的预估重量");
+			return;
+		}
       if (!this.aggrementChecked) {
         this.$toast("请确认已经阅读并同意《物流服务协议》");
         return false;
@@ -760,7 +778,7 @@ export default {
       this.$refs.dateTime.show();
     },
     change: function (e) {
-      this.result = e.target.value;
+      this.result = e.result;
     },
 	
     // 处理重量
