@@ -143,9 +143,7 @@
 		data() {
 			return {
 				context:null,
-				inviteData:{
-					code:"AHJADA"
-				},
+				inviteData:{},
 				type: '',
 				showModel:false,
 				headerImg:"https://static.51mitui.com/default/invite.png",
@@ -174,13 +172,14 @@
 							code: res.data.member_no,
 							group_total:res.data.group_total,
 							coupon_total:res.data.coupon_total,
+							code:res.data.member_no,
 							withdrawn:res.data.withdrawn
 						};
 					}
 				})
 			},
 			copyCode() {
-				let data = this.shareCode;
+				let data = this.inviteData.code;
 				uni.setClipboardData({
 				    data: data,
 				    success: function () {

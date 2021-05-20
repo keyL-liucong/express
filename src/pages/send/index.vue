@@ -205,7 +205,7 @@
                 <view> 预估重量<text>(包含外装的总重量)</text> </view>
                 <view class="line-right">
                   <!-- <button class="sub" @click="handleSub">-</button> -->
-                  <input type="text" type="digit" v-model="weight" />
+                  <input type="digit" v-model="weight" />
                   <!-- <button class="add" @click="handleAdd">+</button> -->
                   <text>kg</text>
                 </view>

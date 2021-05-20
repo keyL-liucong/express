@@ -15,7 +15,7 @@
          <text>(最多三张)</text>
       </view>
       <view class="img-list">
-        <tui-upload :value="value" limit=3 :serverUrl="serverUrl" :header="header" @complete="uploadComplete" @remove="uploadRemove"></tui-upload>
+        <tui-upload :value="value" width=180 height=180 limit=3 :serverUrl="serverUrl" :header="header" @complete="uploadComplete" @remove="uploadRemove"></tui-upload>
       </view>
     </view>
     <view class="bottom-content">
@@ -25,7 +25,7 @@
       </view>
       <view class="row">
         <text>邮箱</text>
-        <input placeholder="海外用户请填写可联系的邮箱" v-model="postData.email"/>
+        <input placeholder="海外用户请填写您的邮箱" v-model="postData.email"/>
       </view>
     </view>
     <view class="btn-box">
@@ -35,8 +35,11 @@
 </template>
 
 <script>
+import tuiUpload from "@/components/tui-upload/tui-upload";
 export default {
-  components: {},
+  components: {
+	  tuiUpload
+  },
   data() {
     return {
       name:"",
@@ -114,7 +117,6 @@ export default {
 		token: this.$cache.get("token")
 	};
 	this.serverUrl = this.$api.getUploadUrl()
-	console.log(this.serverUrl)
 	this.initData();
   }
 };
@@ -128,6 +130,8 @@ export default {
     background: #fff;
     padding: 24rpx 30rpx;
     margin-bottom: 30rpx;
+	border-radius: 16rpx;
+	overflow: hidden;
     .row{
       margin-bottom: 20rpx;
     }
@@ -143,6 +147,8 @@ export default {
   .upload-img{
     background: #fff;
     padding: 30rpx;
+	border-radius: 16rpx;
+	overflow: hidden;
     margin-bottom: 30rpx;
     .row{
       margin-bottom: 20rpx;
@@ -152,6 +158,8 @@ export default {
     background: #fff;
     padding: 0 30rpx;
     margin-bottom: 60rpx;
+	border-radius: 16rpx;
+	overflow: hidden;
     .row{
       display: flex;
       justify-content: space-between;

@@ -39,7 +39,7 @@
 			</view>
 			<view class="middle-list">
 				<view class="middle-list-tab">
-					<tui-tabs :tabs="tabs" sliderWidth="236" padding="-8" sliderBgColor="#FF6C00" selectedColor="#FF6C00" :currentTab="currentTab" itemWidth="33.33%" @change="changeTab"></tui-tabs>
+					<tui-tabs :tabs="tabs" sliderWidth="210" width="390" padding="10" sliderBgColor="#FF6C00" selectedColor="#FF6C00" :currentTab="currentTab" itemWidth="33.33%" @change="changeTab"></tui-tabs>
 				</view>
 				<view class="middle-list-data">
 					<tuiEmpty source="data" v-if="dataList.length == 0"></tuiEmpty>

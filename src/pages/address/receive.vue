@@ -371,7 +371,13 @@ export default {
       } else if (!this.postData.country_id) {
         this.$toast("请完善国家省市区！");
         return;
-      } else if (!this.postData.mobile_code) {
+      } else if(!this.postData.city_id){
+		  this.$toast("请完善州(省)！");
+		  return;
+	  } else if(!this.postData.dis_id){
+		  this.$toast("请完善城市！");
+		  return;
+	  } else if (!this.postData.mobile_code) {
         this.$toast("请填写区号！");
         return;
       } else if (!this.postData.mobile_code) {

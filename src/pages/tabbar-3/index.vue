@@ -133,6 +133,8 @@
             :serverUrl="serverUrl"
             :header="header"
 			limit=3
+			width=150
+			height=150
             @complete="uploadComplete"
             @remove="uploadRemove"
           ></tui-upload>
@@ -160,13 +162,10 @@
       </view>
       <view class="row" v-if="mail == 0">
         <view class="row-left">上门取件时间</view>
-        <view class="row-right" @click="dateShow">
-          {{ result }}
-          <tui-datetime
-            :type="1"
-            ref="dateTime"
-            @confirm="change"
-          ></tui-datetime>
+        <view class="row-right">
+		  <picker mode="date" :value="result" @change="change">
+		        <view class="uni-input">{{ result }}</view>
+		   </picker>
         </view>
       </view>
       <view class="row" v-else>
@@ -205,7 +204,7 @@
                 <view> 预估重量<text>(包含外装的总重量)</text> </view>
                 <view class="line-right">
                   <!-- <button class="sub" @click="handleSub">-</button> -->
-                  <input type="text" type="digit" v-model="weight" />
+                  <input type="digit" v-model="weight" />
                   <!-- <button class="add" @click="handleAdd">+</button> -->
                   <text>kg</text>
                 </view>
@@ -306,13 +305,13 @@
                   <text class="explain-title"></text>
                   <view class="explain-list">
                     <text class="explain-item">
-                      1.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                      1.长+宽+高不得超过120cm，单边长度不得超过90cm单边
                     </text>
                     <text class="explain-item">
-                      2.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                      2.长+宽+高不得超过120cm，单边长度不得超过90cm单边
                     </text>
                     <text class="explain-item">
-                      3.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                      3.长+宽+高不得超过120cm，单边长度不得超过90cm单边
                     </text>
                   </view>
              </scroll-view>
@@ -359,9 +358,11 @@
 
 <script>
 import tuiDatetime from "../../components/tui-datetime/tui-datetime";
+import tuiUpload from "@/components/tui-upload/tui-upload";
 export default {
   components: {
     tuiDatetime,
+	tuiUpload
   },
   data() {
     return {
@@ -759,9 +760,9 @@ export default {
       this.$refs.dateTime.show();
     },
     change: function (e) {
-      //选择的结果
-      this.result = e.result;
+      this.result = e.target.value;
     },
+	
     // 处理重量
     handleConfirmWeight() {
       let _self = this;
