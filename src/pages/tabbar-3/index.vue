@@ -107,6 +107,21 @@
           />
         </view>
       </tui-list-cell>
+	  <tui-list-cell :hover="false">
+	    <view class="thorui-input-item">
+	      <view class="thorui-input-title">
+	        <text>优惠券</text>
+	      </view>
+	      <input
+	        class="thorui-input"
+	        placeholder="选择优惠券 >"
+	        placeholder-class="thorui-phcolor"
+	        disabled="true"
+			v-model="coupon.coupon_name"
+			@click="navTo('/pages/coupon/index?from=order')"
+	      />
+	    </view>
+	  </tui-list-cell>
       <view class="upload-img">
         <view class="row">
           <text>包裹拍照</text>
@@ -393,6 +408,7 @@ export default {
       order_insured_price: 0, //保价费率 保价金额乘以保价费率 如果低于10元 默认10
       order_insured_total: 0, //保价最高限制
       insured_price: 0,
+	  coupon:{}
     };
   },
   watch: {
@@ -649,6 +665,7 @@ export default {
     },
     // 创建订单 立即下单
     async handleCreateOrder() {
+		
 		if(this.sendAddr == null) {
 			this.$toast("请先填写寄件人信息");
 			return;
@@ -675,6 +692,7 @@ export default {
         pick_up_time: this.result || "",
         logistics_no: this.logistics_no,
         increment_price: this.submitStatementValue,
+		coupon_id:this.coupon.coupon_id || 0
       };
 
       let res = await this.$api.createOrder(data);

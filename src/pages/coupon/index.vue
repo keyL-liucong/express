@@ -16,13 +16,13 @@
                 </view>
                 <view class="coupon-bottom">
                     <view class="coupon-time"> 有效期：{{ item.end_time }}前 </view>
-                    <view class="coupon-btn use-btn" v-if="item.status === 3"> 立即使用 </view>
+                    <view class="coupon-btn use-btn" v-if="item.status === 3" @click="goUse(item)"> 立即使用 </view>
                     <view class="coupon-btn no-use-btn" v-else-if="item.status === 2"> 已过期 </view>
                     <view class="coupon-btn no-use-btn" v-else-if="item.status === 1"> 已使用 </view>
                 </view>
             </view>
         </view>
-        <view  class="no-data">
+        <view  class="no-data"  v-if="couponList.length == 0">
 			<tuiEmpty source="coupon" emptyText="暂无优惠券"></tuiEmpty>
         </view>
     </view>
@@ -36,13 +36,25 @@ export default {
 	},
     data() {
         return {
-            couponList:[]
+            couponList:[],
+			from:""
         };
     },
     methods: {
         getCouponList(){
             this.$api.getCouponList()
-        }
+        },
+		goUse(item) {
+			if(this.from == "order") {
+				let pages = getCurrentPages();
+				let nowPage = pages[ pages.length - 1];
+				let prevPage = pages[ pages.length - 2 ];
+				prevPage.$vm.coupon = item; 
+				uni.navigateBack({
+					delta:1
+				})
+			}
+		}
     },
     async created() {
         let res = await this.$api.getMyCounponList({page:1,size:10});
@@ -51,6 +63,9 @@ export default {
         }
         console.log(res);
     },
+	onLoad(options) {
+		this.from = options.from
+	},
     mounted() {},
 };
 </script>
