@@ -46,7 +46,7 @@
         :item="orderitem"
         :key="orderindex"
         :payorderid="payOrderId"
-        v-on:setitempay="setOrderPay"
+        v-on:setitempay="toPay"
         @cancelorder="cancelOrderItem"
       ></orderItem>
 
@@ -54,13 +54,13 @@
         :status="loadingType"
       ></uni-load-more>
     </view>
-    <view v-if="payOrderId != ''" class="bttom-pay">
+    <!-- <view v-if="payOrderId != ''" class="bttom-pay">
       <view class="price-box">
         <text class="price-lab">应付金额:</text>
         <text class="price-num">¥{{ toglePrice }}</text>
       </view>
       <text class="pay-btn" @click="toPay">立即支付</text>
-    </view>
+    </view> -->
   </view>
 </template> 
 <script>
@@ -142,7 +142,7 @@ export default {
       ],
       orderlist: {},
       toglePrice: 0,
-      payOrderId: "",
+      payOrderId: "",//当前选中需要支付的订单id,暂时禁用
     };
   },
   onLoad(options) {
@@ -211,21 +211,21 @@ export default {
       this.orderlist = [];
       this.loadData();
     },
-    setOrderPay(item) {
-      if (this.payOrderId == item.order_sn) {
-        this.payOrderId = "";
-        this.toglePrice = 0;
-        return;
-      }
-      this.toglePrice = item.total_amount;
-      this.payOrderId = item.order_sn;
-    },
-    toPay(orderSn) {
+    // setOrderPay(item) {
+    //   if (this.payOrderId == item.order_sn) {
+    //     this.payOrderId = "";
+    //     this.toglePrice = 0;
+    //     return;
+    //   }
+    //   this.toglePrice = item.total_amount;
+    //   this.payOrderId = item.order_sn;
+    // },
+    toPay(item) {
       let _self = this;
       let wx_openid = this.$cache.get("openId");
       let proData = {
         openId: wx_openid,
-        order_sn: _self.payOrderId,
+        order_sn: item.order_sn,
       };
       this.$api.orderPay(proData).then((res) => {
         if (res.status == 1) {

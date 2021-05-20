@@ -41,8 +41,10 @@
           <text class="info-item-val">-¥{{item.coupon_info.money}}</text>
         </view>
       </view>
-      <view class="cancel-btn" @click="cancelOrder(item.order_sn)">
-        <text class="btn-text">删除订单</text>
+      <view class="pay-btn-box">
+        <text class="order-peice">订单金额：¥{{item.total_amount}}</text>
+        <button class="btn-item pay" type="submit" @tap="setPay">微信支付</button>
+        <text class="btn-item"  @click="cancelOrder(item.order_sn)">删除订单</text>
       </view>
     </view>
     <view v-else class="order-item">
@@ -136,7 +138,7 @@
          <navigator v-if="item.order_status==4" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
       </view>
     </view>
-    <view v-if="item.order_status==0" class="bottom-wait-pay">
+    <view v-if="0" class="bottom-wait-pay">
       <view class="content">
         <view class="lab">
           <icon
@@ -698,13 +700,20 @@ export default {
       }
     }
   }
-  .cancel-btn {
+  .pay-btn-box {
     display: flex;
     position: relative;
     margin-top: 28rpx;
     justify-content: flex-end;
     z-index: 20;
-    .btn-text {
+    align-items: center;
+    .order-peice{
+      flex: 1;
+      font-size: 28rpx;
+      color: #000;
+      line-height: 40rpx;
+    }
+    .btn-item {
       display: flex;
       width: 170rpx;
       height: 52rpx;
@@ -714,6 +723,14 @@ export default {
       border: 2rpx solid #000;
       align-items: center;
       justify-content: center;
+      box-sizing: initial;
+      &.pay{
+        padding: 0;
+        margin: 0;
+        margin-right: 16rpx;
+        border-color: #2cb241;
+        color: #2cb241;
+      }
     }
   }
 }
