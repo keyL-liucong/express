@@ -470,7 +470,7 @@ export default {
       this.receAddr = await this.getDefaultAddr(2);
     }
   },
-  async onLoad() {
+  async onLoad(options) {
     let date = new Date();
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
@@ -482,6 +482,9 @@ export default {
     this.header = {
       token: this.$cache.get("token"),
     };
+	if(options.from == "coupon") {
+		this.coupon = JSON.parse(options.coupon)
+	}
   },
   methods: {
     // 协议

@@ -54,8 +54,9 @@ export default {
 					delta:1
 				})
 			} else {
+				let url = "../send/index?from=coupon&coupon="+JSON.stringify(item)
 				uni.navigateTo({
-					url:"../send/index?from=coupon&coupon="+JSON.stringify(item)
+					url:url
 				})
 			}
 		}

@@ -414,6 +414,7 @@ export default {
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
+		console.log(this.coupon);
         if (
           this.sendAddr.address_id &&
           this.receAddr.address_id &&
@@ -424,8 +425,8 @@ export default {
             addressee_id: this.receAddr.address_id,
             weight: this.weightNum,
 			volume:this.volume,
+			coupon_id:this.coupon.id || 0 ,
           }; 
-		  console.log(data);
           let res = await this.$api.getOrderPrice(data);
           this.standard_price = res.data.standard_price+this.submitStatementValue;
           this.standard_price_time = res.data.standard_price_time;
@@ -448,6 +449,7 @@ export default {
 	        addressee_id: this.receAddr.address_id,
 	        weight: this.weightNum ? this.weightNum : this.volume,
 			volume:this.volume,
+			coupon_id:this.coupon.id || 0 ,
 	      }; 
 	      let res = await this.$api.getOrderPrice(data);
 	      this.standard_price = res.data.standard_price+this.submitStatementValue;
@@ -695,7 +697,7 @@ export default {
         pick_up_time: this.result || "",
         logistics_no: this.logistics_no,
         increment_price: this.submitStatementValue,
-		coupon_id:this.coupon.coupon_id || 0
+		coupon_id:this.coupon.id || 0 ,
       };
 
       let res = await this.$api.createOrder(data);
