@@ -117,6 +117,7 @@
             :value="value"
             :serverUrl="serverUrl"
             :header="header"
+			limit=3
             @complete="uploadComplete"
             @remove="uploadRemove"
           ></tui-upload>
