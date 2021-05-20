@@ -221,7 +221,7 @@
 					this.$nextTick(() => {
 						this.$refs['showimage'].open()
 					})
-				},500)
+				},1000)
 			},
 			cancel() {
 				this.$refs['showimage'].close()
