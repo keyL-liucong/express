@@ -462,4 +462,12 @@ export default {
             method: 'Get'
         })
     },
+	// 物流详情
+	getShipping(data) {
+	    return request({
+	        url: 'order/getShipping',
+	        data,
+	        method: 'Get'
+	    })
+	},
 }
