@@ -106,9 +106,6 @@ export default {
   components: {},
   data() {
     return {
-      money: '0.00',
-      income: '0.00',
-      couponTotal: 0,
       memberInfo: null,
       isLogin:false,
 	  moneyData:{
@@ -164,17 +161,20 @@ export default {
             content: "确定退出登录吗？",
             showCancel:true,
             success: () => {
-                this.$cache.clear();
-                _this.initData();
+                this.$cache.remove("token");
+				this.$cache.remove("userInfo");
+                _this.memberInfo = null;
+				_this.moneyData = {
+					  money:"0.00",
+					  income:"0.00",
+					  couponTotal:0,
+					  not_allow_money:"0.00",
+					  recommend_money:"0.00"
+				  }
             },
 
         });
     }
-    // navTo() {
-    //   uni.navigateTo({
-    //     url: "/pages/feedback/index",
-    //   });
-    // },
   },
   onShow() {
   	this.initData();

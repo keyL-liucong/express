@@ -48,10 +48,9 @@
 			<text class="app-other_text">输入其他充值金额</text>
 			<view class="app-other-data row">
 				<text class="app-other-data_text">¥</text>
-				<input placeholder="请输入其他充值金额" type="digit" v-model="otherMoney" />
+				<input placeholder="请输入其他充值金额" type="number" v-model="otherMoney" />
 			</view>
 		</view>
-		
 		<text class="app-bottom_text">支付方式</text>
 		<view class="app-bottom">
 			<view class="tui-flex">
