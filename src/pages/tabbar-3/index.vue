@@ -3,7 +3,7 @@
     <view class="send-part-box">
       <view class="row line">
         <view class="tag tag-1">寄</view>
-        <view class="send-info" v-if="!sendAddr">
+        <view class="send-info" v-if="!sendAddr"  @click="navTo('/pages/address/index?currentTab=1&from=send')">
           <view class="row"> 寄件人信息 </view>
           <view class="row gray"> 点击填写寄件地址 </view>
         </view>
@@ -23,7 +23,7 @@
       </view>
       <view class="row">
         <view class="tag tag-2">收</view>
-        <view class="send-info" v-if="!receAddr" @click="navTo('')">
+        <view class="send-info" v-if="!receAddr" @click="navTo('/pages/address/index?currentTab=0&from=send')">
           <view class="row"> 收件人信息 </view>
           <view class="row gray"> 点击填写收件地址 </view>
         </view>
@@ -114,7 +114,7 @@
 	      </view>
 	      <input
 	        class="thorui-input"
-	        placeholder="选择优惠券 >"
+	        placeholder="选择优惠券>"
 	        placeholder-class="thorui-phcolor"
 	        disabled="true"
 			v-model="coupon.coupon_name"
@@ -153,7 +153,7 @@
             </label>
             <label class="thorui-radio thorui-align__center thorui-padding">
               <radio color="#5677fc" :value="1"  style="transform:scale(0.8)"></radio>
-              <text class="thorui-left__sm">自寄下单</text>
+              <text class="thorui-left__sm">自寄到仓</text>
             </label>
           </radio-group>
         </view>
@@ -205,7 +205,7 @@
                 <view> 预估重量<text>(包含外装的总重量)</text> </view>
                 <view class="line-right">
                   <!-- <button class="sub" @click="handleSub">-</button> -->
-                  <input type="text" v-model="weight" />
+                  <input type="text" type="digit" v-model="weight" />
                   <!-- <button class="add" @click="handleAdd">+</button> -->
                   <text>kg</text>
                 </view>

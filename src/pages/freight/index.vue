@@ -2,7 +2,7 @@
 	<view class="app-container">
 		<view class="app-body">
 			<view class="tui-flex">
-				<view class="tui-center tui-flex-1">
+				<view class="tui-left tui-flex-1 center">
 					<picker @change="picker" :value="addressData.reindexEn"  :range="addressData.recountryEn" range-key="city_name">
 						<text class="from" :value="addressData.receiverRegionId"> {{ addressData.receiverRegionName }}</text>
 					</picker> 
@@ -10,7 +10,7 @@
 				<view class="tui-center  tui-flex-1">
 					<image class="from-to" src="https://static.51mitui.com/wxMini/static/from_to.png" mode="widthFix"></image>
 				</view>
-				<view class="tui-center tui-flex-1">
+				<view class="tui-right tui-flex-1 center">
 					<picker @change="bindPickerChange" :value="countryEnData.indexEn" :range="countryEnData.countryEn" range-key="city_name">
 						<text class="to" :value="countryEnData.currentCountryId">{{ countryEnData.currentCountryName }}</text>
 					</picker>
@@ -21,9 +21,9 @@
 			<tui-list-view color="#777" unlined="all">
 				<tui-list-cell :arrow="false" :lineRight="true" :hover="false" padding="25rpx" color="#000000">
 					<view class="tui-flex tui-align-between">
-						<view class="tui-left tui-col-4">
+						<view class="tui-left tui-col-4 tui-align-item">
 							<text class="title">预估重量</text>
-							<text class="must">(必填)</text>
+							<text class="must">必填</text>
 						</view>
 						<view class="tui-right tui-col-8 tui-middle">
 							<text class="weight" :class="currentWeight > 0 ? 'cur' : ''" @click="calculate(1)" v-if="currentWeight > 0">{{ currentWeight }}</text>
@@ -402,7 +402,7 @@
 	.app-container {
 	  background: #f3f3f3;
 	  padding: 15px;  
-	  height: 100vh;
+	  /* height: 100vh; */
 	  .common{
 		  border-radius: 16rpx;
 		  background-color: #FFFFFF;
@@ -414,34 +414,48 @@
 		  border-radius: 16rpx;
 		  background-color: #FFFFFF;
 		  overflow: hidden;
-		  padding: 20rpx 20rpx;
+		  padding: 30rpx 20rpx;
 		  margin-bottom: 20rpx;
 		  .from{
-			  font-size: 32rpx;
+			  font-size: 30rpx;
+			  font-weight: 600;
 		  }
 		  .from-to{
 			  width: 194rpx;
 			  height: 20rpx;
 		  }
 		  .to{
-			  font-size: 32rpx;
+			  font-weight: 600;
+			  font-size: 30rpx;
+		  }
+		  .center{
+			  text-align: center;
 		  }
 	  }
 	  .app-middle{
 		  .title{
-			  font-size: 32rpx;
-			  color: #000000;
+			  font-size: 30rpx;
+			  color: #333333;
 		  }	  
 		  .weight,.kg{
 			  font-size: 28rpx;
 			  color: #7B7B7B;
 		  }
 		  .must{
-			  font-size: 28rpx;
-			  color: #7B7B7B;
+			  margin-left: 10rpx;
+			  font-size: 18rpx;
+			  color: #FF6C00;
+			  border-radius: 50rpx;
+			  padding: 4rpx 16rpx;
+			  border: 2rpx solid #ff7100;
 		  }
 		  .cur{
 			  color: #000000 !important; 
+		  }
+		  .tui-align-item{
+			  align-items: center;
+			  justify-content: center;
+			  display: flex;
 		  }
 	  }
 	  .app-result{
@@ -490,16 +504,16 @@
 		  .text-middle-title{
 			  margin: 10rpx 0rpx;
 			  font-size: 26rpx;
-			  color: #000000;
+			  font-weight: 600;
+			  color: #333333;
 		  }
 		  .text-middle-desc{
-			  font-size: 22rpx;
+			  font-size: 24rpx;
 			  color: #7B7B7B;
 		  }
 		  .row{
 			  margin-top: 20rpx;
-			  line-height: 30rpx;
-			  
+			  line-height: 35rpx;
 		  }
 	  }
 	}

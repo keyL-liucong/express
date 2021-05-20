@@ -114,7 +114,7 @@
 	      </view>
 	      <input
 	        class="thorui-input"
-	        placeholder="选择优惠券 >"
+	        placeholder="选择优惠券>"
 	        placeholder-class="thorui-phcolor"
 	        disabled="true"
 			v-model="coupon.coupon_name"
@@ -205,7 +205,7 @@
                 <view> 预估重量<text>(包含外装的总重量)</text> </view>
                 <view class="line-right">
                   <!-- <button class="sub" @click="handleSub">-</button> -->
-                  <input type="text" v-model="weight" />
+                  <input type="text" type="digit" v-model="weight" />
                   <!-- <button class="add" @click="handleAdd">+</button> -->
                   <text>kg</text>
                 </view>

@@ -1,14 +1,6 @@
 <template>
   <view class="app-container">
     <view class="progress-box">
-		
-		<view class="app-body-tab">
-			<view class="tui-flex tui-align-between">
-				<view class="tui-center tui-col-6" :class="navShow == 'left' ? 'tab-active-left' : 'tab-left'" @click="handleNavShow('left')">国际</view>
-				<view class="tui-center tui-col-6" :class="navShow == 'right' ? 'tab-active-right' : 'tab-right'" @click="handleNavShow('right')">港台地址</view>
-			</view>
-		</view>
-     
       <view class="buy-content" v-if="navShow === 'left'">
         <view class="right-progress">
           <view class="content">
@@ -518,8 +510,8 @@ export default {
       display: flex;
       padding: 20rpx;
       background: #fff;
-	  border-bottom-left-radius: 24rpx;
-	  border-bottom-right-radius: 24rpx;
+	  border-radius: 16rpx;
+	  overflow: hidden;
       .left-progress {
         display: flex;
         flex-direction: column;
