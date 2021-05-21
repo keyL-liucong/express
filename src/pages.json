@@ -183,7 +183,8 @@
         {
             "path": "pages/freight/index",
             "style": {
-                "navigationBarTitleText": "运费试算"
+                "navigationBarTitleText": "运费试算",
+				"backgroundColor":"#f3f3f3"
             }
         },
         {

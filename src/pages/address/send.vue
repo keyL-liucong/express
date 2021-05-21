@@ -248,7 +248,7 @@ export default {
       this.$toast(`地址${this.manageType == "edit" ? "修改" : "添加"}成功`);
       setTimeout(() => {
         uni.navigateBack();
-      }, 400);
+      }, 2000);
     },
   },
 };

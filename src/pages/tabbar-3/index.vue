@@ -3,7 +3,7 @@
     <view class="send-part-box">
       <view class="row line">
         <view class="tag tag-1">寄</view>
-        <view class="send-info" v-if="!sendAddr">
+        <view class="send-info" v-if="!sendAddr"  @click="navTo('/pages/address/index?currentTab=1&from=send')">
           <view class="row"> 寄件人信息 </view>
           <view class="row gray"> 点击填写寄件地址 </view>
         </view>
@@ -23,7 +23,7 @@
       </view>
       <view class="row">
         <view class="tag tag-2">收</view>
-        <view class="send-info" v-if="!receAddr" @click="navTo('')">
+        <view class="send-info" v-if="!receAddr" @click="navTo('/pages/address/index?currentTab=0&from=send')">
           <view class="row"> 收件人信息 </view>
           <view class="row gray"> 点击填写收件地址 </view>
         </view>
@@ -107,6 +107,21 @@
           />
         </view>
       </tui-list-cell>
+	  <tui-list-cell :hover="false">
+	    <view class="thorui-input-item">
+	      <view class="thorui-input-title">
+	        <text>优惠券</text>
+	      </view>
+	      <input
+	        class="thorui-input"
+	        placeholder="选择优惠券>"
+	        placeholder-class="thorui-phcolor"
+	        disabled="true"
+			v-model="coupon.coupon_name"
+			@click="navTo('/pages/coupon/index?from=order')"
+	      />
+	    </view>
+	  </tui-list-cell>
       <view class="upload-img">
         <view class="row">
           <text>包裹拍照</text>
@@ -118,6 +133,8 @@
             :serverUrl="serverUrl"
             :header="header"
 			limit=3
+			width=150
+			height=150
             @complete="uploadComplete"
             @remove="uploadRemove"
           ></tui-upload>
@@ -138,7 +155,7 @@
             </label>
             <label class="thorui-radio thorui-align__center thorui-padding">
               <radio color="#5677fc" :value="1"  style="transform:scale(0.8)"></radio>
-              <text class="thorui-left__sm">自寄下单</text>
+              <text class="thorui-left__sm">自寄到仓</text>
             </label>
           </radio-group>
         </view>
@@ -146,12 +163,7 @@
       <view class="row" v-if="mail == 0">
         <view class="row-left">上门取件时间</view>
         <view class="row-right" @click="dateShow">
-          {{ result }}
-          <tui-datetime
-            :type="1"
-            ref="dateTime"
-            @confirm="change"
-          ></tui-datetime>
+		   {{ result }}
         </view>
       </view>
       <view class="row" v-else>
@@ -164,7 +176,7 @@
     </view>
     <label class="thorui-radio" style="margin-right: 20rpx">
       <radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
-      <text class="thorui-left__sm">我已同意并阅读《物流服务协议》</text>
+      <text class="thorui-left__sm" @click="handleAggrentMent">我已同意并阅读《物流服务协议》</text>
     </label>
     <view class="send-buy-box">
       <view class="left">
@@ -190,7 +202,7 @@
                 <view> 预估重量<text>(包含外装的总重量)</text> </view>
                 <view class="line-right">
                   <!-- <button class="sub" @click="handleSub">-</button> -->
-                  <input type="text" v-model="weight" />
+                  <input type="digit" v-model="weight" />
                   <!-- <button class="add" @click="handleAdd">+</button> -->
                   <text>kg</text>
                 </view>
@@ -291,13 +303,13 @@
                   <text class="explain-title"></text>
                   <view class="explain-list">
                     <text class="explain-item">
-                      1.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                      1.长+宽+高不得超过120cm，单边长度不得超过90cm单边
                     </text>
                     <text class="explain-item">
-                      2.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                      2.长+宽+高不得超过120cm，单边长度不得超过90cm单边
                     </text>
                     <text class="explain-item">
-                      3.长+宽+高不得超过120cm，单边长度不得草果90cm单边
+                      3.长+宽+高不得超过120cm，单边长度不得超过90cm单边
                     </text>
                   </view>
              </scroll-view>
@@ -339,14 +351,24 @@
             </view>
             </view>
           </tui-bottom-popup>
+		  <tui-datetime
+		    :type="1"
+		    ref="dateTime"
+		    @confirm="change"
+			:startYear="startYear"
+			:endYear="endYear"
+		  ></tui-datetime>
   </view>
 </template>
 
 <script>
 import tuiDatetime from "../../components/tui-datetime/tui-datetime";
+import tuiUpload from "@/components/tui-upload/tui-upload";
+  
 export default {
   components: {
     tuiDatetime,
+	tuiUpload
   },
   data() {
     return {
@@ -393,11 +415,15 @@ export default {
       order_insured_price: 0, //保价费率 保价金额乘以保价费率 如果低于10元 默认10
       order_insured_total: 0, //保价最高限制
       insured_price: 0,
+	  coupon:{},
+	  startYear:"2021",
+	  endYear:"2021"
     };
   },
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
+		console.log(this.coupon);
         if (
           this.sendAddr.address_id &&
           this.receAddr.address_id &&
@@ -408,8 +434,8 @@ export default {
             addressee_id: this.receAddr.address_id,
             weight: this.weightNum,
 			volume:this.volume,
+			coupon_id:this.coupon.id || 0 ,
           }; 
-		  console.log(data);
           let res = await this.$api.getOrderPrice(data);
           this.standard_price = res.data.standard_price+this.submitStatementValue;
           this.standard_price_time = res.data.standard_price_time;
@@ -432,6 +458,7 @@ export default {
 	        addressee_id: this.receAddr.address_id,
 	        weight: this.weightNum ? this.weightNum : this.volume,
 			volume:this.volume,
+			coupon_id:this.coupon.id || 0 ,
 	      }; 
 	      let res = await this.$api.getOrderPrice(data);
 	      this.standard_price = res.data.standard_price+this.submitStatementValue;
@@ -452,7 +479,7 @@ export default {
       this.receAddr = await this.getDefaultAddr(2);
     }
   },
-  async onLoad() {
+  async onLoad(options) {
     let date = new Date();
     var year = date.getFullYear();
     var month = date.getMonth() + 1;
@@ -461,9 +488,14 @@ export default {
     var minute = date.getMinutes();
     this.result = `${year}-${month}-${day} ${hour}:${minute}`;
     this.serverUrl = this.$api.getUploadUrl();
+	this.startYear = year;
+	this.endYear = year;
     this.header = {
       token: this.$cache.get("token"),
     };
+	if(options.from == "coupon") {
+		this.coupon = JSON.parse(options.coupon)
+	}
   },
   methods: {
     // 协议
@@ -649,6 +681,7 @@ export default {
     },
     // 创建订单 立即下单
     async handleCreateOrder() {
+		
 		if(this.sendAddr == null) {
 			this.$toast("请先填写寄件人信息");
 			return;
@@ -656,6 +689,14 @@ export default {
 		
 		if(this.receAddr == null) {
 			this.$toast("请先填写收件人信息");
+			return;
+		}
+		if(this.declareList.length == 0) {
+			this.$toast("请申报您寄送的物品信息");
+			return;
+		}
+		if(this.weightNum == "") {
+			this.$toast("请输入包裹的预估重量");
 			return;
 		}
       if (!this.aggrementChecked) {
@@ -675,6 +716,7 @@ export default {
         pick_up_time: this.result || "",
         logistics_no: this.logistics_no,
         increment_price: this.submitStatementValue,
+		coupon_id:this.coupon.id || 0 ,
       };
 
       let res = await this.$api.createOrder(data);
@@ -736,9 +778,9 @@ export default {
       this.$refs.dateTime.show();
     },
     change: function (e) {
-      //选择的结果
       this.result = e.result;
     },
+	
     // 处理重量
     handleConfirmWeight() {
       let _self = this;

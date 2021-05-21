@@ -1,14 +1,6 @@
 <template>
   <view class="app-container">
     <view class="progress-box">
-		
-		<view class="app-body-tab">
-			<view class="tui-flex tui-align-between">
-				<view class="tui-center tui-col-6" :class="navShow == 'left' ? 'tab-active-left' : 'tab-left'" @click="handleNavShow('left')">国际</view>
-				<view class="tui-center tui-col-6" :class="navShow == 'right' ? 'tab-active-right' : 'tab-right'" @click="handleNavShow('right')">港台地址</view>
-			</view>
-		</view>
-     
       <view class="buy-content" v-if="navShow === 'left'">
         <view class="right-progress">
           <view class="content">
@@ -164,7 +156,7 @@
                 <view>详细地址</view>
                 <view class="eng-str">Detail Address</view>
               </view>
-              <view class="right">
+              <view class="right max-width">
                 <input
                   type="text"
                   placeholder="请使用英文输入(需精确到门牌号)"
@@ -180,14 +172,14 @@
               <view class="right">
                 <view class="left-input">
                   <input
-                    type="text"
+                    type="number"
                     placeholder="区号"
                     v-model="postData.mobile_code"
                   />
                 </view>
                 <view class="right-input">
                   <input
-                    type="text"
+                    type="number"
                     placeholder="电话号码"
                     v-model="postData.mobile"
                   />
@@ -208,7 +200,7 @@
               </view>
             </view>
 
-            <view class="line-3">
+            <view class="line-3 no-border">
               <view class="left">
                 <view>公司名称</view>
                 <view class="eng-str">Company Address</view>
@@ -288,7 +280,7 @@
                 <input type="text" placeholder="精确到门牌号" />
               </view>
             </view>
-            <view class="line-3">
+            <view class="line-3 no-border">
               <view class="left">
                 <view>公司名称</view>
               </view>
@@ -379,33 +371,36 @@ export default {
       } else if (!this.postData.country_id) {
         this.$toast("请完善国家省市区！");
         return;
-      } else if (!this.postData.mobile_code) {
-        this.$toast("请填写区号！");
-        return;
-      } else if (!this.postData.mobile_code) {
-        this.$toast("请填写电话号码！");
-        return;
-      } else if (!this.postData.mobile_code) {
-        this.$toast("请填写邮编！");
-        return;
-      } else if (!this.postData.mobile_code) {
+      } else if(!this.postData.state_id){
+		  this.$toast("请完善州(省)！");
+		  return;
+	  } else if(!this.postData.city_id){
+		  this.$toast("请完善城市！");
+		  return;
+	  } else if (!this.postData.address) {
         this.$toast("请填写详细地址！");
         return;
       } else if (!this.postData.mobile_code) {
-        this.$toast("请填写公司名称！");
+        this.$toast("请填写区号！");
+        return;
+      } else if (!this.postData.mobile) {
+        this.$toast("请填写电话号码！");
+        return;
+      } else if (!this.postData.zipcode) {
+        this.$toast("请填写邮编！");
         return;
       }
-      console.log(this.postData);
       this.postData.is_china = this.navShow == 'left' ? 0 : 1;
       let res = await this.$api.addReceivedAddr(this.postData);
 
       this.$toast(res.info);
-      this.$href.navigateBack()
+	  let _this = this;
+	  setTimeout(() => {
+		_this.$href.navigateBack()
+	  }, 2000);
     },
     // 选择国家
     selectRegion(id, eName) {
-      console.log(id);
-      console.log(eName);
       this.country_name = eName;
       this.postData.country_id = id;
       this.regionVisible = false;
@@ -418,15 +413,12 @@ export default {
     },
     // 选择城市
     selectCity(id, name) {
-      console.log(id);
-      console.log(name);
       this.cityName = name;
       this.postData.city_id = id;
       this.cityVisible = false;
     },
     // nav展示
     handleNavShow(parm) {
-      console.log(parm);
       this.navShow = parm;
     },
     handleRegion() {
@@ -481,7 +473,7 @@ export default {
 <style lang="scss" scoped>
 .app-container {
 	background: #f3f3f3;
-  padding: 40rpx 30rpx;
+  padding: 40rpx 20rpx;
   padding-bottom: 120rpx;
   .progress-box {
     border-radius: 24rpx;
@@ -518,8 +510,8 @@ export default {
       display: flex;
       padding: 20rpx;
       background: #fff;
-	  border-bottom-left-radius: 24rpx;
-	  border-bottom-right-radius: 24rpx;
+	  border-radius: 16rpx;
+	  overflow: hidden;
       .left-progress {
         display: flex;
         flex-direction: column;
@@ -583,6 +575,9 @@ export default {
             border-radius: 12rpx;
             margin-bottom: 20rpx;
           }
+		  .no-border{
+			  border-bottom: none !important;
+		  }
           .line-3 {
             border-bottom: 1px solid #f3f3f3;
             display: flex;
@@ -597,6 +592,7 @@ export default {
             }
             > .right {
               display: flex;
+			  flex: 1;
               .left-input {
                 display: block;
                 width: 80rpx;
@@ -680,4 +676,10 @@ export default {
 	}
 				
 }
+
+input{
+	font-size: 30rpx;
+	width: 100%;
+}
+
 </style>

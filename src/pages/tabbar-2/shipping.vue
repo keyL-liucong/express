@@ -2,32 +2,34 @@
 	<view class="container">
 		<view class="tui-order-header">
 			<view class="tui-text">订单编号：
-				<text class="tui-bold">9136257866</text>
+				<text class="tui-bold">{{ orderInfo.order_sn }}</text>
 			</view>
-			<view class="tui-text">国内承运人：华南众包站</view>
-			<view class="tui-text">预计送达：
-				<text class="tui-bold">5</text>月<text class="tui-bold">1</text>日</view>
+			<view class="tui-text">下单时间：{{ orderInfo.created }}</view>
+			<view class="tui-text">支付时间：{{ orderInfo.pay_time }}</view>
 		</view>
 		<view class="tui-order-tracking">
-			<tui-time-axis>
-
-				<tui-timeaxis-item backgroundColor="transparent">
+			<tui-time-axis v-if="shippingInfo.length > 0">
+				<tui-timeaxis-item backgroundColor="transparent" v-for="(item, index) in shippingInfo" :key="index">
 					<template v-slot:node>
-						<view class="tui-node" :style="{backgroundColor:backgroundColor}">
+						<view class="tui-node" :style="{backgroundColor:backgroundColor}" v-if="item.status_name == 'SignIn'">
 							<tui-icon name="check" color="#fff" :size="14" :bold="true"></tui-icon>
+						</view>
+						
+						<view class="tui-node" v-else>
+							<tui-icon name="transport" color="#fff" :size="13"></tui-icon>
 						</view>
 					</template>
 
 					<template v-slot:content>
 						<view>
-							<view class="tui-order-title">已签收</view>
-							<view class="tui-order-desc">您的订单已由本人签收。感谢您在商城购物，欢迎再次光临。</view>
-							<view class="tui-order-time tui-gray">2019-05-01 18:48:26</view>
+							<view class="tui-order-title">{{ item.status_name }}</view>
+							<view class="tui-order-desc">{{ item.remark }}</view>
+							<view class="tui-order-time tui-gray">{{ item.status_time }}</view>
 						</view>
 					</template>
 				</tui-timeaxis-item>
 
-				<tui-timeaxis-item backgroundColor="transparent">
+				<!-- <tui-timeaxis-item backgroundColor="transparent">
 					<template v-slot:node>
 						<view class="tui-node">
 							<tui-icon name="people" color="#fff" :size="13"></tui-icon>
@@ -125,26 +127,39 @@
 						<view class="tui-order-desc tui-light-gray">您提交了订单，请等待第三方卖家系统弄确认</view>
 						<view class="tui-order-time tui-gray">2019-05-01 02:04:16</view>
 					</template>
-				</tui-timeaxis-item>
+				</tui-timeaxis-item> -->
 
 			</tui-time-axis>
+			<tuiEmpty source="data" emptyText="暂无物流信息" v-if="shippingInfo.length == 0"></tuiEmpty>
 		</view>
 	</view>
 </template>
 
 <script>
+	import tuiEmpty from '@/components/tui-empty/tui-empty.vue';
 	import tuiTimeAxis from "@/components/tui-time-axis/tui-time-axis"
 	export default {
 		components:{
-			tuiTimeAxis
+			tuiTimeAxis,
+			tuiEmpty
 		},
 		data() {
 			return {
-				backgroundColor: "#5677fc"
+				backgroundColor: "#5677fc",
+				orderInfo:{},
+				shippingInfo:{},
+				order_sn:""
 			}
 		},
-		onLoad(options) {
-			
+		async onLoad(options) {
+			let order_sn = options.order_id;
+			let res = await this.$api.getShipping({order_sn:order_sn});
+			console.log(res.data);
+			console.log(res.data.length);
+			if(res.data) {
+			    this.orderInfo = res.data.order;
+				this.shippingInfo = res.data.shipping;
+			}
 		}
 	};
 </script>
