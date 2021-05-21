@@ -232,7 +232,7 @@
               <button>提交</button>
             </view>
             <!-- 申报物品 -->
-            <view class="popup-box" v-else-if="popupType === 'declare'">
+            <view class="popup-box up" v-else-if="popupType === 'declare'">
               <!-- <view class="title">
                 <text>物品申报</text>
               </view> -->
@@ -247,7 +247,7 @@
               <view class="declare-row">
                 <view class="left">申报数量</view>
                  <view class="right">
-                   <input type="number"  placeholder="输入申报物品数量" style="width:280rpx" v-model="order_item.item_num">
+                   <input type="number"  placeholder="输入申报物品数量" adjust-position="tue" style="width:280rpx" v-model="order_item.item_num">
                    <text>个</text>
                  </view>
               </view>
@@ -372,6 +372,7 @@ export default {
   },
   data() {
     return {
+      inputUp: false,
       longth: "",
       width: "",
       height: "",
@@ -801,6 +802,7 @@ export default {
     // 重量减
     handleSub() {},
     handleAdd() {},
+
   },
   async created() {},
   mounted() {},
@@ -969,6 +971,9 @@ export default {
   }
   .popup-box {
     padding: 30rpx;
+    &.up{
+        padding-bottom: 430rpx;
+      }
     .title {
       text-align: center;
       font-size: 18px;
