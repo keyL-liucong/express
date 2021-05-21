@@ -230,7 +230,8 @@ export default {
 			let token = this.$cache.get('token');
 			return {
 				title:"邀请你填写收件地址",
-				path:"pages/invite/address?token="+token
+				path:"pages/invite/address?token="+token,
+				imageUrl:"https://static.51mitui.com/wxMini/static/invite_address.png"
 			}
 		}
 	}
