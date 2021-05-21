@@ -303,13 +303,13 @@
                   <text class="explain-title"></text>
                   <view class="explain-list">
                     <text class="explain-item">
-                      1.长+宽+高不得超过120cm，单边长度不得超过90cm单边
+                      1.长+宽+高不得超过120cm，单边长度不得超过90cm
                     </text>
                     <text class="explain-item">
-                      2.长+宽+高不得超过120cm，单边长度不得超过90cm单边
+                      2.长+宽+高不得超过120cm，单边长度不得超过90cm
                     </text>
                     <text class="explain-item">
-                      3.长+宽+高不得超过120cm，单边长度不得超过90cm单边
+                      3.长+宽+高不得超过120cm，单边长度不得超过90cm
                     </text>
                   </view>
              </scroll-view>

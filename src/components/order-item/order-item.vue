@@ -229,17 +229,28 @@ export default {
     },
     cancelOrder(e){
       let _self = this;
-      uni.showLoading({
-        title: "请稍后",
-      });
-      this.$api.delOrder({"order_sn":e}).then((res)=>{
-        if(res.status == 1){
-          _self.$emit("cancelorder", _self.item);
-        }else{
-          _self.$toast(res.info);
+      uni.showModal({
+        title: '确定要删除此订单吗？',
+        content: '',
+        confirmColor: "#ff7100",
+        success: function (res) {
+            if (res.confirm) {
+                uni.showLoading({
+                title: "请稍后",
+              });
+              _self.$api.delOrder({"order_sn":e}).then((res)=>{
+                if(res.status == 1){
+                  _self.$emit("cancelorder", _self.item);
+                }else{
+                  _self.$toast(res.info);
+                }
+                uni.hideLoading();
+              })
+            } else if (res.cancel) {
+                console.log('用户点击取消');
+            }
         }
-        uni.hideLoading();
-      })
+      });
     },
   },
 };
