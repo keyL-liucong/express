@@ -22,9 +22,20 @@
           <text class="mark">(必填)</text>
         </view>
         <picker @change="sendModePickerChange" range-key="name" :range="multiArray">
-          <view v-if="sendModeCountryName" class="fill-text">{{sendModeCountryName}}</view>
-          <view v-else class="fill-text placeholder">请选择目的地国家 ></view>
+          <view v-if="sendModeCountryName" class="fill-text">{{sendModeCountryName}}<text class="icon"></text></view>
+          <view v-else class="fill-text placeholder">请选择目的地国家<text class="icon"></text></view>
         </picker>
+      </view>
+      <view v-if="sendModeRecipientsAddress" class="default-address-info">
+        <view class="default-address-info-item recipients">
+          <text class="info-lab">收件人及电话：</text>
+          <text class="info-text">{{sendModeRecipientsName}} {{sendModeRecipientsMobile}}</text>
+          <text class="info-copybtn" @click="copyAddressInfo">一键复制</text>
+        </view>
+        <view class="default-address-info-item address">
+          <text class="info-lab">地址：</text>
+          <text class="info-text">{{sendModeRecipientsAddress}}</text>
+        </view>
       </view>
       <view class="send-mode-fill-item">
         <view class="fill-item-lab">
@@ -406,11 +417,14 @@ export default {
   },
   data() {
     return {
-      multiArray:[{id:1, 'name':'中国'}, {id:2, 'name':'美国'}, {id:3, 'name':'巴西'}, {id:4, 'name':'日本'}],
+      multiArray:[],
       sendModeVal: "r111",//寄送方式: 改成真正的默认值
       sendModeCountryName: "",// 寄送方式-目的地国家名字
       sendModeCountryId: "",// 寄送方式-目的地国家id
       sendModeOrderNumval: "",//寄送方式-快递单号
+      sendModeRecipientsAddress: "",//寄送方式-默认收件人地址
+      sendModeRecipientsMobile: "",//寄送方式-默认收件人电话
+      sendModeRecipientsName: "",//寄送方式-默认收件人名字
       inputUp: false,
       longth: "",
       width: "",
@@ -518,6 +532,7 @@ export default {
     if (this.receAddr == null) {
       this.receAddr = await this.getDefaultAddr(2);
     }
+    this.getCountryList();
   },
   async onLoad(options) {
     let date = new Date();
@@ -820,13 +835,45 @@ export default {
     change: function (e) {
       this.result = e.result;
     },
+    //获取国家地址列表
+    getCountryList(){
+      let _self = this;
+      this.$api.warehouseCountry().then(res=>{
+        if(res.status == 1){
+          _self.multiArray = res.data.all;
+        }
+      })
+    },
     //寄送方式选择
     sendModeChange(e){
       this.sendModeVal = e.detail.value;
     },
     sendModePickerChange(e){
-      this.sendModeCountryName = this.multiArray[e.detail.value].name;
-      this.sendModeCountryId = this.multiArray[e.detail.value].id;
+      let _self = this;
+      let detail = this.multiArray[e.detail.value];
+      this.sendModeCountryName = detail.name;
+      this.sendModeCountryId = detail.id;
+      this.$api.warehouseDetail({country_id: detail.id}).then(res=>{
+          if(res.status == 1){
+            _self.sendModeRecipientsName = res.data.name;
+            _self.sendModeRecipientsMobile = res.data.mobile;
+            _self.sendModeRecipientsAddress = res.data.address;
+          }else{
+            _self.$toast(res.info);
+          }
+      })
+    },
+    copyAddressInfo(){
+      let _self = this;
+      uni.setClipboardData({
+        data: `${_self.sendModeRecipientsName} ${_self.sendModeRecipientsMobile}`,
+        success: function () {
+          _self.$toast("复制成功～");
+        },
+        fail: function () {
+          _self.$toast("复制失败，请稍后再试～");
+        },
+      });
     },
     // 处理重量
     handleConfirmWeight() {
@@ -1342,16 +1389,62 @@ export default {
       color: #7b7b7b;
     }
   }
-  .picker{
+  picker{
+   
   }
   .fill-text{
+      display: flex;
+      align-items: center;
       font-size: 32rpx;
       color: #000;
       line-height: 44rpx;
       text-align: end;
+      justify-content: flex-end;
       &.placeholder{
         color: #7b7b7b;
       }
+  }
+  .icon{
+    display: block;
+    width: 12rpx;
+    height: 20rpx;
+    margin-left: 10rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAUCAMAAACOLiwjAAAAb1BMVEUAAABlZWVwcHBwcHBvb29tbW1ubm5oaGhwcHBvb29wcHBvb29vb29sbGxwcHBvb29vb29vb29vb29vb29vb29tbW1paWlsbGxmZmZwcHBvb29vb29vb29wcHBvb29vb29tbW1tbW1ubm5vb29sbGzJG0uwAAAAJXRSTlMABfXndjpTE/z48Mu0I+LezZ6WjFlLLx4M69HFvLmuk4BuQScaK6idbQAAAG1JREFUGNNVj0UCgDAMBGkqtKW4u/7/jZySQE47h6xEtY74ZNYIgjb3aiDqElvGRP1m15QorqG4iMT5t5GgxMcGyodtZrvQm8n9gVo5adC8chN2TAMEjNWF27GQ4QyhvDSYV0HC88Zw81I9sH4BX6AEVmgVFj0AAAAASUVORK5CYII=) no-repeat center;
+    background-size: 100%;
+  }
+  .default-address-info{
+    padding-top: 10rpx;
+    .default-address-info-item{
+      display: flex;
+      width: 100%;
+      margin-top: 10rpx;
+      align-items: center;
+      &.address{
+      align-items: flex-start; 
+      }
+    }
+    .info-lab{
+      font-size: 28rpx;
+      line-height: 40rpx;
+      color: #7B7B7B;
+    }
+    .info-text{
+      flex: 1;
+      font-size: 28rpx;
+      line-height: 40rpx;
+      color: #000;
+    }
+    .info-copybtn{
+      display: flex;
+      width: 120rpx;
+      height: 40rpx;
+      font-size: 24rpx;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      background: #FF6C00;
+      border-radius: 10rpx;
+    }
   }
 }
 </style>
