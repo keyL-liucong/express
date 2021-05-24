@@ -1,5 +1,39 @@
 <template>
   <view class="app-container">
+    <view class="send-mode">
+      <view class="send-mode-radio">
+            <view class="radio-title">寄送方式</view>
+            <radio-group class="send-mode-radio-group" @change="sendModeChange">
+              <label class="radio-item">
+                <radio class="radio" value="r111" checked="true" color="#FF6E00">
+                </radio>
+                <text>单独邮寄到国外</text>
+              </label>
+              <label class="radio-item">
+                <radio class="radio" value="r222" color="#FF6E00">
+                </radio>
+                <text>到仓库合邮寄</text>
+              </label>
+            </radio-group>
+      </view>
+      <view class="send-mode-fill-item">
+        <view class="fill-item-lab">
+          <text class="lab-text">自寄到仓库</text>
+          <text class="mark">(必填)</text>
+        </view>
+        <picker @change="sendModePickerChange" range-key="name" :range="multiArray">
+          <view v-if="sendModeCountryName" class="fill-text">{{sendModeCountryName}}</view>
+          <view v-else class="fill-text placeholder">请选择目的地国家 ></view>
+        </picker>
+      </view>
+      <view class="send-mode-fill-item">
+        <view class="fill-item-lab">
+          <text class="lab-text">快递单号</text>
+          <text class="mark">(必填)</text>
+        </view>
+        <input type="text" class="fill-text" placeholder="请填写快递单号" :value="sendModeOrderNumval">
+      </view>
+    </view>
     <view class="send-part-box">
       <view class="row line">
         <view class="tag tag-1">寄</view>
@@ -372,6 +406,11 @@ export default {
   },
   data() {
     return {
+      multiArray:[{id:1, 'name':'中国'}, {id:2, 'name':'美国'}, {id:3, 'name':'巴西'}, {id:4, 'name':'日本'}],
+      sendModeVal: "r111",//寄送方式: 改成真正的默认值
+      sendModeCountryName: "",// 寄送方式-目的地国家名字
+      sendModeCountryId: "",// 寄送方式-目的地国家id
+      sendModeOrderNumval: "",//寄送方式-快递单号
       inputUp: false,
       longth: "",
       width: "",
@@ -781,7 +820,14 @@ export default {
     change: function (e) {
       this.result = e.result;
     },
-	
+    //寄送方式选择
+    sendModeChange(e){
+      this.sendModeVal = e.detail.value;
+    },
+    sendModePickerChange(e){
+      this.sendModeCountryName = this.multiArray[e.detail.value].name;
+      this.sendModeCountryId = this.multiArray[e.detail.value].id;
+    },
     // 处理重量
     handleConfirmWeight() {
       let _self = this;
@@ -1236,6 +1282,78 @@ export default {
     margin-left: 36rpx;
     color: #fff;
     background-image: linear-gradient(45deg, #ff9b00 0%, #ff6c00 100%);
+  }
+}
+.send-mode{
+  display: block;
+  width: 100%;
+  margin: 0 auto 20rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 16rpx;
+  .send-mode-radio{
+    padding-bottom: 28rpx;
+    border-bottom: 2rpx dashed #b1afaf;
+    .radio-title{
+      font-size: 32rpx;
+      color: #000;
+      line-height: 44rpx;
+    }
+    .send-mode-radio-group{
+      display: flex;
+      margin-top: 20rpx;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .radio-item{
+      display: flex;
+      align-items: center;
+      &:first-child{
+        margin-left: 16rpx;
+      }
+      radio{
+        transform: scale(.8);
+        margin-right: -8rpx;
+      }
+      text{
+        font-size: 32rpx;
+        color: #000;
+        line-height: 44rpx;
+        font-weight: bold;
+      }
+    }
+  }
+  .send-mode-fill-item{
+    display: flex;
+    margin-top: 28rpx;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .fill-item-lab{
+    display: flex;
+    align-items: center;
+    .lab-text{
+      font-size: 32rpx;
+      color: #000;
+      line-height: 44rpx;
+    }
+    .mark{
+      margin-left: 4rpx;
+      font-size: 28rpx;
+      color: #7b7b7b;
+    }
+  }
+  .picker{
+  }
+  .fill-text{
+      font-size: 32rpx;
+      color: #000;
+      line-height: 44rpx;
+      text-align: end;
+      &.placeholder{
+        color: #7b7b7b;
+      }
   }
 }
 </style>
