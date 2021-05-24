@@ -1303,15 +1303,13 @@ export default {
     .send-mode-radio-group{
       display: flex;
       margin-top: 20rpx;
+      padding: 0 16rpx;
       justify-content: space-between;
       align-items: center;
     }
     .radio-item{
       display: flex;
       align-items: center;
-      &:first-child{
-        margin-left: 16rpx;
-      }
       radio{
         transform: scale(.8);
         margin-right: -8rpx;
