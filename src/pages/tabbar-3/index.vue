@@ -855,9 +855,9 @@ export default {
       this.sendModeCountryId = detail.id;
       this.$api.warehouseDetail({country_id: detail.id}).then(res=>{
           if(res.status == 1){
-            _self.sendModeRecipientsName = res.data.name;
-            _self.sendModeRecipientsMobile = res.data.mobile;
-            _self.sendModeRecipientsAddress = res.data.address;
+            _self.sendModeRecipientsName = res.data.name || "";
+            _self.sendModeRecipientsMobile = res.data.mobile || "";
+            _self.sendModeRecipientsAddress = res.data.address || "";
           }else{
             _self.$toast(res.info);
           }
