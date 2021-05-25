@@ -2,30 +2,34 @@
 	<view class="content">
 		<view class="row b-b">
 			<text class="tit">选择国家</text>
-			<picker :value="value" @change="countryPicker" :range="countryArray" class="pick" range-key="name">
+			<picker :value="value" @change="countryPicker" :range="countryArray" class="pick" range-key="country">
 				<text class="input">{{ postData.country }}</text>
 			</picker>
 		</view>
-		<view class="row b-b" v-if="slefData.country_id != ''">
+		<view class="row b-b" v-if="selfData.country_id != ''">
 			<text class="tit">仓库代码</text>
-			<picker :value="value" @change="statePicker" :range="stateArray" class="pick" range-key="name">
+			<picker :value="value" @change="codePicker" :range="codeArray" class="pick"  range-key="code">
 				<text class="input">{{ postData.code }}</text>
 			</picker>
 		</view>
 		<view class="row b-b">
 			<text class="tit">联系人</text>
-			<input class="input" type="text" v-model="addressData.realname" placeholder-class="placeholder"
+			<input class="input" type="text" v-model="selfData.realname" placeholder-class="placeholder"
 				disabled="true" />
 		</view>
 		<view class="row b-b">
 			<text class="tit">联系人电话</text>
-			<input class="input" type="number" v-model="addressData.mobile" placeholder-class="placeholder"
+			<input class="input" type="number" v-model="selfData.mobile" placeholder-class="placeholder"
 				disabled="true" />
 		</view>
-
+		<view class="row b-b">
+			<text class="tit">编码</text>
+			<input class="input" type="number" v-model="selfData.zipcode" placeholder-class="placeholder"
+				disabled="true" />
+		</view>
 		<view class="row b-b">
 			<text class="tit">详细地址</text>
-			<input class="input" type="text" v-model="addressData.address" placeholder-class="placeholder"
+			<input class="input" type="text" v-model="selfData.address" placeholder-class="placeholder"
 				disabled="true" />
 		</view>
 		<button class="add-btn" @click="sureSelf">选择自提点</button>
@@ -37,7 +41,7 @@
 		data() {
 			return {
 				countryArray: [],
-				stateArray: [],
+				codeArray: [],
 				value: "",
 				postData: {
 					country: "选择国家",
@@ -45,13 +49,14 @@
 				},
 				selfData: {
 					country_id: "",
+					country:"",
 					code: "",
 					state: "",
 					city: "",
 					address: "",
+					realname:"",
 					mobile: "",
 					zipcode: ""
-
 				}
 			};
 		},
@@ -60,14 +65,30 @@
 		},
 
 		methods: {
-			countryPicker(e) {
+			async countryPicker(e) {
 				let country = this.countryArray;
-				this.selfData.country_id = country[e.detail.value];
+				this.selfData.country_id = country[e.detail.value].country_id;
+				this.selfData.country = country[e.detail.value].country;
+				let res = await this.$api.getPackageCode({country_id:this.selfData.country_id});
+				if(res.data) {
+					this.codeArray = res.data;
+				}
+			},
+			async codePicker(e) {
+				let codeArray = this.codeArray;
+				this.selfData.code = codeArray[e.detail.value].code;
+				let res = await this.$api.getPackageList({country_id:this.selfData.country_id,code:this.selfData.code});
+				if(res.data) {
+					this.selfData.realname = res.data.contact;
+					this.selfData.mobile = res.data.mobile;
+					this.selfData.zipcode = res.data.zipcode;
+					this.selfData.address = res.data.address;
+					this.selfData.city = res.data.city;
+					this.selfData.state = res.data.state;
+				}
 			},
 			async getCountry() {
-				let countryData = await this.$api.getCountryAddrList({
-					is_china: 2
-				})
+				let countryData = await this.$api.getPackageCountry()
 				this.countryArray = countryData.data;
 			},
 			sureSelf() {

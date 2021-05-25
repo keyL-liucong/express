@@ -505,4 +505,26 @@ export default {
 	        method: 'POST'
 	    })
 	},
+	getPackageList(data) {
+	    return request({
+	        url: 'address/getPackageList',
+	        data,
+	        method: 'Get'
+	    })
+	},
+
+	getPackageCountry(data) {
+	    return request({
+	        url: 'address/getPackageCountry',
+	        data,
+	        method: 'Get'
+	    })
+	},
+	getPackageCode(data) {
+	    return request({
+	        url: 'address/getPackageCode',
+	        data,
+	        method: 'Get'
+	    })
+	},
 }
