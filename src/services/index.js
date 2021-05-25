@@ -396,6 +396,20 @@ export default {
             data,
         })
     },
+	// 国家列表 is_china：是否是港澳台。0-否1-是
+	getPackageList(data) {
+	    return request({
+	        url: 'address/getPackageList',
+	        data,
+	    })
+	},
+	// 国家列表 is_china：是否是港澳台。0-否1-是
+	getPackage(data) {
+	    return request({
+	        url: 'address/getPackage',
+	        data,
+	    })
+	},
     // 更多活动
     getWelfare(data) {
         return request({

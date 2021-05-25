@@ -144,6 +144,12 @@
 		        "navigationBarTitleText": "物流协议"
 		    }
 		},
+		{
+		    "path": "pages/send/wuliu_text",
+		    "style": {
+		        "navigationBarTitleText": "物流协议"
+		    }
+		},
         {
             "path": "pages/address/send",
             "style": {

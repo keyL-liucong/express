@@ -1,9 +1,64 @@
 <template>
   <view class="app-container">
+    <view class="send-mode">
+	  <!--寄送方式-->
+      <view class="send-mode-radio">
+            <view class="radio-title">寄送方式</view>
+            <radio-group class="send-mode-radio-group" @change="sendModeChange">
+              <label class="radio-item">
+                <radio class="radio" value="r111"  checked="true" color="#FF6E00"></radio>
+                <text>单独邮寄到国外</text>
+              </label>
+              <label class="radio-item">
+				 <radio class="radio" value="r222" color="#FF6E00"></radio>
+                <text>到仓库合邮寄</text>
+              </label>
+            </radio-group>
+      </view>
+ 
+     <view v-if="option_v==2">
+		 <view class="send-mode-fill-item">
+		     <view class="fill-item-lab">
+		       <text class="lab-text">自寄到仓库</text>
+		       <text class="mark">(必填)</text>
+		     </view>
+		     <picker @change="sendModePickerChange" range-key="name" :range="multiArray">
+		       <view v-if="sendModeCountryName" class="fill-text">{{sendModeCountryName}}<text class="icon"></text></view>
+		       <view v-else class="fill-text placeholder">请选择目的地国家<text class="icon"></text></view>
+		     </picker>
+		   </view>
+		   
+		   <view v-if="sendModeRecipientsAddress" class="default-address-info">
+		     <view class="default-address-info-item recipients">
+		       <text class="info-lab">收件人及电话：</text>
+		       <text class="info-text">{{sendModeRecipientsName}} {{sendModeRecipientsMobile}}</text>
+			   <text class="info-copybtn" @click="copyAddressInfo">一键复制</text>
+		     </view>
+		     <view class="default-address-info-item address">
+		       <text class="info-lab">地址：</text>
+		       <text class="info-text">{{sendModeRecipientsAddress}}</text>
+		     </view>
+		   </view>
+		  <view class="send-type-box">
+			  
+		    <view class="row" v-if="option_v == 2">
+		      <view class="row-left">快递单号</view>
+			  <text class="mark" style="    margin-left: -34rpx;font-size: 28rpx; color: #7b7b7b;">(必填)</text>
+		      <view class="row-right" style="width: 56%;">
+		        <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no">
+		        <image src="../../static/scan.png" alt="" @click="handleScan">
+		      </view>
+		    </view>
+		  </view>
+		 </view>
+	 </view>
+	
     <view class="send-part-box">
-      <view class="row line">
+		
+		<!-- 寄件地址 -->
+      <view class="row line" @click="navTo('/pages/address/index?currentTab=1&from=send')" v-if="option_v == 1">
         <view class="tag tag-1">寄</view>
-        <view class="send-info" v-if="!sendAddr"  @click="navTo('/pages/address/index?currentTab=1&from=send')">
+        <view class="send-info" v-if="!sendAddr">
           <view class="row"> 寄件人信息 </view>
           <view class="row gray"> 点击填写寄件地址 </view>
         </view>
@@ -14,16 +69,35 @@
           </view>
           <view class="row gray clamp-1"> {{ sendAddr.address }} </view>
         </view>
-        <view
-          class="address"
-          @click="navTo('/pages/address/index?currentTab=1&from=send')"
-        >
+        <view class="address">
           地址簿
         </view>
       </view>
-      <view class="row">
+	  <!-- 寄件地址 -->
+	  
+	  <!--收件方式-->
+	  <view class="send-mode">
+	  	 <view class="send-mode-radio">
+	  			<view class="radio-title">收件方式</view>
+	  			<radio-group class="send-mode-radio-group" @change="sendModeChangeSj">
+	  			  <label class="radio-item">
+	  				<radio class="radio" value="r111" checked="true" color="#FF6E00"></radio>
+	  				<text>派送上门</text>
+	  			  </label>
+	  			  <label class="radio-item">
+	  				 <radio class="radio" value="r222"  color="#FF6E00"></radio>
+	  				<text>自提点自提</text>
+	  			  </label>
+	  			</radio-group>
+	  	  </view>
+	    </view>
+	  <!--收件方式-->
+		
+		
+	  <!-- 收件地址 -->
+      <view class="row" v-if="is_flag == 0" @click="navTo('/pages/address/index?currentTab=0&from=send')">
         <view class="tag tag-2">收</view>
-        <view class="send-info" v-if="!receAddr" @click="navTo('/pages/address/index?currentTab=0&from=send')">
+        <view class="send-info" v-if="!receAddr">
           <view class="row"> 收件人信息 </view>
           <view class="row gray"> 点击填写收件地址 </view>
         </view>
@@ -41,7 +115,33 @@
           地址簿
         </view>
       </view>
+	  <!-- 收件地址 -->
+	  
+	  <!-- 自提点 -->
+	  <view class="row" v-if="is_flag == 1" >
+	    <view class="tag tag-2">自</view>
+	    <view class="send-info" v-if="!receAddr">
+	      <view class="row"> 收件人信息 </view>
+	      
+		 <select v-model="list">
+		     <option v-for="x in shuju">{{x.package_name}}</option>
+		   </select>
+		  
+	    </view>
+	    <view class="send-info" v-else>
+	      <view class="row">
+	        <text>{{ receAddr.realname }}</text>
+	        <text>{{ receAddr.mobile }}</text>
+	      </view>
+	      <view class="row gray clamp-1"> {{ receAddr.address }} </view>
+	    </view>
+	  </view>
+	  <!-- 自提点 -->
+	  
+	  
     </view>
+	
+	
     <view class="send-info-box">
       <tui-list-cell :hover="false">
         <view class="thorui-input-item">
@@ -141,43 +241,42 @@
         </view>
       </view>
     </view>
-    <view class="send-type-box">
-      <view class="row line">
-        <view class="row-left">寄件方式</view>
-        <view class="row-right">
-          <radio-group @change="radioChange">
-            <label
-              class="thorui-radio thorui-align__center thorui-padding"
-              style="margin-right: 20rpx"
-            >
-              <radio color="#5677fc" :value="0" checked="true" style="transform:scale(0.8)"></radio>
-              <text class="thorui-left__sm">上门取件</text>
-            </label>
-            <label class="thorui-radio thorui-align__center thorui-padding">
-              <radio color="#5677fc" :value="1"  style="transform:scale(0.8)"></radio>
-              <text class="thorui-left__sm">自寄到仓</text>
-            </label>
-          </radio-group>
-        </view>
-      </view>
-      <view class="row" v-if="mail == 0">
+    
+	<view class="send-type-box">
+      <view class="row" v-if="option_v == 1">
         <view class="row-left">上门取件时间</view>
         <view class="row-right" @click="dateShow">
 		   {{ result }}
         </view>
       </view>
-      <view class="row" v-else>
-        <view class="row-left">快递单号</view>
-        <view class="row-right">
-          <input type="text" placeholder="请填写发货的快递单号" v-model="logistics_no">
-          <image src="../../static/scan.png" alt="" @click="handleScan">
-        </view>
-      </view>
     </view>
-    <label class="thorui-radio" style="margin-right: 20rpx">
-      <radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
-      <text class="thorui-left__sm" @click="handleAggrentMent">我已同意并阅读《物流服务协议》</text>
-    </label>
+	
+	<view class="send-type-box">
+	 <view class="row line">
+	   <view class="row-right">
+	     <radio-group @change="radioChange">
+	       <label
+	         class="thorui-radio thorui-align__center thorui-padding"
+	         style="margin-right: 20rpx"
+	       >
+	         <radio color="#5677fc" :value="0" checked="true" style="transform:scale(0.8)"></radio>
+	         <text class="thorui-left__sm">标准服务</text>
+	       </label>
+	       <label class="thorui-radio thorui-align__center thorui-padding">
+	         <radio color="#5677fc" :value="1"  style="transform:scale(0.8)"></radio>
+	         <text class="thorui-left__sm">特惠服务</text>
+	       </label>
+	     </radio-group>
+	   </view>
+	 </view>
+	</view>
+	
+    <view style="color:#ff6c00;">
+		<label class="thorui-radio" style="margin-right: 20rpx"></label>
+		<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
+		<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
+	</view>
+    
     <view class="send-buy-box">
       <view class="left">
         <view class="top"> 预估运费<text>￥ {{ price || 0 }} </text>起 </view>
@@ -188,6 +287,7 @@
         <button @click="handleCreateOrder">立即下单</button>
       </view>
     </view>
+	
     <!-- 底部弹框部分 -->
      <tui-bottom-popup
             backgroundColor="#fff"
@@ -208,10 +308,7 @@
                 </view>
               </view>
               <view class="rule">
-                <view>计费规则：</view>
-                <view>体积重量(kg) = (长(cm) x 宽(cm) x 高(cm)) ÷ 6000</view>
-                <view>国际物流续重以0.5kg为计费单位，不足时按0.5kg计费</view>
-                <view>例如：体积重量为1.01kg，按1.5kg计费</view>
+               <rich-text type="text" :nodes="wight_text"></rich-text>
               </view>
               <button class="" @click="handleConfirmWeight">确认</button>
             </view>
@@ -302,15 +399,7 @@
                   </view>
                   <text class="explain-title"></text>
                   <view class="explain-list">
-                    <text class="explain-item">
-                      1.长+宽+高不得超过120cm，单边长度不得超过90cm
-                    </text>
-                    <text class="explain-item">
-                      2.长+宽+高不得超过120cm，单边长度不得超过90cm
-                    </text>
-                    <text class="explain-item">
-                      3.长+宽+高不得超过120cm，单边长度不得超过90cm
-                    </text>
+                   <rich-text type="text" :nodes="fillStatementValue_text"></rich-text>
                   </view>
              </scroll-view>
              <view class="support-box-btn-box">
@@ -336,16 +425,13 @@
                   <input type="number"  @blur="handleCheck" v-model="height" maxlength="3" placeholder="高">
                   <text>cm</text>
                 </view>
-              </view>
+              </view> 
               <view class="line-text">
                 <text>预估体积总量=</text>
                 <text class="num">{{ volumeWeight }} KG</text>
               </view>
               <view class="tips">
-                *长+宽+高不得超过120cm，单边长度不得超过90cm
-              </view>
-              <view class="tips">
-                *预估体积重量=(长x宽x高)/6000
+               <rich-text type="text" :nodes="volume_text"></rich-text>
               </view>
               <button class="" @click="handleVolume">确认</button>
             </view>
@@ -364,14 +450,26 @@
 <script>
 import tuiDatetime from "../../components/tui-datetime/tui-datetime";
 import tuiUpload from "@/components/tui-upload/tui-upload";
-  
+
 export default {
   components: {
     tuiDatetime,
 	tuiUpload
-  },
+},
   data() {
     return {
+		columns: ['交易时间', '今日', '近七日', '本周', '本月','近三月'],
+	  fillStatementValue_text:"",
+	  volume_text:"",
+	  wight_text:"",
+      multiArray:[],
+      sendModeVal: "r111",//寄送方式: 改成真正的默认值
+      sendModeCountryName: "",// 寄送方式-目的地国家名字
+      sendModeCountryId: "",// 寄送方式-目的地国家id
+      sendModeOrderNumval: "",//寄送方式-快递单号
+      sendModeRecipientsAddress: "",//寄送方式-默认收件人地址
+      sendModeRecipientsMobile: "",//寄送方式-默认收件人电话
+      sendModeRecipientsName: "",//寄送方式-默认收件人名字
       inputUp: false,
       longth: "",
       width: "",
@@ -382,7 +480,7 @@ export default {
       result: "",
       sendAddr: null,
       receAddr: null,
-      weight: 0.1,
+      weight: 0.5,
       weightNum: "",
       volume: "",
       mail: 0, //寄件方式 0 上门取件 1 自寄下单
@@ -418,20 +516,29 @@ export default {
       insured_price: 0,
 	  coupon:{},
 	  startYear:"2021",
-	  endYear:"2021"
+	  endYear:"2021",
+	  option_v:1,
+	  is_merge:0,
+	  city_id:"",
+	  service_type:"standard",
+	  is_flag:0,
+	  list:[],
     };
   },
   watch: {
     // 预估金额
     async weightNum(newVal, oldVal) {
-		console.log(this.coupon);
+		if(this.mail == 0){
+			 this.city_id = this.sendAddr.address_id;
+		}
+		
         if (
-          this.sendAddr.address_id &&
+          this.city_id &&
           this.receAddr.address_id &&
           this.weightNum
         ) {
           let data = {
-            sender_id: this.sendAddr.address_id,
+            sender_id: this.city_id,
             addressee_id: this.receAddr.address_id,
             weight: this.weightNum,
 			volume:this.volume,
@@ -449,13 +556,16 @@ export default {
     },
 	// 预估金额
 	async volume(newVal, oldVal) {
+		if(this.mail == 0){
+			 this.city_id = this.sendAddr.address_id;
+		}
 	    if (
-	      this.sendAddr.address_id &&
+	      this.city_id &&
 	      this.receAddr.address_id &&
 	      this.volume
 	    ) {
 	      let data = {
-	        sender_id: this.sendAddr.address_id,
+	        sender_id: this.city_id,
 	        addressee_id: this.receAddr.address_id,
 	        weight: this.weightNum ? this.weightNum : this.volume,
 			volume:this.volume,
@@ -473,12 +583,13 @@ export default {
 	}
   },
   async onShow() {
-    if (this.sendAddr == null) {
+    if (this.sendAddr == null && this.mail == 0) {
       this.sendAddr = await this.getDefaultAddr(1);
     }
     if (this.receAddr == null) {
       this.receAddr = await this.getDefaultAddr(2);
     }
+    this.getCountryList();
   },
   async onLoad(options) {
     let date = new Date();
@@ -497,11 +608,24 @@ export default {
 	if(options.from == "coupon") {
 		this.coupon = JSON.parse(options.coupon)
 	}
+	if(options.v){
+		this.option_v = options.v;
+		if(options.v == 1){
+			this.mail = 0;
+		}else{
+			this.mail = 1;
+		}
+	}
   },
   methods: {
     // 协议
     handleAggrentMent() {
       this.aggrementChecked = !this.aggrementChecked;
+    },
+	handleAggrentMent_text() {
+		 uni.navigateTo({
+			url: 'wuliu_text', 
+		 }); 
     },
     // 扫一扫
     handleScan() {
@@ -682,12 +806,18 @@ export default {
     },
     // 创建订单 立即下单
     async handleCreateOrder() {
-		
-		if(this.sendAddr == null) {
-			this.$toast("请先填写寄件人信息");
-			return;
+		if(this.mail == 1){
+			if(this.city_id == null){
+				this.$toast("自寄到仓邮寄地址必选");
+				return;
+			}
+		}else{
+			if(this.sendAddr == null) {
+				this.$toast("请先填写寄件人信息");
+				return;
+			}
+			 this.city_id = this.sendAddr.address_id;
 		}
-		
 		if(this.receAddr == null) {
 			this.$toast("请先填写收件人信息");
 			return;
@@ -705,7 +835,7 @@ export default {
         return false;
       }
       let data = {
-        sender_id: this.sendAddr.address_id || "",
+        sender_id: this.city_id || "",
         addressee_id: this.receAddr.address_id || "",
         weight: this.weightNum,
         mail: this.mail,
@@ -718,6 +848,8 @@ export default {
         logistics_no: this.logistics_no,
         increment_price: this.submitStatementValue,
 		coupon_id:this.coupon.id || 0 ,
+		is_merge:this.is_merge || 0,
+		service_type:this.service_type,
       };
 
       let res = await this.$api.createOrder(data);
@@ -731,7 +863,13 @@ export default {
       }
     },
     handlePopup(type) {
-	  if(this.sendAddr == null) {
+		
+	  if(this.mail == 1 && !this.sendModeRecipientsName){
+		 this.$toast("请先选择自寄到仓信息");
+		 return;
+	  }
+		
+	  if(this.sendAddr == null && this.mail == 0) {
 	  	this.$toast("请先填写寄件人信息");
 	  	return;
 	  }
@@ -760,18 +898,23 @@ export default {
 	  if (res.data && res.data.length > 0) {
 		  this.order_insured_price = res.data[0]["order_insured_price"];
 		  this.order_insured_total = res.data[0]["order_insured_total"];
+		  this.fillStatementValue_text = res.data[0]["fillStatementValue_text"];
+		  this.volume_text = res.data[0]["volume_text"];
+		  this.wight_text = res.data[0]["wight_text"];
 		  return res.data[0];
 	  }
      
     },
     radioChange(e) {
       if (e.detail.value == 0) {
-        this.price = this.standard_price;
-        this.time = this.standard_price_time;
+		  this.service_type = 'standard';
+          this.price = this.standard_price;
+          this.time = this.standard_price_time;
       }
       if (e.detail.value == 1) {
-        this.price = this.preferential_price;
-        this.time = this.preferential_price_time;
+		  this.service_type = 'preferential';
+          this.price = this.preferential_price;
+          this.time = this.preferential_price_time;
       }
       this.mail = e.detail.value;
     },
@@ -781,7 +924,67 @@ export default {
     change: function (e) {
       this.result = e.result;
     },
-	
+    //获取国家地址列表
+    getCountryList(){
+      let _self = this;
+      this.$api.warehouseCountry().then(res=>{
+        if(res.status == 1){
+          _self.multiArray = res.data.all;
+        }
+      })
+    },
+    //寄送方式选择
+    sendModeChange(e){
+      this.sendModeVal = e.detail.value;
+	  if(e.target.value == 'r222'){
+		  this.is_merge = 1;
+	  }else{
+		  this.is_merge = 0;
+	  }
+    },
+	sendModeChangeSj(e){
+	  this.sendModeVal = e.detail.value;
+	  if(e.target.value == 'r222'){
+		  this.is_flag = 1;
+		  let _self = this;
+		 this.$api.getPackageList().then(res=>{
+			 //获取第一层自提点信息
+			  _self.list = res.data;
+			  //根据name获取自提点下详细地址
+			  // this.$api.getPackage({'package_name':"3111"});
+		 })
+	  }else{
+		  this.is_flag = 0;
+	  }
+	},
+    sendModePickerChange(e){
+      let _self = this;
+      let detail = this.multiArray[e.detail.value];
+      this.sendModeCountryName = detail.name;
+      this.sendModeCountryId = detail.id;
+      this.$api.warehouseDetail({country_id: detail.id}).then(res=>{
+          if(res.status == 1){
+            _self.sendModeRecipientsName = res.data.name || "";
+            _self.sendModeRecipientsMobile = res.data.mobile || "";
+            _self.sendModeRecipientsAddress = res.data.address || "";
+			_self.city_id = res.data.city_id;
+          }else{
+            _self.$toast(res.info);
+          }
+      })
+    },
+    copyAddressInfo(){
+      let _self = this;
+      uni.setClipboardData({
+        data: `${_self.sendModeRecipientsName} ${_self.sendModeRecipientsMobile} ${_self.sendModeRecipientsAddress}`,
+        success: function () {
+          _self.$toast("复制成功～");
+        },
+        fail: function () {
+          _self.$toast("复制失败，请稍后再试～");
+        },
+      });
+    },
     // 处理重量
     handleConfirmWeight() {
       let _self = this;
@@ -910,7 +1113,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20rpx;
+      padding: 3rpx;
       height: 66rpx;
       .row-right {
         display: flex;
@@ -931,6 +1134,7 @@ export default {
 	  }
   }
   .send-buy-box {
+	z-index: 500;
     position: fixed;
     left: 0;
     right: 0;
@@ -970,6 +1174,7 @@ export default {
     }
   }
   .popup-box {
+	  z-index: 1000;
     padding: 30rpx;
     &.up{
         padding-bottom: 430rpx;
@@ -1236,6 +1441,122 @@ export default {
     margin-left: 36rpx;
     color: #fff;
     background-image: linear-gradient(45deg, #ff9b00 0%, #ff6c00 100%);
+  }
+}
+.send-mode{
+  display: block;
+  width: 100%;
+  margin: 0 auto 20rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 16rpx;
+  .send-mode-radio{
+    padding-bottom: 28rpx;
+    border-bottom: 2rpx dashed #b1afaf;
+    .radio-title{
+      font-size: 32rpx;
+      color: #000;
+      line-height: 44rpx;
+    }
+    .send-mode-radio-group{
+      display: flex;
+      margin-top: 20rpx;
+      padding: 0 16rpx;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .radio-item{
+      display: flex;
+      align-items: center;
+      radio{
+        transform: scale(.8);
+        margin-right: -8rpx;
+      }
+      text{
+        font-size: 32rpx;
+        color: #000;
+        line-height: 44rpx;
+        font-weight: bold;
+      }
+    }
+  }
+  .send-mode-fill-item{
+    display: flex;
+    margin-top: 28rpx;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .fill-item-lab{
+    display: flex;
+    align-items: center;
+    .lab-text{
+      font-size: 32rpx;
+      color: #000;
+      line-height: 44rpx;
+    }
+    .mark{
+      margin-left: 4rpx;
+      font-size: 28rpx;
+      color: #7b7b7b;
+    }
+  }
+  picker{
+   
+  }
+  .fill-text{
+      display: flex;
+      align-items: center;
+      font-size: 32rpx;
+      color: #000;
+      line-height: 44rpx;
+      text-align: end;
+      justify-content: flex-end;
+      &.placeholder{
+        color: #7b7b7b;
+      }
+  }
+  .icon{
+    display: block;
+    width: 12rpx;
+    height: 20rpx;
+    margin-left: 10rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAUCAMAAACOLiwjAAAAb1BMVEUAAABlZWVwcHBwcHBvb29tbW1ubm5oaGhwcHBvb29wcHBvb29vb29sbGxwcHBvb29vb29vb29vb29vb29vb29tbW1paWlsbGxmZmZwcHBvb29vb29vb29wcHBvb29vb29tbW1tbW1ubm5vb29sbGzJG0uwAAAAJXRSTlMABfXndjpTE/z48Mu0I+LezZ6WjFlLLx4M69HFvLmuk4BuQScaK6idbQAAAG1JREFUGNNVj0UCgDAMBGkqtKW4u/7/jZySQE47h6xEtY74ZNYIgjb3aiDqElvGRP1m15QorqG4iMT5t5GgxMcGyodtZrvQm8n9gVo5adC8chN2TAMEjNWF27GQ4QyhvDSYV0HC88Zw81I9sH4BX6AEVmgVFj0AAAAASUVORK5CYII=) no-repeat center;
+    background-size: 100%;
+  }
+  .default-address-info{
+    padding-top: 10rpx;
+    .default-address-info-item{
+      display: flex;
+      width: 100%;
+      margin-top: 10rpx;
+      align-items: center;
+      &.address{
+      align-items: flex-start; 
+      }
+    }
+    .info-lab{
+      font-size: 28rpx;
+      line-height: 40rpx;
+      color: #7B7B7B;
+    }
+    .info-text{
+      flex: 1;
+      font-size: 28rpx;
+      line-height: 40rpx;
+      color: #000;
+    }
+    .info-copybtn{
+      display: flex;
+      width: 120rpx;
+      height: 40rpx;
+      font-size: 24rpx;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      background: #FF6C00;
+      border-radius: 10rpx;
+    }
   }
 }
 </style>

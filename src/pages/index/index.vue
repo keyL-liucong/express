@@ -52,7 +52,7 @@
 		<view class="space"></view>
         <view class="banner-part">
             <view class="piece bg-1">
-                <view class="desc-box"  @click="navTo('/pages/send/index')">  
+                <view class="desc-box"  @click="navTo('/pages/send/index?v=1')">  
                     <view class="left left-1"></view>
                     <view class="right">
                         <view>上门取件</view>
@@ -60,12 +60,12 @@
                     </view> 
                 </view>
             </view>
-            <view class="piece bg-2" @click="navTo('/pages/contraband/index')">
+            <view class="piece bg-2" @click="navTo('/pages/send/index?v=2')">
                 <view class="desc-box">
-                    <view class="left left-2"></view>
+                    <view class="left left-2"></view> 
                     <view class="right">
-                        <view>违禁物品</view>
-                        <view>违禁物品集合</view>
+                        <view>自寄到仓</view>
+                        <view>自寄方便快捷</view>
                     </view>
                 </view>
             </view>
