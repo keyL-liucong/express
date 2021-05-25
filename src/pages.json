@@ -132,6 +132,12 @@
                 "navigationBarTitleText": "意见反馈"
             }
         },
+		{
+		    "path": "pages/login/sign_text",
+		    "style": {
+		        "navigationBarTitleText": "注册协议"
+		    }
+		},
         {
             "path": "pages/address/send",
             "style": {

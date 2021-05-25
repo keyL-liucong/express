@@ -19,7 +19,7 @@
 					v-model="loginData.code"
                 />
                 <button class="get-code" :class="dynacodeData.isSend ? 'disabled-btn' : ''" @tap="sendSms">{{ dynacodeData.codeText}}</button>
-                <div class="desc">新用户登陆后将成为会员同意《快递》协议</div>
+                <div class="desc" @click="handleLogin_sign">新用户登陆后将成为会员同意《注册协议》</div>
             </div>
             <div class="row">
                 <button class="login-btn" @click="handleLogin">登录</button>
@@ -50,7 +50,11 @@ export default {
         };
     },
     methods: {
-       
+       handleLogin_sign(){
+       	uni.navigateTo({
+       		url: 'sign_text',
+       	});
+       },
         // 登录
         login(postData) {
             return new Promise((resolve, reject) => {

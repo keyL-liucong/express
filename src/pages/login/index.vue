@@ -38,8 +38,8 @@
                 >
                     微信用户一键登录
                 </tui-button>
-                <!-- <button class="auth-login-btn">微信授权登录</button> -->
             </div>
+			<div class="desc_sign" @click="handleLogin_sign">新用户登陆后将成为会员同意《注册协议》</div>
         </div>
     </div>
 </template>
@@ -50,6 +50,7 @@ export default {
     components: {},
     data() {
         return {
+			signText:"",
             loginBtn: false,
 			isLogin:false,
 			codeIsSend:false,
@@ -66,6 +67,14 @@ export default {
         };
     },
     methods: {
+		handleLogin_sign(){
+			uni.navigateTo({
+				url: 'sign_text',
+			});
+		},
+		navTo(url) {
+		    this.$href.navigateTo({ url: url });      
+		},
 		emailLogin() {
 			uni.navigateTo({
 				url: 'email',
@@ -243,6 +252,14 @@ export default {
 </script>
 <style lang='scss' scoped>
 .app-container {
+	.desc_sign{
+		position: absolute;
+		right: 221rpx;
+		font-size: 24rpx;
+		bottom: 483rpx;
+		width: 456rpx;
+		color: #ff6c00;
+	}
     .login-part {
         padding: 40rpx 76rpx 0;
         .title {
