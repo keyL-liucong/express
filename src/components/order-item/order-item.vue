@@ -59,7 +59,7 @@
         <view v-if="0" class="info-btn kefu">
           <text class="info-kefu-text">需要客服处理</text>
         </view> -->
-		<view v-if="item.order_status==6 && item.is_merge == 1" class="info-btn he-xiang">
+		<view v-if="item.is_merge == 1" class="info-btn he-xiang">
 		  <text class="info-text">可合箱</text>
 		</view>
         <!-- 已签收 -->
@@ -130,7 +130,7 @@
           <text v-if="item.order_status==6" class="bottom-data-title">下单时间</text>
           <text class="data-text">{{item.created}}</text>
         </view>
-		<label class="thorui-radio" style="margin-right: 20rpx" v-if="item.order_status==6 && item.is_merge == 1">
+		<label class="thorui-radio" style="margin-right: 20rpx" v-if="item.is_merge == 1">
 		  <radio color="#2cb241" :checked="mergeChecked" @click="handleMerge"></radio>
 		  <text class="thorui-left__sm" @click="handleMerge">选择合箱</text>
 		</label>
