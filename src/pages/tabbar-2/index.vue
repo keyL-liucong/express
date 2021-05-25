@@ -46,7 +46,7 @@
         :item="orderitem"
         :key="orderindex"
         :payorderid="payOrderId"
-        v-on:setitempay="toPay"
+		v-on:handleMergeClick="handleMergeData"
         @cancelorder="cancelOrderItem"
       ></orderItem>
 
@@ -54,13 +54,9 @@
         :status="loadingType"
       ></uni-load-more>
     </view>
-    <!-- <view v-if="payOrderId != ''" class="bttom-pay">
-      <view class="price-box">
-        <text class="price-lab">应付金额:</text>
-        <text class="price-num">¥{{ toglePrice }}</text>
-      </view>
-      <text class="pay-btn" @click="toPay">立即支付</text>
-    </view> -->
+    <view v-if="mergeOrder.length > 0" class="bttom-pay">
+      <text class="pay-btn" @click="toMerge">立即合箱</text>
+    </view>
   </view>
 </template> 
 <script>
@@ -78,6 +74,7 @@ export default {
   },
   data() {
     return {
+	  mergeOrder:[],
       messageboxShow: true,
       pageNum: 1,
       loadingType: "more",
@@ -161,6 +158,19 @@ export default {
     this.loadData();
   },
   methods: {
+	handleMergeData(item) {
+		let _merge = this.mergeOrder
+		if(item.isChecked == false) {
+			_merge.splice(_merge.indexOf(item.order_sn),1);
+		} else {
+			_merge.push(item.order_sn)
+		}
+		this.mergeOrder = _merge;
+		return;
+	},
+	toMerge() {
+		console.log(this.mergeOrder);
+	},
     //获取订单列表
     loadData(source) {
       var _self = this;
@@ -211,15 +221,8 @@ export default {
       this.orderlist = [];
       this.loadData();
     },
-    // setOrderPay(item) {
-    //   if (this.payOrderId == item.order_sn) {
-    //     this.payOrderId = "";
-    //     this.toglePrice = 0;
-    //     return;
-    //   }
-    //   this.toglePrice = item.total_amount;
-    //   this.payOrderId = item.order_sn;
-    // },
+    setMerge(item) {
+    },
     toPay(item) {
       let _self = this;
       let wx_openid = this.$cache.get("openId");
@@ -492,34 +495,19 @@ page {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 120rpx;
+  height: 100rpx;
   background-color: #fff;
-  padding: 0 28rpx;
+  padding: 0 20rpx;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   box-sizing: border-box;
   border-radius: 16rpx 16rpx 0 0;
   z-index: 50;
-  .price-box {
-    display: flex;
-    align-items: center;
-    .price-lab {
-      font-size: 32rpx;
-      color: #000;
-      font-weight: bold;
-    }
-    .price-num {
-      margin-left: 18px;
-      font-size: 44rpx;
-      color: #ff0000;
-      font-weight: bold;
-    }
-  }
   .pay-btn {
     display: flex;
     width: 290rpx;
-    height: 80rpx;
-    font-size: 36rpx;
+    height: 60rpx;
+    font-size: 32rpx;
     color: #fff;
     align-items: center;
     justify-content: center;

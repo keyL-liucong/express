@@ -48,19 +48,20 @@
       </view>
     </view>
     <view v-else class="order-item">
-      <view class="to-detail" @click="toDetail"></view>
+      <!-- <view class="to-detail" @click="toDetail"></view> -->
       <!-- 右上角按钮信息 -->
       <view class="top-right-box">
         <!-- 待处理-功能暂时不上线 -->
         <!-- <view v-if="0" class="info-cancel">
           <text class="info-text">已取消</text>
         </view>
-        <view v-if="0" class="info-btn he-xiang">
-          <text class="info-text">可合箱</text>
-        </view>
+   
         <view v-if="0" class="info-btn kefu">
           <text class="info-kefu-text">需要客服处理</text>
         </view> -->
+		<view v-if="item.order_status==6 && item.is_merge == 1" class="info-btn he-xiang">
+		  <text class="info-text">可合箱</text>
+		</view>
         <!-- 已签收 -->
         <view v-if="item.order_status==4" class="info-btn qian-shou">
           <text class="info-qianshou-text">成功签收</text>
@@ -70,17 +71,15 @@
         </view>
       </view>
       <!-- 单号信息 -->
-      <view class="orderinfos">
+      <view class="orderinfos"  @click="toDetail">
         <view class="orderinfo-item">
           <text class="item-lab">订单号:</text>
           <text class="item-val">{{item.order_sn}}</text>
-          <text class="copy-btn" @click="copyOrderId"></text>
+          <text class="copy-btn" @click.stop="copyOrderId"></text>
         </view>
-        <view v-if="item.logistics_no
-" class="orderinfo-item">
+        <view v-if="item.logistics_no" class="orderinfo-item">
           <text class="item-lab">国内快递单号:</text>
-          <text class="item-val">{{item.logistics_no
-}}</text>
+          <text class="item-val">{{item.logistics_no}}</text>
         </view>
         <view class="orderinfo-item">
           <text class="item-lab">寄件人:</text>
@@ -91,9 +90,7 @@
       <view v-if="item.order_status==8 && item.order_trajectory" class="newest-progress-message">
         <text class="message-btn" @click="toexPressDetail">查看物流信息</text>
         <text class="message-tite">最新物流轨迹</text>
-        <text class="message-text"
-          >{{item.order_trajectory}}</text
-        >
+        <text class="message-text">{{item.order_trajectory}}</text>
       </view>
       <!-- 包裹详情 -->
       <view v-if="item.order_status==8" class="package-detail">
@@ -133,40 +130,13 @@
           <text v-if="item.order_status==6" class="bottom-data-title">下单时间</text>
           <text class="data-text">{{item.created}}</text>
         </view>
-        <!-- <text v-if="item.order_status==7" class="change-btn">更改</text> -->
+		<label class="thorui-radio" style="margin-right: 20rpx" v-if="item.order_status==6 && item.is_merge == 1">
+		  <radio color="#2cb241" :checked="mergeChecked" @click="handleMerge"></radio>
+		  <text class="thorui-left__sm" @click="handleMerge">选择合箱</text>
+		</label>
         <!-- <text class="share-btn">分享给收件人</text> -->
          <navigator v-if="item.order_status==4" class="share-btn" :url="`/pages/tabbar-2/detail?order_sn=${item.order_sn}`">查看包裹详情</navigator>
       </view>
-    </view>
-    <view v-if="0" class="bottom-wait-pay">
-      <view class="content">
-        <view class="lab">
-          <icon
-            class="wx-icon"
-            name="wechat"
-            size="50"
-            color="#2cb241"
-            unit="rpx"
-          ></icon>
-          <text class="lab-text">微信支付</text>
-        </view>
-        <icon v-if="payorderid == item.order_sn"
-          class="btn"
-          name="circle-fill"
-          size="40"
-          color="#2cb241"
-          unit="rpx"
-          @tap="setPay"
-        ></icon>
-        <icon v-else
-          class="btn"
-          name="circle"
-          size="40"
-          unit="rpx"
-          @tap="setPay"
-        ></icon>
-      </view>
-      <button class="bottom-wait-pay-text" type="submit" open-type="contact">微信没钱？请联系客服</button>
     </view>
   </view>
 </template>
@@ -193,6 +163,7 @@ export default {
     return {
       detailAll: false,
       detailOpenBtnText: "查看全部包裹",
+	  mergeChecked: false,
     };
   },
   mounted() {
@@ -201,11 +172,19 @@ export default {
     setPay() {
       this.$emit("setitempay", this.item);
     },
+	handleMerge() {
+		this.mergeChecked = !this.mergeChecked;
+		let data = {
+			order_sn: this.item.order_sn,
+			isChecked: this.mergeChecked
+		}
+		this.$emit("handleMergeClick", data);
+	},
     openAllDetail(){
       this.detailAll = !this.detailAll;
       this.detailOpenBtnText = this.detailAll ? " 收起 " : "查看全部包裹";
     },
-    toDetail(){
+    toDetail(e){
       uni.navigateTo({
         url: `/pages/tabbar-2/detail?order_sn=${this.item.order_sn}`
       })
