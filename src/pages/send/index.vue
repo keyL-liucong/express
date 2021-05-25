@@ -531,7 +531,6 @@ export default {
 		if(this.mail == 0){
 			 this.city_id = this.sendAddr.address_id;
 		}
-		
         if (
           this.city_id &&
           this.receAddr.address_id &&
@@ -585,10 +584,14 @@ export default {
   async onShow() {
     if (this.sendAddr == null && this.mail == 0) {
       this.sendAddr = await this.getDefaultAddr(1);
-    }
+    }else{
+		// this.city_id = this.sendAddr.address_id;
+	}
     if (this.receAddr == null) {
       this.receAddr = await this.getDefaultAddr(2);
-    }
+    }else{
+		// this.receAddr.address_id = this.receAddr.address_id;
+	}
     this.getCountryList();
   },
   async onLoad(options) {
@@ -901,7 +904,9 @@ export default {
 		  this.fillStatementValue_text = res.data[0]["fillStatementValue_text"];
 		  this.volume_text = res.data[0]["volume_text"];
 		  this.wight_text = res.data[0]["wight_text"];
-		  return res.data[0];
+		  if(res.data[0]['address_id']){
+			  return res.data[0];
+		  }
 	  }
      
     },
