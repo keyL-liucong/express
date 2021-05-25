@@ -96,24 +96,6 @@
 		</view>
 		<view class="app-text">
 			<rich-text type="text" :nodes="fregiht_calculation_text"></rich-text>
-			<!-- <text class="text-title">运费规则说明：</text>
-			<view class="row">
-				<text class="text-middle-title">体积重计算方式</text>
-				<text class="text-middle-desc">按照国际惯例，低密度的包裹，比较其实际重量，占用的空间通常较大，计算得出体积重量。体积重量和实际重量两者取最大者计费。</text>
-				<text class="text-middle-title">计算公式</text>
-				<text class="text-middle-desc">体积重量（Kg）=（长(cm) x 宽(cm) x 高(cm)） ÷ 6000</text>
-				<text class="text-middle-desc">注意：体积重量计算结果会自动进位到0.5区间</text>
-				<text class="text-middle-desc">例如：计算结果为1.01kg，自动进位到1.5kg</text>
-				<text class="text-middle-title">物品尺寸限制</text>
-				<text class="text-middle-desc">特惠服务：长+宽+高《 90cm，单位长度《 60cm</text>
-				<text class="text-middle-desc">标准服务：长+宽+高《 300cm，单位长度《 120cm</text>
-				<text class="text-middle-title">寄中国台湾</text>
-				<text class="text-middle-desc">标准服务：长+宽+高《 150cm，单位长度《 140cm</text>
-				<text class="text-middle-title">寄中国香港</text>
-				<text class="text-middle-desc">标准服务：长+宽+高《 200cm，单位长度《 140cm</text>
-				<text class="text-middle-desc">重量限制：《 30cm</text>
-				<text class="text-middle-desc">以上测算为普货价格标准，如包裹内有特殊品（如食品、液体、电池等），寄送运费将比普通包裹贵10元/kg,请下单时如实申报</text>
-			</view> -->
 		</view>
 		<uni-popup ref="showpopup" type="bottom" @change="change">
 			<view class="weight-area">
@@ -138,9 +120,7 @@
 						</view>
 					</view>
 					<view class="weight-area_desc row">
-						<text>请注意：</text>
-						<text>1.实际计费重量以仓库核实为准</text>
-						<text>2.体积重量和实际重量两者取最大者计费</text>
+						<rich-text type="text" :nodes="wight_text"></rich-text>
 					</view>
 				</view>
 				<view class="volume-area-data" v-if="currentTab == 2">
@@ -182,8 +162,7 @@
 						<text class="big">KG</text>
 					</view>
 					<view class="weight-area_desc row">
-						<text>温馨提示：</text>
-						<text>当物品的体积较大而重量较轻时，在运输重就会把它的体积折算成重量来收取费用</text>
+						<rich-text type="text" :nodes="volume_text"></rich-text>						
 					</view>
 				</view>
 				<view class="weight-area_footer tui-center">
@@ -207,6 +186,8 @@
 			return {
 				fregiht_calculation_num:6000,
 				fregiht_calculation_text:"",
+				volume_text:"",
+				wight_text:"",
 				standardPrice:0.00,
 				standardMsg:"预计5-10个工作日到达",
 				preferentialPrice:0.00,
@@ -355,6 +336,8 @@
 					this.currentVolumewhere = this.addressData.recountryEn[0].maximum_limit;
 					this.fregiht_calculation_num = EnRes.data.data.fregiht_calculation_num;
 					this.fregiht_calculation_text = EnRes.data.data.fregiht_calculation_text;
+					this.volume_text = EnRes.data.data.volume_text;
+					this.wight_text = EnRes.data.data.wight_text;
 				}
 			},
 			bindPickerChange: function(e) {
