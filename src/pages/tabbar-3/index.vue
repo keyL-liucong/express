@@ -45,10 +45,10 @@
         <input type="text" class="fill-text" placeholder="请填写快递单号" :value="sendModeOrderNumval">
       </view>
     </view>
-    <view class="send-part-box">
+    <view class="send-part-box"  @click="navTo('/pages/address/index?currentTab=1&from=send')">
       <view class="row line">
         <view class="tag tag-1">寄</view>
-        <view class="send-info" v-if="!sendAddr"  @click="navTo('/pages/address/index?currentTab=1&from=send')">
+        <view class="send-info" v-if="!sendAddr">
           <view class="row"> 寄件人信息 </view>
           <view class="row gray"> 点击填写寄件地址 </view>
         </view>
@@ -66,9 +66,9 @@
           地址簿
         </view>
       </view>
-      <view class="row">
+      <view class="row" @click="navTo('/pages/address/index?currentTab=0&from=send')">
         <view class="tag tag-2">收</view>
-        <view class="send-info" v-if="!receAddr" @click="navTo('/pages/address/index?currentTab=0&from=send')">
+        <view class="send-info" v-if="!receAddr">
           <view class="row"> 收件人信息 </view>
           <view class="row gray"> 点击填写收件地址 </view>
         </view>
@@ -219,10 +219,12 @@
         </view>
       </view>
     </view>
-    <label class="thorui-radio" style="margin-right: 20rpx">
-      <radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
-      <text class="thorui-left__sm" @click="handleAggrentMent">我已同意并阅读《物流服务协议》</text>
-    </label>
+    <view style="color:#ff6c00;">
+		<label class="thorui-radio" style="margin-right: 20rpx"></label>
+		<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
+		<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
+	</view>
+    
     <view class="send-buy-box">
       <view class="left">
         <view class="top"> 预估运费<text>￥ {{ price || 0 }} </text>起 </view>
@@ -253,10 +255,7 @@
                 </view>
               </view>
               <view class="rule">
-                <view>计费规则：</view>
-                <view>体积重量(kg) = (长(cm) x 宽(cm) x 高(cm)) ÷ 6000</view>
-                <view>国际物流续重以0.5kg为计费单位，不足时按0.5kg计费</view>
-                <view>例如：体积重量为1.01kg，按1.5kg计费</view>
+               <rich-text type="text" :nodes="wight_text"></rich-text>
               </view>
               <button class="" @click="handleConfirmWeight">确认</button>
             </view>
@@ -347,15 +346,7 @@
                   </view>
                   <text class="explain-title"></text>
                   <view class="explain-list">
-                    <text class="explain-item">
-                      1.长+宽+高不得超过120cm，单边长度不得超过90cm
-                    </text>
-                    <text class="explain-item">
-                      2.长+宽+高不得超过120cm，单边长度不得超过90cm
-                    </text>
-                    <text class="explain-item">
-                      3.长+宽+高不得超过120cm，单边长度不得超过90cm
-                    </text>
+                   <rich-text type="text" :nodes="fillStatementValue_text"></rich-text>
                   </view>
              </scroll-view>
              <view class="support-box-btn-box">
@@ -381,16 +372,13 @@
                   <input type="number"  @blur="handleCheck" v-model="height" maxlength="3" placeholder="高">
                   <text>cm</text>
                 </view>
-              </view>
+              </view> 
               <view class="line-text">
                 <text>预估体积总量=</text>
                 <text class="num">{{ volumeWeight }} KG</text>
               </view>
               <view class="tips">
-                *长+宽+高不得超过120cm，单边长度不得超过90cm
-              </view>
-              <view class="tips">
-                *预估体积重量=(长x宽x高)/6000
+               <rich-text type="text" :nodes="volume_text"></rich-text>
               </view>
               <button class="" @click="handleVolume">确认</button>
             </view>
@@ -417,6 +405,9 @@ export default {
   },
   data() {
     return {
+	  fillStatementValue_text:"",
+	  volume_text:"",
+	  wight_text:"",
       multiArray:[],
       sendModeVal: "r111",//寄送方式: 改成真正的默认值
       sendModeCountryName: "",// 寄送方式-目的地国家名字
@@ -556,6 +547,11 @@ export default {
     // 协议
     handleAggrentMent() {
       this.aggrementChecked = !this.aggrementChecked;
+    },
+	handleAggrentMent_text() {
+		 uni.navigateTo({
+			url: 'wuliu_text', 
+		 });
     },
     // 扫一扫
     handleScan() {
@@ -814,6 +810,9 @@ export default {
 	  if (res.data && res.data.length > 0) {
 		  this.order_insured_price = res.data[0]["order_insured_price"];
 		  this.order_insured_total = res.data[0]["order_insured_total"];
+		  this.fillStatementValue_text = res.data[0]["fillStatementValue_text"];
+		  this.volume_text = res.data[0]["volume_text"];
+		  this.wight_text = res.data[0]["wight_text"];
 		  return res.data[0];
 	  }
      
@@ -1024,6 +1023,7 @@ export default {
 	  }
   }
   .send-buy-box {
+	z-index: 99999;
     position: fixed;
     left: 0;
     right: 0;

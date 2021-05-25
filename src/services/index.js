@@ -346,7 +346,20 @@ export default {
             method: 'POST'
         })
     },
-
+	// 获取注册协议
+	signText(data) {
+	    return request({
+	        url: 'auth/sign_agreement',
+	        method: 'POST'
+	    })
+	},
+	// 获取物流协议
+	wuliuText(data) {
+	    return request({
+	        url: 'auth/wuliu_agreement',
+	        method: 'POST'
+	    })
+	},
     // 发送邮箱验证码
     sendEmail(data) {
         return request({
