@@ -138,6 +138,12 @@
 		        "navigationBarTitleText": "注册协议"
 		    }
 		},
+		{
+		    "path": "pages/tabbar-3/wuliu_text",
+		    "style": {
+		        "navigationBarTitleText": "物流协议"
+		    }
+		},
         {
             "path": "pages/address/send",
             "style": {
