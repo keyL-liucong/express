@@ -95,7 +95,8 @@
 			</tui-list-view>
 		</view>
 		<view class="app-text">
-			<text class="text-title">运费规则说明：</text>
+			<rich-text type="text" :nodes="fregiht_calculation_text"></rich-text>
+			<!-- <text class="text-title">运费规则说明：</text>
 			<view class="row">
 				<text class="text-middle-title">体积重计算方式</text>
 				<text class="text-middle-desc">按照国际惯例，低密度的包裹，比较其实际重量，占用的空间通常较大，计算得出体积重量。体积重量和实际重量两者取最大者计费。</text>
@@ -112,7 +113,7 @@
 				<text class="text-middle-desc">标准服务：长+宽+高《 200cm，单位长度《 140cm</text>
 				<text class="text-middle-desc">重量限制：《 30cm</text>
 				<text class="text-middle-desc">以上测算为普货价格标准，如包裹内有特殊品（如食品、液体、电池等），寄送运费将比普通包裹贵10元/kg,请下单时如实申报</text>
-			</view>
+			</view> -->
 		</view>
 		<uni-popup ref="showpopup" type="bottom" @change="change">
 			<view class="weight-area">
@@ -204,6 +205,8 @@
 		},
 		data() {
 			return {
+				fregiht_calculation_num:6000,
+				fregiht_calculation_text:"",
 				standardPrice:0.00,
 				standardMsg:"预计5-10个工作日到达",
 				preferentialPrice:0.00,
@@ -320,7 +323,7 @@
 					this.lwh.height = e.detail.value;
 				}
 				if (this.lwh.long >0 && this.lwh.wide > 0 && this.lwh.height > 0) {
-					let volume = (this.lwh.long * this.lwh.wide * this.lwh.height) / 6000;
+					let volume = (this.lwh.long * this.lwh.wide * this.lwh.height) / this.fregiht_calculation_num;
 					
 					volume = volume*100;
 					if(volume < 0.49){
@@ -350,6 +353,8 @@
 					this.addressData.receiverRegionName = this.addressData.recountryEn[0].city_name;
 					this.objective_id = this.addressData.recountryEn[0].city_id;
 					this.currentVolumewhere = this.addressData.recountryEn[0].maximum_limit;
+					this.fregiht_calculation_num = EnRes.data.data.fregiht_calculation_num;
+					this.fregiht_calculation_text = EnRes.data.data.fregiht_calculation_text;
 				}
 			},
 			bindPickerChange: function(e) {
@@ -442,7 +447,7 @@
 			  color: #7B7B7B;
 		  }
 		  .must{
-			  margin-left: 10rpx;
+			  margin-left: 6;
 			  font-size: 18rpx;
 			  color: #FF6C00;
 			  border-radius: 50rpx;
