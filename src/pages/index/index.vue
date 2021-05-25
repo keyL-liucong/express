@@ -60,7 +60,7 @@
                     </view> 
                 </view>
             </view>
-            <view class="piece bg-2" @click="navTo('/pages/send/index?v=2')">
+            <view class="piece bg-2" @click="navTo('/pages/send/self')">
                 <view class="desc-box">
                     <view class="left left-2"></view> 
                     <view class="right">

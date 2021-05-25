@@ -219,12 +219,10 @@
         </view>
       </view>
     </view>
-    <view style="color:#ff6c00;">
-		<label class="thorui-radio" style="margin-right: 20rpx"></label>
-		<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
-		<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
-	</view>
-    
+    <label class="thorui-radio" style="margin-right: 20rpx">
+    	<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
+    	<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
+    </label>
     <view class="send-buy-box">
       <view class="left">
         <view class="top"> 预估运费<text>￥ {{ price || 0 }} </text>起 </view>

@@ -16,29 +16,45 @@
 				</radio-group>
 			</view>
 
-
-			<view class="send-part-box send-part-box_2">
-				<!-- 寄件地址 -->
-				<view class="row" @click="navTo('/pages/address/index?currentTab=1&from=send')">
-				  <view class="tag tag-1">寄</view>
-				  <view class="send-info" v-if="!sendAddr">
-				    <view class="row"> 寄件人信息 </view>
-				    <view class="row gray"> 点击填写寄件地址 </view>
-				  </view>
-				  <view class="send-info" v-else>
-				    <view class="row">
-				      <text class="name">{{ sendAddr.realname }}</text>
-				      <text class="mobile">{{ sendAddr.mobile }}</text>
-				    </view>
-				    <view class="row gray clamp-1"> {{ sendAddr.address }} </view>
-				  </view>
-				  <view class="address">
-				    地址簿
-				  </view>
+			<view class="send-mode-fill-item">
+				<view class="fill-item-lab">
+					<text class="lab-text">自寄到仓库</text>
+					<text class="mark">(必填)</text>
 				</view>
-				<!-- 寄件地址 -->
+				<picker @change="sendModePickerChange" range-key="name" :range="multiArray">
+					<view v-if="sendModeCountryName" class="fill-text">{{sendModeCountryName}}<text class="icon"></text>
+					</view>
+					<view v-else class="fill-text placeholder">请选择目的地国家<text class="icon"></text></view>
+				</picker>
 			</view>
 
+			<view v-if="sendModeRecipientsAddress" class="default-address-info">
+				<view class="default-address-info-item recipients">
+					<text class="info-lab">收件人：</text>
+					<text class="info-text">{{sendModeRecipientsName}}</text>
+					<text class="info-copybtn" @click="copyAddressInfo">一键复制</text>
+				</view>
+				<view class="default-address-info-item recipients">
+					<text class="info-lab">电      话：</text>
+					<text class="info-text">{{sendModeRecipientsMobile}}</text>
+				</view>
+				<view class="default-address-info-item address">
+					<text class="info-lab">地      址：</text>
+					<text class="info-text">{{sendModeRecipientsAddress}}</text>
+				</view>
+			</view>
+			<view class="send-type-box">
+				<view class="row">
+					<view class="row-left">
+						<text class="lab-text">快递单号</text>
+						<text class="mark">(必填)</text>
+					</view>
+					<view class="row-right">
+						<input type="text" class="placeholder-text" placeholder="请填写发货的快递单号" v-model="logistics_no">
+						<image src="../../static/scan.png" alt="" @click="handleScan">
+					</view>
+				</view>
+			</view>
 		</view>
 
 		<view class="send-part-box">
@@ -163,7 +179,7 @@
 		</view>
 
 		<view class="send-type-box send-type-service">
-			<view class="row line">
+			<view class="row">
 				<view class="row-left">服务</view>
 				<view class="row-right">
 					<radio-group @change="radioChange">
@@ -178,14 +194,8 @@
 					</radio-group>
 				</view>
 			</view>
-			<view class="row">
-				<view class="row-left">上门取件时间</view>
-				<view class="row-right" @click="dateShow">
-					{{ result }}
-				</view>
-			</view>
 		</view>
-		<label class="thorui-radio">
+		<label class="thorui-radio" style="margin-right: 20rpx">
 			<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
 			<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
 		</label>
@@ -936,46 +946,37 @@
 		background: #f3f3f3;
 		padding: 20rpx;
 		padding-bottom: 100px;
-		.send-part-box_2{
-			padding: 0rpx !important;
-			margin-bottom: 0rpx !important;
-		}
 		.send-part-box {
 			padding: 30rpx;
 			background: #fff;
 			border-radius: 16rpx;
 			margin-bottom: 20rpx;
-
-			.send-part-title {
+			.send-part-title{
 				font-size: 32rpx;
 			}
-
 			>.mode {
 				.send-mode-radio {
 					padding-bottom: 28rpx;
 					border-bottom: 2rpx dashed #b1afaf;
-
 					.radio-title {
 						font-size: 32rpx;
 						color: #000;
 						line-height: 44rpx;
 					}
-
+				
 					.send-mode-radio-group {
 						display: flex;
 						margin-top: 20rpx;
 						justify-content: space-between;
 						align-items: center;
 					}
-
+				
 					.radio-item {
 						display: flex;
 						align-items: center;
-
 						radio {
 							transform: scale(.8);
 						}
-
 						text {
 							font-size: 32rpx;
 							color: #000;
@@ -990,7 +991,6 @@
 				margin-top: 20rpx;
 				display: flex;
 				align-items: center;
-
 				.tag {
 					color: #fff;
 					padding: 4rpx 2rpx;
@@ -1083,53 +1083,42 @@
 				}
 			}
 		}
-
-		.send-type-service {
+		.send-type-service{
 			padding: 20rpx;
 			margin-bottom: 10rpx;
-
-			>.row {
-				padding: 15rpx 0rpx;
-			}
 		}
-
 		.send-type-box {
 			background: #fff;
 			border-radius: 16rpx;
 			overflow: hidden;
 			margin-top: 20rpx;
-
 			.line {
 				border-bottom: 1px solid rgba(204, 204, 204, 0.3);
 			}
-
+			
 			>.row {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-
-				.row-left {
+				.row-left{
 					.lab-text {
 						font-size: 28rpx;
 						color: #000;
 						line-height: 44rpx;
 					}
-
+					
 					.mark {
 						margin-left: 4rpx;
 						font-size: 22rpx;
 						color: #7b7b7b;
 					}
 				}
-
 				.row-right {
 					display: flex;
-
-					.placeholder-text {
+					.placeholder-text{
 						font-size: 28rpx;
 						text-align: right;
 					}
-
 					image {
 						margin-left: 10rpx;
 						width: 40rpx;
@@ -1138,15 +1127,12 @@
 				}
 			}
 		}
-
-		.slef-wrapp {
+		.slef-wrapp{
 			padding: 20rpx 0rpx;
-
-			.slef-wrapp-data {
+			.slef-wrapp-data{
 				justify-content: center;
 				align-items: center;
 			}
-
 			.tag {
 				color: #fff;
 				padding: 8rpx 8rpx;
@@ -1157,16 +1143,13 @@
 				border-radius: 8rpx;
 				margin-right: 16rpx;
 			}
-
 			.tag-2 {
 				background: #ff8400;
 			}
-
-			.mb10 {
+			.mb10{
 				margin-bottom: 20rpx;
 			}
 		}
-
 		>.thorui-radio {
 			radio {
 				transform: scale(0.7)
@@ -1517,7 +1500,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-
 		button {
 			display: flex;
 			width: 300rpx;
@@ -1550,7 +1532,6 @@
 		box-sizing: border-box;
 		background: #fff;
 		border-radius: 16rpx;
-
 		.send-mode-radio {
 			padding-bottom: 28rpx;
 			border-bottom: 2rpx dashed #b1afaf;
@@ -1575,7 +1556,6 @@
 				radio {
 					transform: scale(.8);
 				}
-
 				text {
 					font-size: 32rpx;
 					color: #000;
@@ -1675,8 +1655,7 @@
 			}
 		}
 	}
-
-	.tui-right {
+	.tui-right{
 		text-align: right;
 	}
 </style>

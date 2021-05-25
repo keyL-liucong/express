@@ -162,12 +162,24 @@
                 "navigationBarTitleText": "新增收件地址"
             }
         },
+		{
+		    "path": "pages/address/self",
+		    "style": {
+		        "navigationBarTitleText": "自提点"
+		    }
+		},
         {
             "path": "pages/send/index",
             "style": {
-                "navigationBarTitleText": "寄件"
+                "navigationBarTitleText": "上门取件"
             }
         },
+		{
+		    "path": "pages/send/self",
+		    "style": {
+		        "navigationBarTitleText": "自寄到仓"
+		    }
+		},
         {
             "path": "pages/contraband/index",
             "style": {
