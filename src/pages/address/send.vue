@@ -138,13 +138,10 @@ export default {
     picker: function (e) {
       let value = e.detail.value;
       this.value = value;
-      // this.addressData.receiverCity = this.citys[value[1]].name;
-      console.log('object',this.districts[value[2]]);
-      // this.addressData.receiverDistrict = this.districts[value[2]].name;
       this.addressData.receiverDistrictId = this.districts[value[2]].id;
       this.addressData.prov_id = this.provinces[value[0]].id;
-      this.addressData.city_id = this.provinces[value[1]].id;
-      this.addressData.dist_id = this.provinces[value[2]].id;
+      this.addressData.city_id = this.districts[value[1]].parent_id;
+      this.addressData.dist_id = this.districts[value[2]].id;
       this.addressData.receiverRegionName =
         this.provinces[value[0]].name +
         " " +
