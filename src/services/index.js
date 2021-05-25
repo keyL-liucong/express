@@ -483,4 +483,12 @@ export default {
 	        method: 'Get'
 	    })
 	},
+	// 合并订单
+	mergeOrder(data) {
+	    return request({
+	        url: 'order/mergeOrder',
+	        data,
+	        method: 'POST'
+	    })
+	},
 }

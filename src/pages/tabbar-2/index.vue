@@ -169,7 +169,30 @@ export default {
 		return;
 	},
 	toMerge() {
-		console.log(this.mergeOrder);
+		let _merge = this.mergeOrder
+		let _this = this;
+		if(this.mergeOrder.length > 0) {
+			this.$toast("请选择合箱订单");
+			return;
+		}
+		let data = {
+			order_sn: _merge.join(",")
+		}
+		this.$api.mergeOrder(data).then(function(res) {
+			if(res.status == 1) {
+				uni.showToast({
+					title: "合箱成功",
+					duration: 1000,
+					icon:"success"
+				})
+				setTimeout(()=>{
+					_this.cancelOrderItem();
+				},2000)
+			} else {
+				this.$toast(res.info);
+				return;
+			}
+		})
 	},
     //获取订单列表
     loadData(source) {
