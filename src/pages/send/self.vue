@@ -1074,10 +1074,10 @@
 			.upload-img {
 				background: #fff;
 				padding: 30rpx;
-				border-radius: 16rpx;
+				border-bottom-left-radius: 16rpx;
+				border-bottom-right-radius: 16rpx;
 				overflow: hidden;
-				margin-bottom: 20rpx;
-
+			
 				.row {
 					margin-bottom: 20rpx;
 				}

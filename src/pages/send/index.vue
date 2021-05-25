@@ -82,7 +82,7 @@
 
 			<!-- 自提点 -->
 			<view class="row" v-if="is_flag == 1" @click="navTo('/pages/address/self?from=send')">
-				<view class="tag tag-2">自</view>
+				<view class="tag tag-2">自提</view>
 				<view class="send-info" v-if="!selfAddr">
 					<view class="row"> 自提信息 </view>
 					<view class="row gray"> 点击选择自提点 </view>
@@ -489,7 +489,7 @@
 			}
 		},
 		async onShow() {
-			if (this.sendAddr == null && this.mail == 0) {
+			if (this.sendAddr == null) {
 				this.sendAddr = await this.getDefaultAddr(1);
 			} else {
 				// this.city_id = this.sendAddr.address_id;
@@ -1074,10 +1074,9 @@
 			.upload-img {
 				background: #fff;
 				padding: 30rpx;
-				border-radius: 16rpx;
+				border-bottom-left-radius: 16rpx;
+				border-bottom-right-radius: 16rpx;
 				overflow: hidden;
-				margin-bottom: 20rpx;
-
 				.row {
 					margin-bottom: 20rpx;
 				}
