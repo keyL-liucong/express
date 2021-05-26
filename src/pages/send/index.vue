@@ -752,7 +752,7 @@
 			handleVolume() {
 				if (this.longth && this.width && this.height) {
 					this.volume = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
+						(this.longth * this.width * this.height) / this.fregiht_calculation_num
 					).toFixed(2);
 					// this.postData.volume = this.longth * this.width * this.height;
 					if (this.volume < 0.5) {
@@ -804,6 +804,7 @@
 					sender_id: this.city_id || "",
 					addressee_id: this.addr_id || "",
 					weight: this.weightNum,
+					volume:this.volumeWeight,
 					mail: this.mail,
 					item_picture: this.imageList,
 					order_items: JSON.stringify(this.declareList),
