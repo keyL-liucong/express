@@ -171,7 +171,7 @@ export default {
 	toMerge() {
 		let _merge = this.mergeOrder
 		let _this = this;
-		if(this.mergeOrder.length > 0) {
+		if(this.mergeOrder.length < 0) {
 			this.$toast("请选择合箱订单");
 			return;
 		}
