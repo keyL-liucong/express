@@ -211,7 +211,7 @@
 					<view class="line-right">
 						<!-- <button class="sub" @click="handleSub">-</button> -->
 						<!-- <input type="digit" v-model="weight" /> -->
-						<tui-numberbox :min="0.5" :step="0.1" :value="weight" @change="updateNumberWeight"></tui-numberbox>
+						<tui-numberbox :min="0.5"  :step="0.1" :value="weight" @change="updateNumberWeight"></tui-numberbox>
 						<!-- <button class="add" @click="handleAdd">+</button> -->
 						<text>kg</text>
 					</view>
@@ -1430,22 +1430,14 @@
 
 					view {
 						/* background: #f3f3f3; */
-						margin-right: 8rpx;
-						padding: 0 16rpx;
+						/* padding: 0 16rpx;
+						margin-right: 8rpx; */
 					}
 
 					>button {
 						background: #f3f3f3;
 						height: 70rpx;
 						line-height: 70rpx;
-					}
-
-					input {
-						display: block;
-						width: 60rpx;
-						background: #f3f3f3;
-						padding: 6rpx 16rpx;
-						margin-right: 8rpx;
 					}
 
 					.sub {

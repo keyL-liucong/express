@@ -1407,8 +1407,8 @@
 
 					view {
 						/* background: #f3f3f3; */
-						margin-right: 8rpx;
-						padding: 0 16rpx;
+						/* margin-right: 8rpx; */
+						/* padding: 0 16rpx; */
 					}
 
 					>button {
@@ -1417,13 +1417,13 @@
 						line-height: 70rpx;
 					}
 
-					input {
+					/* input {
 						display: block;
 						width: 60rpx;
 						background: #f3f3f3;
 						padding: 6rpx 16rpx;
 						margin-right: 8rpx;
-					}
+					} */
 
 					.sub {
 						border-top-left-radius: 6rpx;
