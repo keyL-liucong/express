@@ -56,8 +56,8 @@
     </view>
     <view v-if="mergeOrder.length > 0" class="bttom-pay">
 		<view class="left">
-			<view class="top"> 预估运费：<text style="color: #ff9800;">￥ {{ mergeTotalPrice || 0 }} </text> </view>
-			<view class="bottom">合箱手续费：<text style="color: #ff9800;">￥ {{ mergePrice || 0 }} </text></view>
+			<view class="top"> 预估运费：<text style="color: #ff9800;">￥{{ mergeTotalPrice || 0 }} </text> </view>
+			<view class="bottom">合箱手续费：<text style="color: #ff9800;">￥{{ mergePrice || 0 }} </text></view>
 			<view style="color:#7B7B7B;">最终运费以到仓称重确认为准</view>
 		</view>
       <text class="pay-btn" @click="toMerge">立即合箱</text>
@@ -246,6 +246,7 @@ export default {
       this.payOrderId = "";
       this.loadingType = "more";
       this.orderlist = [];
+	  this.mergeOrder = [];
       this.loadData("tabChange");
     },
     messagePopClose(pro) {
