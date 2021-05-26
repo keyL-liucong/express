@@ -189,7 +189,7 @@ export default {
 					_this.cancelOrderItem();
 				},2000)
 			} else {
-				this.$toast(res.info);
+				_this.$toast(res.info);
 				return;
 			}
 		})
