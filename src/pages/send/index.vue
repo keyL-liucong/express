@@ -365,7 +365,6 @@
 		},
 		data() {
 			return {
-				columns: ['交易时间', '今日', '近七日', '本周', '本月', '近三月'],
 				fillStatementValue_text: "",
 				volume_text: "",
 				wight_text: "",
@@ -430,6 +429,7 @@
 				service_type: "standard",
 				is_flag: 0,
 				list: [],
+				old_price:0,
 			};
 		},
 		watch: {
@@ -451,6 +451,11 @@
 						coupon_id: this.coupon.id || 0,
 					};
 					let res = await this.$api.getOrderPrice(data);
+					if(res.status == 0){
+						this.$toast(res.info);
+						return;
+					}
+					this.submitStatementValue = parseInt(this.submitStatementValue);
 					this.standard_price = res.data.standard_price + this.submitStatementValue;
 					this.standard_price_time = res.data.standard_price_time;
 					this.price = res.data.standard_price + this.submitStatementValue;
@@ -478,6 +483,11 @@
 						coupon_id: this.coupon.id || 0,
 					};
 					let res = await this.$api.getOrderPrice(data);
+					if(res.status == 0){
+						this.$toast(res.info);
+						return;
+					}
+					this.submitStatementValue = parseInt(this.submitStatementValue);
 					this.standard_price = res.data.standard_price + this.submitStatementValue;
 					this.standard_price_time = res.data.standard_price_time;
 					this.price = res.data.standard_price + this.submitStatementValue;
@@ -518,7 +528,7 @@
 			if (options.from == "coupon") {
 				this.coupon = JSON.parse(options.coupon)
 			}
-			this.mail = 1;
+			//this.mail = 1;
 		},
 		methods: {
 			// 协议
@@ -666,10 +676,18 @@
 					if (this.submitStatementValue < 10) {
 						this.submitStatementValue = this.submitStatementValue > 0 ? 10 : 0;
 					}
+					
 					this.submitStatementValue_msg = "保费￥" + parseInt(this.submitStatementValue);
-					this.standard_price = parseInt(standard_price) + parseInt(this.submitStatementValue);
-					this.preferential_price = parseInt(preferential_price) + parseInt(this.submitStatementValue);
-					this.price = parseInt(price) + parseInt(this.submitStatementValue);
+					if(this.submitStatementValue == 0){
+						this.standard_price = parseInt(standard_price) - parseInt(this.old_price);
+						this.preferential_price = parseInt(preferential_price) - parseInt(this.old_price);
+						this.price = parseInt(price) - parseInt(this.old_price);
+					}else{
+						this.standard_price = parseInt(standard_price) + parseInt(this.submitStatementValue);
+						this.preferential_price = parseInt(preferential_price) + parseInt(this.submitStatementValue);
+						this.price = parseInt(price) + parseInt(this.submitStatementValue);
+						this.old_price = parseInt(this.submitStatementValue);
+					}
 				}
 			},
 			// 保价取消
@@ -694,9 +712,9 @@
 			handleCheck(e) {
 				if (this.longth && this.width && this.height) {
 					this.volumeWeight = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / 6000
+						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
 					).toFixed(2);
-					if (this.volume < 0.5) {
+					if (this.volumeWeight < 0.5) {
 						this.volumeWeight = 0.5;
 					}
 				}
@@ -705,7 +723,7 @@
 			handleVolume() {
 				if (this.longth && this.width && this.height) {
 					this.volume = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / 6000
+						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
 					).toFixed(2);
 					// this.postData.volume = this.longth * this.width * this.height;
 					if (this.volume < 0.5) {
@@ -718,18 +736,13 @@
 			},
 			// 创建订单 立即下单
 			async handleCreateOrder() {
-				if (this.mail == 1) {
-					if (this.city_id == null) {
-						this.$toast("自寄到仓邮寄地址必选");
-						return;
-					}
-				} else {
-					if (this.sendAddr == null) {
-						this.$toast("请先填写寄件人信息");
-						return;
-					}
-					this.city_id = this.sendAddr.address_id;
+				
+				if (this.sendAddr == null) {
+					this.$toast("请先填写寄件人信息");
+					return;
 				}
+				this.city_id = this.sendAddr.address_id;
+				
 				if (this.receAddr == null) {
 					this.$toast("请先填写收件人信息");
 					return;
@@ -777,7 +790,7 @@
 				}
 			},
 			handlePopup(type) {
-
+				
 				if (this.mail == 1 && !this.sendModeRecipientsName) {
 					this.$toast("请先选择自寄到仓信息");
 					return;
@@ -834,7 +847,7 @@
 					this.price = this.preferential_price;
 					this.time = this.preferential_price_time;
 				}
-				this.mail = e.detail.value;
+				//this.mail = e.detail.value;
 			},
 			dateShow: function(e) {
 				this.$refs.dateTime.show();
@@ -1037,7 +1050,7 @@
 				}
 
 				.address {
-					padding: 0 20rpx;
+					padding: 0 19rpx;
 				}
 			}
 

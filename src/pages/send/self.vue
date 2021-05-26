@@ -440,6 +440,7 @@
 				service_type: "standard",
 				is_flag: 0,
 				list: [],
+				old_price:0,
 			};
 		},
 		watch: {
@@ -461,6 +462,11 @@
 						coupon_id: this.coupon.id || 0,
 					};
 					let res = await this.$api.getOrderPrice(data);
+					if(res.status == 0){
+						this.$toast(res.info);
+						return;
+					}
+					this.submitStatementValue = parseInt(this.submitStatementValue);
 					this.standard_price = res.data.standard_price + this.submitStatementValue;
 					this.standard_price_time = res.data.standard_price_time;
 					this.price = res.data.standard_price + this.submitStatementValue;
@@ -488,6 +494,11 @@
 						coupon_id: this.coupon.id || 0,
 					};
 					let res = await this.$api.getOrderPrice(data);
+					if(res.status == 0){
+						this.$toast(res.info);
+						return;
+					}
+					this.submitStatementValue = parseInt(this.submitStatementValue);
 					this.standard_price = res.data.standard_price + this.submitStatementValue;
 					this.standard_price_time = res.data.standard_price_time;
 					this.price = res.data.standard_price + this.submitStatementValue;
@@ -677,9 +688,16 @@
 						this.submitStatementValue = this.submitStatementValue > 0 ? 10 : 0;
 					}
 					this.submitStatementValue_msg = "保费￥" + parseInt(this.submitStatementValue);
-					this.standard_price = parseInt(standard_price) + parseInt(this.submitStatementValue);
-					this.preferential_price = parseInt(preferential_price) + parseInt(this.submitStatementValue);
-					this.price = parseInt(price) + parseInt(this.submitStatementValue);
+					if(this.submitStatementValue == 0){
+						this.standard_price = parseInt(standard_price) - parseInt(this.old_price);
+						this.preferential_price = parseInt(preferential_price) - parseInt(this.old_price);
+						this.price = parseInt(price) - parseInt(this.old_price);
+					}else{
+						this.standard_price = parseInt(standard_price) + parseInt(this.submitStatementValue);
+						this.preferential_price = parseInt(preferential_price) + parseInt(this.submitStatementValue);
+						this.price = parseInt(price) + parseInt(this.submitStatementValue);
+						this.old_price = parseInt(this.submitStatementValue);
+					}
 				}
 			},
 			// 保价取消
@@ -704,9 +722,9 @@
 			handleCheck(e) {
 				if (this.longth && this.width && this.height) {
 					this.volumeWeight = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / 6000
+						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
 					).toFixed(2);
-					if (this.volume < 0.5) {
+					if (this.volumeWeight < 0.5) {
 						this.volumeWeight = 0.5;
 					}
 				}
@@ -715,7 +733,7 @@
 			handleVolume() {
 				if (this.longth && this.width && this.height) {
 					this.volume = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / 6000
+						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
 					).toFixed(2);
 					// this.postData.volume = this.longth * this.width * this.height;
 					if (this.volume < 0.5) {
@@ -844,7 +862,7 @@
 					this.price = this.preferential_price;
 					this.time = this.preferential_price_time;
 				}
-				this.mail = e.detail.value;
+				// this.mail = e.detail.value;
 			},
 			dateShow: function(e) {
 				this.$refs.dateTime.show();
@@ -1037,7 +1055,7 @@
 				}
 
 				.address {
-					padding: 0 20rpx;
+					padding: 0 19rpx;
 				}
 			}
 
