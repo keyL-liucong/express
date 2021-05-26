@@ -186,7 +186,7 @@
 			</view>
 		</view>
 		<label class="thorui-radio">
-			<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
+			<radio color="#5677fc" :checked="aggrementChecked" checked="true" @click="handleAggrentMent"></radio>
 			<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
 		</label>
 		<view class="send-buy-box">
@@ -421,7 +421,7 @@
 				header: {},
 				value: "", // 图片上传
 				serverUrl: "",
-				aggrementChecked: false, // 协议
+				aggrementChecked: true, // 协议
 				order_insured_price: 0, //保价费率 保价金额乘以保价费率 如果低于10元 默认10
 				order_insured_total: 0, //保价最高限制
 				insured_price: 0,
@@ -808,7 +808,7 @@
 					mail: this.mail,
 					item_picture: this.imageList,
 					order_items: JSON.stringify(this.declareList),
-					total_amount: this.price + this.submitStatementValue,
+					total_amount: this.price,
 					scene: this.$cache.get("scene") || "",
 					increment_price_total: this.fillStatementValue,
 					pick_up_time: this.result || "",
