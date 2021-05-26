@@ -210,7 +210,8 @@
 					<view> 预估重量<text>(包含外装的总重量)</text> </view>
 					<view class="line-right">
 						<!-- <button class="sub" @click="handleSub">-</button> -->
-						<input type="digit" v-model="weight" />
+						<!-- <input type="digit" v-model="weight" /> -->
+						<tui-numberbox :min="0.5" :step="0.1" :value="weight" @change="updateNumberWeight"></tui-numberbox>
 						<!-- <button class="add" @click="handleAdd">+</button> -->
 						<text>kg</text>
 					</view>
@@ -254,8 +255,9 @@
 					<view class="declare-row">
 						<view class="left">申报数量</view>
 						<view class="right">
-							<input type="number" placeholder="输入申报物品数量" adjust-position="tue" style="width:280rpx"
-								v-model="order_item.item_num">
+							<!-- <input type="number" placeholder="输入申报物品数量" adjust-position="tue" style="width:280rpx"
+								v-model="order_item.item_num"> -->
+							<tui-numberbox :min="0" :step="1" :value="item_num_temp" @change="updateNumber"></tui-numberbox>
 							<text>个</text>
 						</view>
 					</view>
@@ -357,11 +359,12 @@
 <script>
 	import tuiDatetime from "../../components/tui-datetime/tui-datetime";
 	import tuiUpload from "@/components/tui-upload/tui-upload";
-
+	import tuiNumberbox from "@/components/tui-numberbox/tui-numberbox"
 	export default {
 		components: {
 			tuiDatetime,
-			tuiUpload
+			tuiUpload,
+			tuiNumberbox
 		},
 		data() {
 			return {
@@ -395,10 +398,11 @@
 				volumeWeight: 0,
 				firstList: [],
 				secList: [],
+				item_num_temp:0,
 				order_item: {
 					declare_id: "",
 					item_price: "",
-					item_num: "",
+					item_num: 0,
 				}, // 申报物品的item
 				declareList: [], // 申报物品列表
 				total_amount: "", // 申报物品总价
@@ -546,6 +550,13 @@
 			//this.mail = 1;
 		},
 		methods: {
+			updateNumber(e) {
+				this.item_num_temp = e.value
+				this.order_item.item_num = this.item_num_temp
+			},
+			updateNumberWeight(e) {
+				this.weight = e.value
+			},
 			// 协议
 			handleAggrentMent() {
 				this.aggrementChecked = !this.aggrementChecked;
@@ -741,7 +752,7 @@
 			handleVolume() {
 				if (this.longth && this.width && this.height) {
 					this.volume = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
+						(this.longth * this.width * this.height) / this.fregiht_calculation_num
 					).toFixed(2);
 					// this.postData.volume = this.longth * this.width * this.height;
 					if (this.volume < 0.5) {
@@ -793,6 +804,7 @@
 					sender_id: this.city_id || "",
 					addressee_id: this.addr_id || "",
 					weight: this.weightNum,
+					volume:this.volumeWeight,
 					mail: this.mail,
 					item_picture: this.imageList,
 					order_items: JSON.stringify(this.declareList),
@@ -1229,7 +1241,7 @@
 			left: 0;
 			right: 0;
 			bottom: 0;
-			padding: 10rpx 30rpx 50rpx 30rpx;
+			padding: 10rpx 30rpx 30rpx 30rpx;
 			background: #fff;
 			font-size: 24rpx;
 			display: flex;
@@ -1322,10 +1334,10 @@
 						display: flex;
 						align-items: center;
 
-						input {
+						/* input {
 							text-align: right;
 							margin-right: 8rpx;
-						}
+						} */
 					}
 				}
 			}
@@ -1417,7 +1429,7 @@
 					display: flex;
 
 					view {
-						background: #f3f3f3;
+						/* background: #f3f3f3; */
 						margin-right: 8rpx;
 						padding: 0 16rpx;
 					}
