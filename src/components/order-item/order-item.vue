@@ -176,6 +176,7 @@ export default {
 		this.mergeChecked = !this.mergeChecked;
 		let data = {
 			order_sn: this.item.order_sn,
+			order_price:this.item.total_amount,
 			isChecked: this.mergeChecked
 		}
 		this.$emit("handleMergeClick", data);

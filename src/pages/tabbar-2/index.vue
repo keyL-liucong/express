@@ -55,6 +55,11 @@
       ></uni-load-more>
     </view>
     <view v-if="mergeOrder.length > 0" class="bttom-pay">
+		<view class="left">
+			<view class="top"> 预估运费：<text style="color: #ff9800;">￥ {{ mergeTotalPrice || 0 }} </text> </view>
+			<view class="bottom">合箱手续费：<text style="color: #ff9800;">￥ {{ mergePrice || 0 }} </text></view>
+			<view style="color:#7B7B7B;">最终运费以到仓称重确认为准</view>
+		</view>
       <text class="pay-btn" @click="toMerge">立即合箱</text>
     </view>
   </view>
@@ -74,6 +79,8 @@ export default {
   },
   data() {
     return {
+	  mergeTotalPrice:0,
+      mergePrice:0,
 	  mergeOrder:[],
       messageboxShow: true,
       pageNum: 1,
@@ -165,8 +172,10 @@ export default {
 	handleMergeData(item) {
 		let _merge = this.mergeOrder
 		if(item.isChecked == false) {
+			this.mergeTotalPrice = this.mergeTotalPrice - item.order_price;
 			_merge.splice(_merge.indexOf(item.order_sn),1);
 		} else {
+			this.mergeTotalPrice = this.mergeTotalPrice + item.order_price;
 			_merge.push(item.order_sn)
 		}
 		this.mergeOrder = _merge;
@@ -222,6 +231,7 @@ export default {
 
           _self.pageNum++;
           _self.loadingType = (_self.orderlist.length >= orderTotal || res.data.list.length == 0) ?  "noMore" : "more";
+		  _self.mergePrice = res.data.order_merge_price;
         } else {
           _self.$toast("加载失败，请重试");
         }
@@ -306,7 +316,12 @@ page {
   padding-top: 80rpx;
   background: #f3f3f3;
 }
-
+.left{
+	font-size: 22rpx;
+	display: inline-block;
+	margin: 0% 3%;
+	width: 380rpx;
+}
 .navbar {
   display: flex;
   position: fixed;
