@@ -390,7 +390,7 @@
 	.app-container {
 	  background: #f3f3f3;
 	  padding: 15px;  
-	  /* height: 100vh; */
+	  height: 100vh;
 	  .common{
 		  border-radius: 16rpx;
 		  background-color: #FFFFFF;
@@ -434,7 +434,7 @@
 			  font-size: 18rpx;
 			  color: #FF6C00;
 			  border-radius: 50rpx;
-			  padding: 4rpx 16rpx;
+			  padding: 4rpx 10rpx;
 			  border: 2rpx solid #ff7100;
 		  }
 		  .cur{

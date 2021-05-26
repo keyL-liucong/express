@@ -47,11 +47,11 @@ export default {
       addrList: [],
       currentTab:0,
       tabs: [{
-					name: "收件地址簿"
-				}, {
-					name: "寄件地址簿"
-				}],
-      type:1   ,// 地址类型 1-寄件，2-收件
+				name: "收件地址簿"
+			}, {
+			name: "寄件地址簿"
+		}],
+      type:2  ,// 地址类型 1-寄件，2-收件
 	  from:""
     };
   },

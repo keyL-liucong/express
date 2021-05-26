@@ -153,7 +153,11 @@ export default {
       });
     }
   },
-  onShow() {},
+  onShow() {
+	  if (token) {
+	    this.loadData();
+	  }
+  },
   onReachBottom() {
     this.loadData();
   },

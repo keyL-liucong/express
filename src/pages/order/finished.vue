@@ -74,7 +74,7 @@
     </view>
     <view class="bottom-btn-box">
       <button class="left"  open-type="share">通知收件人</button>
-      <button class="right" @click="toOrderList">查看订单</button>
+      <button class="right" @click="toOrderList">返回首页</button>
     </view>
   </view>
 </template>
@@ -112,9 +112,12 @@ export default {
       this.$href.navigateTo({ url: url });
     },
     toOrderList(){
-      uni.navigateTo({
-        url: "/pages/tabbar-2/detail?order_sn="+this.orderId,
-      })
+		uni.switchTab({
+			url:"../tabbar-2/index"
+		})
+      // uni.navigateTo({
+      //   url: "/pages/tabbar-2/detail?order_sn="+this.orderId,
+      // })
     },
 	copyData() {
 		  let data = this.orderId;
