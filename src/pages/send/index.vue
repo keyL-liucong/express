@@ -430,6 +430,9 @@
 				is_flag: 0,
 				list: [],
 				old_price:0,
+				addr_id:"",
+				order_total_kg:0,
+				fregiht_calculation_num:0,
 			};
 		},
 		watch: {
@@ -438,17 +441,23 @@
 				if (this.mail == 0) {
 					this.city_id = this.sendAddr.address_id;
 				}
+				if(this.is_flag == 1){
+					this.addr_id = this.selfAddr.country_id;
+				}else{
+					this.addr_id = this.receAddr.address_id;
+				}
 				if (
 					this.city_id &&
-					this.receAddr.address_id &&
+					this.addr_id &&
 					this.weightNum
 				) {
 					let data = {
 						sender_id: this.city_id,
-						addressee_id: this.receAddr.address_id,
+						addressee_id: this.addr_id,
 						weight: this.weightNum,
 						volume: this.volume,
 						coupon_id: this.coupon.id || 0,
+						is_flag:this.is_flag,
 					};
 					let res = await this.$api.getOrderPrice(data);
 					if(res.status == 0){
@@ -470,17 +479,23 @@
 				if (this.mail == 0) {
 					this.city_id = this.sendAddr.address_id;
 				}
+				if(this.is_flag == 1){
+					this.addr_id = this.selfAddr.country_id;
+				}else{
+					this.addr_id = this.receAddr.address_id;
+				}
 				if (
 					this.city_id &&
-					this.receAddr.address_id &&
+					this.addr_id &&
 					this.volume
 				) {
 					let data = {
 						sender_id: this.city_id,
-						addressee_id: this.receAddr.address_id,
+						addressee_id: this.addr_id,
 						weight: this.weightNum ? this.weightNum : this.volume,
 						volume: this.volume,
 						coupon_id: this.coupon.id || 0,
+						is_flag:this.is_flag,
 					};
 					let res = await this.$api.getOrderPrice(data);
 					if(res.status == 0){
@@ -712,10 +727,13 @@
 			handleCheck(e) {
 				if (this.longth && this.width && this.height) {
 					this.volumeWeight = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
+						(this.longth * this.width * this.height) / this.fregiht_calculation_num
 					).toFixed(2);
 					if (this.volumeWeight < 0.5) {
 						this.volumeWeight = 0.5;
+					}
+					if(this.volumeWeight > this.order_total_kg){
+						this.volumeWeight = this.order_total_kg;
 					}
 				}
 			},
@@ -728,6 +746,9 @@
 					// this.postData.volume = this.longth * this.width * this.height;
 					if (this.volume < 0.5) {
 						this.volume = 0.5;
+					}
+					if(this.volume > this.order_total_kg){
+						this.volume = this.order_total_kg;
 					}
 				}
 				setTimeout(() => {
@@ -743,8 +764,12 @@
 				}
 				this.city_id = this.sendAddr.address_id;
 				
-				if (this.receAddr == null) {
+				if (this.receAddr == null  && this.is_flag == 0) {
 					this.$toast("请先填写收件人信息");
+					return;
+				}
+				if(this.selfAddr == null && this.is_flag == 1){
+					this.$toast("请先选择自提点信息");
 					return;
 				}
 				if (this.declareList.length == 0) {
@@ -759,9 +784,14 @@
 					this.$toast("请确认已经阅读并同意《物流服务协议》");
 					return false;
 				}
+				if(this.is_flag == 1){
+					this.addr_id = this.selfAddr.country_id;
+				}else{
+					this.addr_id = this.receAddr.address_id;
+				}
 				let data = {
 					sender_id: this.city_id || "",
-					addressee_id: this.receAddr.address_id || "",
+					addressee_id: this.addr_id || "",
 					weight: this.weightNum,
 					mail: this.mail,
 					item_picture: this.imageList,
@@ -775,6 +805,7 @@
 					coupon_id: this.coupon.id || 0,
 					is_merge: this.is_merge || 0,
 					service_type: this.service_type,
+					is_flag:this.is_flag,
 				};
 
 				let res = await this.$api.createOrder(data);
@@ -796,13 +827,13 @@
 					return;
 				}
 
-				if (this.sendAddr == null && this.mail == 0) {
-					this.$toast("请先填写寄件人信息");
+				if (this.receAddr == null && this.is_flag == 0) {
+					this.$toast("请先填写收件人信息");
 					return;
 				}
-
-				if (this.receAddr == null) {
-					this.$toast("请先填写收件人信息");
+				
+				if(this.selfAddr == null && this.is_flag == 1){
+					this.$toast("请先选择自提点信息");
 					return;
 				}
 				if (type === "goods") {
@@ -830,6 +861,8 @@
 					this.fillStatementValue_text = res.data[0]["fillStatementValue_text"];
 					this.volume_text = res.data[0]["volume_text"];
 					this.wight_text = res.data[0]["wight_text"];
+					this.order_total_kg = res.data[0]["order_total_kg"];
+					this.fregiht_calculation_num = res.data[0]["fregiht_calculation_num"];
 					if (res.data[0]['address_id']) {
 						return res.data[0];
 					}
@@ -921,12 +954,12 @@
 			// 处理重量
 			handleConfirmWeight() {
 				let _self = this;
-				if (this.weight > this.receAddr.order_total_kg) {
+				if (this.weight > this.order_total_kg) {
 					setTimeout(() => {
-						_self.$toast(`最大重量是${this.receAddr.order_total_kg}KG`);
+						_self.$toast(`最大重量是${this.order_total_kg}KG`);
 					}, 500);
-					this.weightNum = this.receAddr.order_total_kg;
-					this.weight = this.receAddr.order_total_kg;
+					this.weightNum = this.order_total_kg;
+					this.weight = this.order_total_kg;
 				} else {
 					this.weightNum = this.weight;
 				}

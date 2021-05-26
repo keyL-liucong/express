@@ -375,7 +375,6 @@
 		},
 		data() {
 			return {
-				columns: ['交易时间', '今日', '近七日', '本周', '本月', '近三月'],
 				fillStatementValue_text: "",
 				volume_text: "",
 				wight_text: "",
@@ -441,6 +440,9 @@
 				is_flag: 0,
 				list: [],
 				old_price:0,
+				addr_id:"",
+				order_total_kg:0,
+				fregiht_calculation_num:0,
 			};
 		},
 		watch: {
@@ -449,17 +451,23 @@
 				if (this.mail == 0) {
 					this.city_id = this.sendAddr.address_id;
 				}
+				if(this.is_flag == 1){
+					this.addr_id = this.selfAddr.country_id;
+				}else{
+					this.addr_id = this.receAddr.address_id;
+				}
 				if (
 					this.city_id &&
-					this.receAddr.address_id &&
+					this.addr_id &&
 					this.weightNum
 				) {
 					let data = {
 						sender_id: this.city_id,
-						addressee_id: this.receAddr.address_id,
+						addressee_id: this.addr_id,
 						weight: this.weightNum,
 						volume: this.volume,
 						coupon_id: this.coupon.id || 0,
+						is_flag:this.is_flag,
 					};
 					let res = await this.$api.getOrderPrice(data);
 					if(res.status == 0){
@@ -481,17 +489,23 @@
 				if (this.mail == 0) {
 					this.city_id = this.sendAddr.address_id;
 				}
+				if(this.is_flag == 1){
+					this.addr_id = this.selfAddr.country_id;
+				}else{
+					this.addr_id = this.receAddr.address_id;
+				}
 				if (
 					this.city_id &&
-					this.receAddr.address_id &&
+					this.addr_id &&
 					this.volume
 				) {
 					let data = {
 						sender_id: this.city_id,
-						addressee_id: this.receAddr.address_id,
+						addressee_id: this.addr_id,
 						weight: this.weightNum ? this.weightNum : this.volume,
 						volume: this.volume,
 						coupon_id: this.coupon.id || 0,
+						is_flag:this.is_flag,
 					};
 					let res = await this.$api.getOrderPrice(data);
 					if(res.status == 0){
@@ -722,10 +736,13 @@
 			handleCheck(e) {
 				if (this.longth && this.width && this.height) {
 					this.volumeWeight = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
+						(this.longth * this.width * this.height) / this.fregiht_calculation_num
 					).toFixed(2);
 					if (this.volumeWeight < 0.5) {
 						this.volumeWeight = 0.5;
+					}
+					if(this.volumeWeight > this.order_total_kg){
+						this.volumeWeight = this.order_total_kg;
 					}
 				}
 			},
@@ -733,11 +750,14 @@
 			handleVolume() {
 				if (this.longth && this.width && this.height) {
 					this.volume = this.volumeWeight = parseFloat(
-						(this.longth * this.width * this.height) / this.receAddr.fregiht_calculation_num
+						(this.longth * this.width * this.height) / this.fregiht_calculation_num
 					).toFixed(2);
 					// this.postData.volume = this.longth * this.width * this.height;
 					if (this.volume < 0.5) {
 						this.volume = 0.5;
+					}
+					if(this.volume > this.order_total_kg){
+						this.volume = this.order_total_kg;
 					}
 				}
 				setTimeout(() => {
@@ -746,20 +766,16 @@
 			},
 			// 创建订单 立即下单
 			async handleCreateOrder() {
-				if (this.mail == 1) {
-					if (this.city_id == null) {
-						this.$toast("自寄到仓邮寄地址必选");
-						return;
-					}
-				} else {
-					if (this.sendAddr == null) {
-						this.$toast("请先填写寄件人信息");
-						return;
-					}
-					this.city_id = this.sendAddr.address_id;
+				if (this.city_id == null) {
+					this.$toast("自寄到仓邮寄地址必选");
+					return;
 				}
-				if (this.receAddr == null) {
+				if (this.receAddr == null  && this.is_flag == 0) {
 					this.$toast("请先填写收件人信息");
+					return;
+				}
+				if(this.selfAddr == null && this.is_flag == 1){
+					this.$toast("请先选择自提点信息");
 					return;
 				}
 				if (this.declareList.length == 0) {
@@ -774,9 +790,14 @@
 					this.$toast("请确认已经阅读并同意《物流服务协议》");
 					return false;
 				}
+				if(this.is_flag == 1){
+					this.addr_id = this.selfAddr.country_id;
+				}else{
+					this.addr_id = this.receAddr.address_id;
+				}
 				let data = {
 					sender_id: this.city_id || "",
-					addressee_id: this.receAddr.address_id || "",
+					addressee_id: this.addr_id || "",
 					weight: this.weightNum,
 					mail: this.mail,
 					item_picture: this.imageList,
@@ -790,6 +811,7 @@
 					coupon_id: this.coupon.id || 0,
 					is_merge: this.is_merge || 0,
 					service_type: this.service_type,
+					is_flag:this.is_flag,
 				};
 
 				let res = await this.$api.createOrder(data);
@@ -805,21 +827,22 @@
 				}
 			},
 			handlePopup(type) {
-
+				
 				if (this.mail == 1 && !this.sendModeRecipientsName) {
 					this.$toast("请先选择自寄到仓信息");
 					return;
 				}
 
-				if (this.sendAddr == null && this.mail == 0) {
-					this.$toast("请先填写寄件人信息");
-					return;
-				}
-
-				if (this.receAddr == null) {
+				if (this.receAddr == null && this.is_flag == 0) {
 					this.$toast("请先填写收件人信息");
 					return;
 				}
+				
+				if(this.selfAddr == null && this.is_flag == 1){
+					this.$toast("请先选择自提点信息");
+					return;
+				}
+				
 				if (type === "goods") {
 					this.popupShow = true;
 					this.getFirstList();
@@ -838,18 +861,18 @@
 				let res = await this.$api.getDefaultAddr({
 					type, // 1默认寄件地址 2默认收件地址
 				});
-
 				if (res.data && res.data.length > 0) {
 					this.order_insured_price = res.data[0]["order_insured_price"];
 					this.order_insured_total = res.data[0]["order_insured_total"];
 					this.fillStatementValue_text = res.data[0]["fillStatementValue_text"];
 					this.volume_text = res.data[0]["volume_text"];
 					this.wight_text = res.data[0]["wight_text"];
+					this.order_total_kg = res.data[0]["order_total_kg"];
+					this.fregiht_calculation_num = res.data[0]["fregiht_calculation_num"];
 					if (res.data[0]['address_id']) {
 						return res.data[0];
 					}
 				}
-
 			},
 			radioChange(e) {
 				if (e.detail.value == 0) {
@@ -936,12 +959,12 @@
 			// 处理重量
 			handleConfirmWeight() {
 				let _self = this;
-				if (this.weight > this.receAddr.order_total_kg) {
+				if (this.weight > this.order_total_kg) {
 					setTimeout(() => {
-						_self.$toast(`最大重量是${this.receAddr.order_total_kg}KG`);
+						_self.$toast(`最大重量是${this.order_total_kg}KG`);
 					}, 500);
-					this.weightNum = this.receAddr.order_total_kg;
-					this.weight = this.receAddr.order_total_kg;
+					this.weightNum = this.order_total_kg;
+					this.weight = this.order_total_kg;
 				} else {
 					this.weightNum = this.weight;
 				}
