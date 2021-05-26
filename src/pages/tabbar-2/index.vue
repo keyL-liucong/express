@@ -189,6 +189,7 @@ export default {
 					duration: 1000,
 					icon:"success"
 				})
+				_this.mergeOrder = [];
 				setTimeout(()=>{
 					_this.cancelOrderItem();
 				},2000)
