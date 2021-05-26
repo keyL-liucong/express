@@ -186,7 +186,7 @@
 			</view>
 		</view>
 		<label class="thorui-radio">
-			<radio color="#5677fc" :checked="aggrementChecked" checked="true" @click="handleAggrentMent"></radio>
+			<radio color="#5677fc" :checked="aggrementChecked" @click="handleAggrentMent"></radio>
 			<text class="thorui-left__sm" @click="handleAggrentMent_text">我已同意并阅读《物流服务协议》</text>
 		</label>
 		<view class="send-buy-box">
