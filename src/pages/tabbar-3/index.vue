@@ -211,7 +211,7 @@
 					<view class="line-right">
 						<!-- <button class="sub" @click="handleSub">-</button> -->
 						<!-- <input type="digit" v-model="weight" /> -->
-						<tui-numberbox :min="0.5" :step="0.1" :value="weight" @change="updateNumberWeight"></tui-numberbox>
+						<tui-numberbox :min="0.5"  :step="0.1" :value="weight" @change="updateNumberWeight"></tui-numberbox>
 						<!-- <button class="add" @click="handleAdd">+</button> -->
 						<text>kg</text>
 					</view>
@@ -421,7 +421,7 @@
 				header: {},
 				value: "", // 图片上传
 				serverUrl: "",
-				aggrementChecked: false, // 协议
+				aggrementChecked: true, // 协议
 				order_insured_price: 0, //保价费率 保价金额乘以保价费率 如果低于10元 默认10
 				order_insured_total: 0, //保价最高限制
 				insured_price: 0,
@@ -808,7 +808,7 @@
 					mail: this.mail,
 					item_picture: this.imageList,
 					order_items: JSON.stringify(this.declareList),
-					total_amount: this.price + this.submitStatementValue,
+					total_amount: this.price,
 					scene: this.$cache.get("scene") || "",
 					increment_price_total: this.fillStatementValue,
 					pick_up_time: this.result || "",
@@ -1430,8 +1430,8 @@
 
 					view {
 						/* background: #f3f3f3; */
-					/* 	margin-right: 8rpx;
-						padding: 0 16rpx; */
+						/* padding: 0 16rpx;
+						margin-right: 8rpx; */
 					}
 
 					>button {
@@ -1439,14 +1439,6 @@
 						height: 70rpx;
 						line-height: 70rpx;
 					}
-/* 
-					input {
-						display: block;
-						width: 60rpx;
-						background: #f3f3f3;
-						padding: 6rpx 16rpx;
-						margin-right: 8rpx;
-					} */
 
 					.sub {
 						border-top-left-radius: 6rpx;
