@@ -27,19 +27,50 @@
     </view>
     <view class="order-info-list">
       <view class="order-info-item">
-        <text class="item-lab">订单金额</text>
-        <text class="item-val">¥ {{ orderInfo.total_amount }}</text>
+        <text class="item-lab">保价金额</text>
+        <text class="item-val">¥ {{ orderInfo.increment_price_total }}</text>
       </view>
-      <view class="order-info-item">
-        <text class="item-lab">订单时间</text>
-        <text class="item-val">{{ orderInfo.created }}</text>
-      </view>
+	  <view class="order-info-item">
+	    <text class="item-lab">保价费用</text>
+	    <text class="item-val">¥ {{ orderInfo.increment_price }}</text>
+	  </view>
+	  <view class="order-info-item">
+	    <text class="item-lab">订单金额</text>
+	    <text class="item-val">¥ {{ orderInfo.total_amount }}</text>
+	  </view>
+	  <view class="order-info-item">
+	    <text class="item-lab">订单时间</text>
+	    <text class="item-val">{{ orderInfo.created }}</text>
+	  </view>
     </view>
     <view class="order-addrss-city">
       <text class="city-from">{{ orderInfo.sender_addr }}</text>
       <text class="city-from-icon"></text>
       <text class="city-to">{{ orderInfo.addressee_addr }}</text>
     </view>
+	<!-- 包裹详情 -->
+	<view class="package-detail">
+	  <text class="detail-tite">包裹详情</text>
+	  <view class="detail-list" :class="{'down': detailAll}">
+	    <view v-for="(orderitem) in orderItems" :key="orderitem.order_id" class="detail-item">
+	      <view class="item-info item-name">
+	        <!-- <text class="info-title">物品</text> -->
+	        <text class="info-val">{{orderitem.item_name}}</text>
+	      </view>
+	      <view class="item-info item-price">
+	        <text class="info-title">价值：</text>
+	        <text class="info-val">{{orderitem.item_price}}</text>
+	      </view>
+	      <view class="item-info item-num">
+	        <text class="info-title">数量：</text>
+	        <text class="info-val">{{orderitem.item_num}}</text>
+	      </view>
+	    </view>
+	  </view>
+	  <view v-if="item.orderItems.length > 2" class="message-btn-wrap">
+	    <text class="message-btn" @click="openAllDetail">{{detailOpenBtnText}}</text>
+	  </view>
+	</view>
     <view class="btn-box"  v-if="orderInfo.order_status == 8">
       <button class="btn-item share-btn" open-type="share">分享给收件人</button>
       <navigator
@@ -59,6 +90,7 @@ export default {
     return {
       orderId: "",
       orderInfo: {},
+	  orderItems:{},
 	  token:""
     };
   },
@@ -88,6 +120,7 @@ export default {
       this.$api.getOrderInfo({ order_sn: _self.orderId }).then((res) => {
         if (res.status == 1) {
           _self.orderInfo = res.data;
+		  _self.orderItems = res.data.orderItems;
         } else {
           _self.$toast(res.info);
         }
@@ -150,7 +183,64 @@ page {
   background: #fff;
   border-radius: 16rpx;
   box-sizing: border-box;
+  height: 1175rpx;
 }
+.package-detail {
+    position: relative;
+    margin-top: 3rpx;
+	padding: 19rpx 0 43rpx;
+    // border-bottom: 2rpx dashed #b1afaf;
+    .message-btn-wrap{
+      display: flex;
+      margin-top: 24rpx;
+      justify-content: flex-end;
+    }
+    .message-btn {
+      display: flex;
+      width: 170rpx;
+      height: 52rpx;
+      font-size: 26rpx;
+      color: #000;
+      border-radius: 30rpx;
+      border: 2rpx solid #000;
+      align-items: center;
+      justify-content: center;
+    }
+    .detail-tite {
+      display: block;
+      height: 40rpx;
+      font-size: 28rpx;
+      color: #7b7b7b;
+      line-height: 40rpx;
+      font-weight: bold;
+    }
+    .detail-list{
+      max-height: 100rpx;
+      &.down{
+        max-height: auto;
+      }
+    }
+    .detail-item {
+      display: flex;
+      margin-top: 3rpx;
+      align-items: center;
+      font-size: 28rpx;
+      font-weight: bold;
+      justify-content: space-between;
+    }
+    .item-info{
+      display: flex;
+      align-items: center;
+    }
+    .info-title {
+      margin-right: 12rpx;
+      color: #7b7b7b;
+    }
+    .info-val {
+      font-weight: 400;
+      color: #000;
+    }
+  }
 .top-num-info {
   display: flex;
   align-items: center;
