@@ -180,7 +180,7 @@
 			</view>
 			<view class="row">
 				<view class="row-left">上门取件时间</view>
-				<view class="row-right" @click="dateShow">
+				<view class="row-right" style="float:right;" @click="dateShow">
 					{{ result }}
 				</view>
 			</view>

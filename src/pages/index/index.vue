@@ -82,7 +82,7 @@
                 <view class="desc-box" @click="navTo('/pages/freight/index')">
                     <view class="left left-4"></view>
                     <view class="right">
-                        <view>运费与实效</view>
+                        <view>运费与时效</view>
                         <view>透明正规准时</view>
                     </view>
                 </view>

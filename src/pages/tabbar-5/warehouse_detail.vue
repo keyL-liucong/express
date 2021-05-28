@@ -38,7 +38,9 @@
 		</view>
 		<view class="app-body mt">
 			<view class="top-content">
-				<text class="">{{ warehouse.name }}, {{ warehouse.address }}, {{ warehouse.mobile }}</text>
+				<text class="">{{ warehouse.name }}  {{ warehouse.mobile }}</text> <br/>
+				<text class="">{{ warehouse.address }}</text>
+				
 			</view>
 			<view class="item-list-wrap">
 				<tui-list-view color="#fff">
@@ -79,8 +81,7 @@
 						data = this.warehouse.mobile;
 						break;
 					default:
-						data = this.warehouse.name +", "+this.warehouse.address+", "+this.warehouse.mobile
-						
+						data = this.warehouse.name +" "+this.warehouse.mobile + "  "+this.warehouse.address;
 				}
 				uni.setClipboardData({
 				    data: data,
